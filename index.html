@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freminatos Trading PLC – Customer Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a56db 0%,#1e40af 100%);color:#fff;padding:0}
+.header-inner{max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:16px}
+.logo-circle{width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;border:2px solid rgba(255,255,255,0.4);flex-shrink:0}
+.header-text h1{font-size:1.5rem;font-weight:800;letter-spacing:.5px}
+.header-text p{font-size:.85rem;opacity:.8;margin-top:2px}
+/* STATS BAR */
+.stats-bar{background:#1a56db;border-top:1px solid rgba(255,255,255,0.15)}
+.stats-inner{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;gap:24px;flex-wrap:wrap}
+.stat-item{color:#fff;font-size:.8rem;opacity:.9;display:flex;align-items:center;gap:6px}
+.stat-item strong{font-size:1rem;font-weight:700}
+.stat-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.6)}
+/* MAIN CONTENT */
+.main{max-width:1280px;margin:0 auto;padding:24px}
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.tab-btn{flex:1;padding:10px 16px;border:none;background:transparent;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;color:#64748b;transition:all .2s}
+.tab-btn.active{background:#1a56db;color:#fff;box-shadow:0 2px 8px rgba(26,86,219,.35)}
+/* FILTERS */
+.filters{background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-wrap input{width:100%;padding:9px 12px 9px 36px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:#1a56db}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:15px}
+.filter-group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.filter-label{font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.filter-btn{padding:6px 12px;border:1.5px solid #e2e8f0;border-radius:6px;background:#fff;font-size:.78rem;font-weight:500;cursor:pointer;color:#475569;transition:all .15s}
+.filter-btn.active{background:#1a56db;border-color:#1a56db;color:#fff}
+.filter-btn:hover:not(.active){background:#f1f5f9;border-color:#cbd5e1}
+/* RESULTS COUNT */
+.results-info{font-size:.82rem;color:#64748b;margin-bottom:12px;padding:0 2px}
+/* GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+/* CARD */
+.hospital-card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1.5px solid #e8edf2;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.hospital-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#1a56db;border-radius:4px 0 0 4px}
+.hospital-card:hover{box-shadow:0 6px 20px rgba(26,86,219,.15);border-color:#93c5fd;transform:translateY(-2px)}
+.card-number{position:absolute;top:14px;right:14px;width:26px;height:26px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#94a3b8}
+.card-name{font-size:.95rem;font-weight:700;color:#0f172a;margin-bottom:10px;padding-right:30px;line-height:1.4}
+.card-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.badge{padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.badge-city{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.badge-a8{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.badge-a90{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+.badge-ext{background:#f3e8ff;color:#6b21a8;border:1px solid #d8b4fe}
+.card-date{font-size:.78rem;color:#64748b;display:flex;align-items:center;gap:5px}
+.card-date svg{flex-shrink:0}
+.card-contact{font-size:.75rem;color:#94a3b8;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* NO RESULTS */
+.no-results{text-align:center;padding:60px 20px;color:#94a3b8}
+.no-results svg{font-size:48px;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto}
+.no-results p{font-size:1rem;font-weight:500}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{background:linear-gradient(135deg,#1a56db,#1e40af);color:#fff;padding:20px 24px;border-radius:16px 16px 0 0;position:sticky;top:0;z-index:10}
+.modal-header-top{display:flex;justify-content:space-between;align-items:flex-start}
+.modal-title{font-size:1.1rem;font-weight:800;line-height:1.3;padding-right:12px}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.modal-close:hover{background:rgba(255,255,255,.35)}
+.modal-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.modal-badge{padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.modal-body{padding:20px 24px}
+.modal-section{margin-bottom:18px}
+.modal-section:last-child{margin-bottom:0}
+.modal-section-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.modal-section-title::after{content:'';flex:1;height:1px;background:#f1f5f9}
+.modal-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modal-info-item{background:#f8fafc;border-radius:8px;padding:10px 12px}
+.modal-info-label{font-size:.68rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.modal-info-value{font-size:.87rem;color:#0f172a;font-weight:600}
+.contact-list{display:flex;flex-direction:column;gap:6px}
+.contact-item{background:#f8fafc;border-radius:8px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px}
+.contact-icon{width:28px;height:28px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.contact-details{flex:1;min-width:0}
+.contact-role{font-size:.68rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.contact-name{font-size:.85rem;color:#0f172a;font-weight:700}
+.contact-phone{font-size:.8rem;color:#1d4ed8;font-weight:500;margin-top:1px}
+.modal-text-block{background:#f8fafc;border-radius:8px;padding:10px 12px;font-size:.85rem;color:#334155;line-height:1.6}
+.empty-field{font-size:.82rem;color:#cbd5e1;font-style:italic}
+/* LANG TOGGLE */
+.lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
+.lang-btn{padding:6px 14px;border-radius:20px;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(255,255,255,.25);border-color:#fff}
+.lang-btn:hover:not(.active){background:rgba(255,255,255,.1)}
+/* RESPONSIVE */
+@media(max-width:640px){
+  .header-inner{padding:14px 16px}
+  .header-text h1{font-size:1.2rem}
+  .main{padding:16px}
+  .cards-grid{grid-template-columns:1fr}
+  .modal-info-grid{grid-template-columns:1fr}
+  .filters{padding:12px}
+  .stats-inner{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-circle">F</div>
+    <div class="header-text">
+      <h1>Freminatos Trading PLC</h1>
+      <p data-en="Hospital &amp; Laboratory Customer Management System" data-zh="医院和实验室客户管理系统">Hospital &amp; Laboratory Customer Management System</p>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
+      <button class="lang-btn" onclick="setLang('zh')" id="btn-zh">中文</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-dot"></div><strong>64</strong> <span data-en="Total Customers" data-zh="客户总数">Total Customers</span></div>
+      <div class="stat-item"><div class="stat-dot" style="background:#fde68a"></div><strong>51</strong> <span data-en="Machine Customers" data-zh="机器客户">Machine Customers</span></div>
+      <div class="stat-item"><div class="stat-dot" style="background:#6ee7b7"></div><strong>13</strong> <span data-en="External Customers" data-zh="外部客户">External Customers</span></div>
+      <div class="stat-item"><div class="stat-dot" style="background:#fbbf24"></div><span data-en="A8 &amp; A90 Models" data-zh="A8 和 A90 型号">A8 &amp; A90 Models</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('machine')" id="tab-machine">
+      🏥 <span data-en="Machine Customers (51)" data-zh="机器客户 (51)">Machine Customers (51)</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('external')" id="tab-external">
+      🔬 <span data-en="External Customers (13)" data-zh="外部客户 (13)">External Customers (13)</span>
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search by hospital name or city…" oninput="applyFilters()">
+    </div>
+    <div class="filter-group">
+      <span class="filter-label" data-en="City:" data-zh="城市:">City:</span>
+      <div id="cityFilters"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label" data-en="Model:" data-zh="型号:">Model:</span>
+      <button class="filter-btn active" onclick="setModel('All')" id="model-All" data-en="All" data-zh="全部">All</button>
+      <button class="filter-btn" onclick="setModel('A8')" id="model-A8">A8</button>
+      <button class="filter-btn" onclick="setModel('A90')" id="model-A90">A90</button>
+    </div>
+  </div>
+
+  <div class="results-info" id="resultsInfo"></div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title" id="modalTitle"></div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-badges" id="modalBadges"></div>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const machineCustomers = [
+  {id:1,name:"Lucy health care plc",city:"A.A",date:"29/08/2024",model:"A8",
+   contacts:[{role:"Laboratory Head",name:"Foziya",phone:"0911563600"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:2,name:"AL-FEWZ Health care",city:"A.A",date:"08/12/2024",model:"A8",
+   contacts:[{role:"G/Manager",name:"Helen",phone:"0911940148"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:3,name:"Dr.Meliha Gyn/Obs",city:"A.A",date:"20/03/2025",model:"A8",
+   contacts:[{role:"G/Manager",name:"Nejat",phone:"0910701635"},{role:"Owner",name:"Dr.Abubeker",phone:"0913188833"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:4,name:"Lubu Internal and MCH Clinic",city:"A.A",date:"29/03/2025",model:"A8",
+   contacts:[{role:"Owner",name:"Dr.Shemles",phone:"0911267007"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:5,name:"Semah MCH",city:"A.A",date:"02/04/2025",model:"A8",
+   contacts:[{role:"Owner",name:"Dr.Solomon",phone:"0930294147"},{role:"Purchaser/Store",name:"Selam",phone:"0926480679"}],
+   payment:[],stock:"TSH (7 tests), TT3 (8 tests), TT4 & AMH (6 tests) – Stock Mar 10",order:"Fertility pediatric",doctors:"2 Gynaecologist + 2 Pediatric"},
+  {id:6,name:"UNECA",city:"A.A",date:"28/10/2024",model:"A90",
+   contacts:[{role:"Lab Head",name:"Yohannes",phone:"0929908429"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:7,name:"Care Medium Clinic",city:"D.B",date:"14/08/2025",model:"A8",
+   contacts:[{role:"Owner",name:"Dr.Abebe",phone:"0978789879 / 0905703752"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:8,name:"Nuri Enat MCH",city:"Adama",date:"26/05/2025",model:"A90",
+   contacts:[{role:"G/Manager",name:"Ezedin",phone:"0919626181"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:9,name:"Bati Hospital",city:"Adama",date:"25/06/2025",model:"A90",
+   contacts:[{role:"Owner",name:"Milan",phone:"0911920953"},{role:"Finance Head",name:"Kaleb",phone:"0911280233"}],
+   payment:[{role:"Finance Head",name:"Kaleb",phone:"0911280233"}],stock:"",order:"",doctors:""},
+  {id:10,name:"RiftVally Hospital",city:"Adama",date:"21/05/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Yohannes",phone:"0972151400"},{role:"Finance Head",name:"Mulugeta",phone:"0930291905"}],
+   payment:[{role:"Finance Head",name:"Mulugeta",phone:"0930291905"}],stock:"",order:"",doctors:""},
+  {id:11,name:"Tirat Rad PLC",city:"Adama",date:"10/07/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Dagmawit",phone:"0969391026"},{role:"Owner",name:"Dr.Zelalem",phone:"0928423034"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:12,name:"Geda Medical Laboratory",city:"Jimma",date:"31/10/2024",model:"A90",
+   contacts:[{role:"Lab Head",name:"Awel",phone:"0919611436"},{role:"Owner",name:"Gentnet",phone:"0911386169"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:13,name:"Dr. Ermias Medium Clinic",city:"Jimma",date:"08/02/2025",model:"A90",
+   contacts:[{role:"Contact",name:"",phone:"0917236449"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:14,name:"Jimma Awetu Primary Hospital",city:"Jimma",date:"08/06/2025",model:"A90",
+   contacts:[{role:"G/Manager",name:"Jemila",phone:"0930812206"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:15,name:"Abajifar Medium Clinic",city:"Jimma",date:"08/04/2025",model:"A90",
+   contacts:[{role:"Owner",name:"Dr.Fedlu",phone:"0913082564"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:16,name:"Abajifar Medium Clinic",city:"Jimma",date:"31/10/2024",model:"A8",
+   contacts:[{role:"Owner",name:"Dr.Fedlu",phone:"0913082564"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:17,name:"Dr.Belete Medium Clinic",city:"Jimma",date:"11/01/2024",model:"A8",
+   contacts:[{role:"Lab Head",name:"Mesay",phone:"0912363131"},{role:"Owner",name:"Dr.Belete",phone:"0911340588"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:18,name:"Shenen Gibe General Hospital",city:"Jimma",date:"30/08/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Chala",phone:"0917444004"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:19,name:"My Medium Clinic",city:"Jimma",date:"29/08/2025",model:"A90",
+   contacts:[{role:"Owner",name:"Dr.Mohammed",phone:"0917803022"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:20,name:"Dr. Tesfa (Kidus Medium Clinic)",city:"Assala",date:"25/08/2025",model:"A8",
+   contacts:[{role:"Owner",name:"Dr.Tesfa",phone:"0911840622"}],
+   payment:[{role:"Owner",name:"Dr.Tesfa",phone:"0911840622"}],stock:"",order:"",doctors:""},
+  {id:21,name:"Vital Internal Medicine",city:"A.A",date:"21/03/2025",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:22,name:"Arada Georgis Specialized Medical Center",city:"A.A",date:"30/10/2024",model:"A90",
+   contacts:[{role:"Lab Head",name:"Matias",phone:"0913481278"},{role:"Laboratory",name:"Dereje",phone:"0977081035"}],
+   payment:[{role:"Finance Head",name:"Betty",phone:"0923124241"},{role:"Purchaser",name:"Felekech",phone:"0964014059"}],
+   stock:"TSH, TT3, TT4, PRL, LH, FT4 (31 tests), Folate, Vitamin B12 – Stock Mar 10\nOrder: Vitamin D",
+   order:"Vitamin D",doctors:"1 full time + 4 part time internal medicine"},
+  {id:23,name:"Biruhkids Pediatrics Center",city:"A.A",date:"04/04/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Abraham",phone:"0968400961"},{role:"Owner",name:"Dr.Fassil",phone:"0929135785"}],
+   payment:[{role:"Finance Head",name:"Mezegbe",phone:"0907391480"}],stock:"",order:"",doctors:""},
+  {id:24,name:"Dr.Shemse MCH Center",city:"A.A",date:"26/03/2025",model:"A8",
+   contacts:[{role:"Purchaser/Store",name:"Kewser",phone:"0912309023"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:25,name:"Fikir Abrak Internal and MCH Center",city:"A.A",date:"22/03/2025",model:"A8",
+   contacts:[{role:"Medical Director",name:"Dr.Eden",phone:"0919155293"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:26,name:"Lobe Medium Clinic",city:"A.A",date:"21/05/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Dinsefa",phone:"0912713461"},{role:"Finance Head",name:"Abiy",phone:"0911713119"}],
+   payment:[{role:"Finance Head",name:"Abiy",phone:"0911713119"}],
+   stock:"TT3=13 tests, TT4=18 tests (Mar 10)\nTT4=18, TSH=35, FT3=29, D-Dimer, TPSA=11, HscTnl=1 (Mar 13)",
+   order:"Vitamin D",doctors:"1 full time"},
+  {id:27,name:"Legehar General Hospital",city:"A.A",date:"20/03/2025",model:"A90",
+   contacts:[{role:"Laboratorist",name:"Dr.Abebe",phone:"0919744038"},{role:"Lab Head",name:"Hawi",phone:"0913435581"}],
+   payment:[{role:"Finance Head",name:"Mizer",phone:"0907346944"}],stock:"",order:"",doctors:""},
+  {id:28,name:"Senay Higher Clinic",city:"A.A",date:"29/05/2025",model:"A90",
+   contacts:[{role:"Owner/Purchaser",name:"Dr.Elsa",phone:"0922226434"}],
+   payment:[{role:"Owner/Purchaser",name:"Dr.Elsa",phone:"0922226434"}],
+   stock:"No stock available",order:"Internal, Sugar, Nerve tests",doctors:"1 full time"},
+  {id:29,name:"Fikir Abrak Internal and MCH Center",city:"A.A",date:"06/08/2025",model:"A90",
+   contacts:[{role:"Medical Director",name:"Dr.Eden",phone:"0919155293"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:30,name:"Qelebet Specialised Clinic",city:"A.A",date:"06/08/2025",model:"A8",
+   contacts:[{role:"Medical Director",name:"Dr.Eden",phone:"0919155293"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:31,name:"Uropshare Medical Service",city:"A.A",date:"29/11/2024",model:"A8",
+   contacts:[{role:"Lab Head",name:"Aberash",phone:"0911104817"}],
+   payment:[{role:"Lab Head",name:"Aberash",phone:"0911104817"}],
+   stock:"TSH, LH, FSH (one pack), Prolactin",order:"Fertility: Prolactin, Progesterone, Testosterone, Estradiol",doctors:""},
+  {id:32,name:"Summit Health Center",city:"A.A",date:"18/12/2024",model:"A90",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:33,name:"Universe Internal Medicine Speciality Clinic",city:"A.A",date:"09/10/2025",model:"A90",
+   contacts:[{role:"Purchaser",name:"Nato",phone:"0903196219"},{role:"Owner",name:"Dr.Gudeta",phone:"0926758270"}],
+   payment:[],stock:"Vitamin D, Vitamin B12, Ferritin",order:"Vitamin D",doctors:""},
+  {id:34,name:"Hiwot Fana Hospital",city:"Harrar",date:"19/12/2024",model:"A90",
+   contacts:[{role:"Lab Head",name:"Biniam",phone:"0905808619"},{role:"Finance Head",name:"Fato",phone:"0911897455"}],
+   payment:[{role:"Finance Head",name:"Fato",phone:"0911897455"}],stock:"",order:"",doctors:""},
+  {id:35,name:"Hamdi Specialized Clinic",city:"Harrar",date:"20/12/2024",model:"A90",
+   contacts:[{role:"Finance Head & Purchaser",name:"Worknesh",phone:"0919133446"}],
+   payment:[{role:"Finance Head & Purchaser",name:"Worknesh",phone:"0919133446"}],stock:"",order:"",doctors:""},
+  {id:36,name:"Robsen Clinic",city:"D.D",date:"25/12/2024",model:"A8",
+   contacts:[{role:"Lab Head",name:"Addis",phone:""}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:37,name:"Odo Dola Medium Clinic",city:"Shakiso",date:"28/07/2025",model:"A8",
+   contacts:[{role:"Owner",name:"Tamerat",phone:"0949187474"}],
+   payment:[{role:"Owner",name:"Tamerat",phone:"0949187474"}],stock:"",order:"",doctors:""},
+  {id:38,name:"Dilla University Referral Hospital",city:"Dilla",date:"23/07/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Jemberu",phone:"0916189770 / 0777496646"}],
+   payment:[{role:"Lab Head",name:"Jemberu",phone:"0916189770 / 0777496646"}],stock:"",order:"",doctors:""},
+  {id:39,name:"Kibru Primary Hospital",city:"Hawassa",date:"20/08/2025",model:"A90",
+   contacts:[{role:"Owner",name:"Dr.Tizazu",phone:"0977729696"}],
+   payment:[{role:"Owner",name:"Dr.Tizazu",phone:"0977729696"}],stock:"",order:"",doctors:""},
+  {id:40,name:"Unicare Medical Service",city:"Hawassa",date:"22/08/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Endrias",phone:"0913187083"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:41,name:"Newyork Health Care",city:"Hawassa",date:"22/08/2025",model:"A90",
+   contacts:[{role:"Owner",name:"Dr.Mubarek",phone:"0925636085"},{role:"Finance Head",name:"Kayamo",phone:"0924881986"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:42,name:"Cardinal Speciality Medical & Surgical Center",city:"Shashemene",date:"—",model:"A90",
+   contacts:[{role:"Lab Head",name:"Hawi",phone:"0926365326"},{role:"Finance Head",name:"Geremew",phone:"0912347009"}],
+   payment:[{role:"Finance Head",name:"Geremew",phone:"0912347009"}],stock:"",order:"",doctors:""},
+  {id:43,name:"Grace Hospital",city:"Wolayta",date:"08/09/2025",model:"A90",
+   contacts:[{role:"Laboratory",name:"Zewude",phone:"0912024540"},{role:"Finance",name:"Muluneh",phone:"0916713078"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:44,name:"Guro Basic Diagnostic Laboratory",city:"Yirgalem",date:"30/09/2025",model:"A90",
+   contacts:[{role:"G/Manager",name:"Mukerim",phone:"0920542672"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:45,name:"Arba Minch General Hospital",city:"Arba Minch",date:"25/09/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Desta",phone:"0964520267"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:46,name:"Hayat Hospital",city:"A.A",date:"05/12/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Biniam",phone:"0913817632"}],
+   payment:[{role:"Lab Head",name:"Biniam",phone:"0913817632"}],
+   stock:"Vitamin D, Vitamin B12, Ferritin (1 pack)",
+   order:"Fertility, cancer markers, thyroid",
+   doctors:"Above 30 with speciality: internal medicine, sub-speciality, oncology, eye speciality"},
+  {id:47,name:"Amin General Hospital",city:"A.A",date:"28/10/2025",model:"A90",
+   contacts:[{role:"Laboratorist",name:"Habtamu",phone:"0910722375"},{role:"Medical Director",name:"Dr.Sauda",phone:"0912707515"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:48,name:"Caring Internal Medicine Speciality Clinic",city:"A.A",date:"07/11/2025",model:"A8",
+   contacts:[{role:"Purchaser",name:"Kalkidan",phone:"0943514228"}],
+   payment:[],
+   stock:"Vitamin B12, T3, T4, Ferritin (all 1 pack except ferritin; all started test)",
+   order:"Vitamin D",doctors:"1 full time + 3 part time internal medicine"},
+  {id:49,name:"Addis Cardiac Hospital",city:"A.A",date:"09/12/2025",model:"A90",
+   contacts:[{role:"Lab Head",name:"Zelalem",phone:"0911609067"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:50,name:"Makira Hakime Pediatric and Surgical Center",city:"Hawassa",date:"02/01/2026",model:"A8",
+   contacts:[{role:"Lab Head",name:"Eyob",phone:"0928983333"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:51,name:"Guro Basic Diagnostic Laboratory (No 02)",city:"Dilla",date:"03/01/2026",model:"A8",
+   contacts:[{role:"G/Manager",name:"Mukerim",phone:"0920542672"}],
+   payment:[],stock:"",order:"",doctors:""}
+];
+
+const externalCustomers = [
+  {id:1,name:"Birhan Ethiopia International Medicine",city:"A.A",date:"",model:"EXT",
+   contacts:[{role:"Medical Director",name:"DR Zewudu",phone:"0911668642"}],
+   payment:[],
+   stock:"HscTnl, Vitamin B12 (1 pack), Folate",
+   order:"Vitamin B12, Folate, HscTnl. Next import: Insulin and C-peptide",
+   doctors:"1 full time"},
+  {id:2,name:"Alem Tena Internal Medicine Speciality Center",city:"A.A",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Ashenafi",phone:"0955660646"},{role:"Manager",name:"Asefa",phone:"0911216806"}],
+   payment:[],stock:"",order:"Note: store manager not available, sent reagent list for order",doctors:""},
+  {id:3,name:"ACE Engineering PLC",city:"A.A",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Betty",phone:"0939762618"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:4,name:"Alta Medium Clinic",city:"Adama",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Sintayehu",phone:"0923465690"},{role:"Finance Head",name:"Asfaw",phone:"0967726767"}],
+   payment:[{role:"Finance Head",name:"Asfaw",phone:"0967726767"}],stock:"",order:"",doctors:""},
+  {id:5,name:"Medhen Beza Primary Hospital",city:"Adama",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Mekdes",phone:"0993935767"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:6,name:"Alem Gena Medical Services",city:"Addis Ababa",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Amsal",phone:"0935401135"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:7,name:"American Medical Center",city:"Addis Ababa",date:"",model:"EXT",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:8,name:"Alatyon General Hospital",city:"Hawassa",date:"",model:"EXT",
+   contacts:[{role:"Purchaser",name:"Tezera",phone:"0917053726"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:9,name:"Feya General Hospital",city:"Shashemene",date:"",model:"EXT",
+   contacts:[{role:"Owner",name:"Dr.Kelemu",phone:"0911714904"},{role:"Laboratory",name:"Dr.Chernet",phone:"0911744164"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:10,name:"Alem Primary Hospital",city:"Butajira",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Yilikal",phone:"0920271225"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:11,name:"Rohobot General Hospital",city:"Asella",date:"",model:"EXT",
+   contacts:[{role:"Owner",name:"Dr.Kedir",phone:"0927713200"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:12,name:"Mohammed Akle General Hospital",city:"Awash",date:"",model:"EXT",
+   contacts:[{role:"Lab Head",name:"Mohammed",phone:"0920546849"}],
+   payment:[],stock:"",order:"",doctors:""},
+  {id:13,name:"Sold Not Installed",city:"Addis Ababa",date:"",model:"EXT",
+   contacts:[],payment:[],stock:"",order:"",doctors:""}
+];
+
+// ===================== STATE =====================
+let currentTab = 'machine';
+let currentCity = 'All';
+let currentModel = 'All';
+let searchTerm = '';
+
+// ===================== CITY LISTS =====================
+function getCities(data) {
+  const cities = ['All', ...new Set(data.map(h => h.city))].sort((a,b) => a==='All'?-1:b==='All'?1:a.localeCompare(b));
+  return cities;
+}
+
+// ===================== RENDER CITY BUTTONS =====================
+function renderCityButtons() {
+  const data = currentTab === 'machine' ? machineCustomers : externalCustomers;
+  const cities = getCities(data);
+  const container = document.getElementById('cityFilters');
+  const allLabel = currentLang === 'zh' ? '全部' : 'All';
+  container.innerHTML = cities.map(c =>
+    `<button class="filter-btn ${c===currentCity?'active':''}" onclick="setCity('${c}')">${c === 'All' ? allLabel : c}</button>`
+  ).join('');
+}
+
+// ===================== FILTER LOGIC =====================
+function getFiltered() {
+  const data = currentTab === 'machine' ? machineCustomers : externalCustomers;
+  return data.filter(h => {
+    const matchSearch = !searchTerm ||
+      h.name.toLowerCase().includes(searchTerm) ||
+      h.city.toLowerCase().includes(searchTerm);
+    const matchCity = currentCity === 'All' || h.city === currentCity;
+    const matchModel = currentModel === 'All' || h.model === currentModel;
+    return matchSearch && matchCity && matchModel;
+  });
+}
+
+// ===================== RENDER CARDS =====================
+function renderCards() {
+  const filtered = getFiltered();
+  const grid = document.getElementById('cardsGrid');
+  const info = document.getElementById('resultsInfo');
+  const total = currentTab === 'machine' ? machineCustomers.length : externalCustomers.length;
+  info.textContent = `${t('showing')} ${filtered.length} ${t('of')} ${total} ${currentTab === 'machine' ? t('machineLabel') : t('externalLabel')} ${currentLang==='zh'?'客户':'customers'}`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="no-results" style="grid-column:1/-1">
+      <div style="font-size:48px;margin-bottom:12px">🔍</div>
+      <p>${t('noResults')}</p>
+      <p style="margin-top:6px;font-size:.8rem">${t('noResultsSub')}</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(h => {
+    const modelBadge = h.model === 'A8'
+      ? `<span class="badge badge-a8">⚙ A8</span>`
+      : h.model === 'A90'
+      ? `<span class="badge badge-a90">⚙ A90</span>`
+      : `<span class="badge badge-ext">🔬 ${currentLang==='zh'?'外部':'External'}</span>`;
+    const firstContact = h.contacts[0];
+    const contactPreview = firstContact
+      ? `${firstContact.role}${firstContact.name ? ': '+firstContact.name : ''}${firstContact.phone ? ' · '+firstContact.phone : ''}`
+      : (currentLang==='zh'?'无联系人':'No contact listed');
+    const dateDisplay = h.date && h.date !== '—' && h.date
+      ? `📅 ${t('installed')}: ${h.date}`
+      : `📅 ${t('installNA')}`;
+    return `<div class="hospital-card" onclick="openModal(${currentTab==='machine'?'machineCustomers':'externalCustomers'},${h.id-1})">
+      <div class="card-number">${h.id}</div>
+      <div class="card-name">${h.name}</div>
+      <div class="card-badges">
+        <span class="badge badge-city">📍 ${h.city}</span>
+        ${modelBadge}
+      </div>
+      <div class="card-date">${dateDisplay}</div>
+      <div class="card-contact">${contactPreview}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===================== MODAL =====================
+function openModal(datasetName, idx) {
+  const dataset = datasetName === machineCustomers ? machineCustomers : externalCustomers;
+  const h = dataset[idx];
+  document.getElementById('modalTitle').textContent = h.name;
+
+  // Badges
+  const modelBadge = h.model === 'A8' ? `⚙ ${t('model')}: A8` : h.model === 'A90' ? `⚙ ${t('model')}: A90` : `🔬 ${t('extReagent')}`;
+  document.getElementById('modalBadges').innerHTML =
+    `<span class="modal-badge">📍 ${h.city}</span>
+     <span class="modal-badge">${modelBadge}</span>
+     ${h.date && h.date !== '—' ? `<span class="modal-badge">📅 ${h.date}</span>` : ''}`;
+
+  // Body
+  let body = '';
+
+  // Hospital Info
+  body += `<div class="modal-section">
+    <div class="modal-section-title">${t('hospitalInfo')}</div>
+    <div class="modal-info-grid">
+      <div class="modal-info-item"><div class="modal-info-label">${t('hospitalName')}</div><div class="modal-info-value">${h.name}</div></div>
+      <div class="modal-info-item"><div class="modal-info-label">${t('cityLocation')}</div><div class="modal-info-value">${h.city}</div></div>
+      <div class="modal-info-item"><div class="modal-info-label">${t('model')}</div><div class="modal-info-value">${h.model === 'EXT' ? t('extReagent') : h.model}</div></div>
+      <div class="modal-info-item"><div class="modal-info-label">${t('installDate')}</div><div class="modal-info-value">${h.date && h.date !== '—' ? h.date : t('na')}</div></div>
+    </div>
+  </div>`;
+
+  // Contacts
+  body += `<div class="modal-section">
+    <div class="modal-section-title">${t('contactPersons')}</div>`;
+  if (h.contacts && h.contacts.length > 0) {
+    body += `<div class="contact-list">` + h.contacts.map(c =>
+      `<div class="contact-item">
+        <div class="contact-icon">👤</div>
+        <div class="contact-details">
+          <div class="contact-role">${c.role}</div>
+          ${c.name ? `<div class="contact-name">${c.name}</div>` : ''}
+          ${c.phone ? `<div class="contact-phone">📱 ${c.phone}</div>` : ''}
+        </div>
+      </div>`
+    ).join('') + `</div>`;
+  } else {
+    body += `<div class="modal-text-block empty-field">${t('noContact')}</div>`;
+  }
+  body += `</div>`;
+
+  // Payment
+  if (h.payment && h.payment.length > 0) {
+    body += `<div class="modal-section">
+      <div class="modal-section-title">${t('paymentContacts')}</div>
+      <div class="contact-list">` + h.payment.map(c =>
+      `<div class="contact-item">
+        <div class="contact-icon">💳</div>
+        <div class="contact-details">
+          <div class="contact-role">${c.role}</div>
+          ${c.name ? `<div class="contact-name">${c.name}</div>` : ''}
+          ${c.phone ? `<div class="contact-phone">📱 ${c.phone}</div>` : ''}
+        </div>
+      </div>`
+    ).join('') + `</div></div>`;
+  }
+
+  // Stock
+  if (h.stock) {
+    body += `<div class="modal-section">
+      <div class="modal-section-title">${t('stockAvailable')}</div>
+      <div class="modal-text-block" style="white-space:pre-line">${h.stock}</div>
+    </div>`;
+  }
+
+  // Order
+  if (h.order) {
+    body += `<div class="modal-section">
+      <div class="modal-section-title">${t('orderNeeded')}</div>
+      <div class="modal-text-block">${h.order}</div>
+    </div>`;
+  }
+
+  // Doctors
+  if (h.doctors) {
+    body += `<div class="modal-section">
+      <div class="modal-section-title">${t('numDoctors')}</div>
+      <div class="modal-text-block">${h.doctors}</div>
+    </div>`;
+  }
+
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+// ===================== CONTROLS =====================
+function switchTab(tab) {
+  currentTab = tab;
+  currentCity = 'All';
+  currentModel = 'All';
+  searchTerm = '';
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('model-All').classList.add('active');
+  // Show/hide model filter for external (no A8/A90)
+  const modelFilter = document.querySelector('.filter-group:last-child');
+  modelFilter.style.display = tab === 'external' ? 'none' : 'flex';
+  renderCityButtons();
+  renderCards();
+}
+
+function setCity(city) {
+  currentCity = city;
+  renderCityButtons();
+  renderCards();
+}
+
+function setModel(model) {
+  currentModel = model;
+  document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('model-' + model).classList.add('active');
+  renderCards();
+}
+
+function applyFilters() {
+  searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+  renderCards();
+}
+
+// keyboard close modal
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===================== LANGUAGE =====================
+let currentLang = 'en';
+
+const zhLabels = {
+  searchPlaceholder: '按医院名称或城市搜索…',
+  installed: '安装日期',
+  installNA: '安装日期未知',
+  noContact: '无联系人信息',
+  noResults: '未找到符合条件的医院。',
+  noResultsSub: '请调整搜索条件或筛选器。',
+  showing: '显示',
+  of: '共',
+  machineLabel: '机器客户',
+  externalLabel: '外部客户',
+  // Modal section titles
+  hospitalInfo: '🏥 医院信息',
+  contactPersons: '📞 联系人',
+  paymentContacts: '💳 付款联系人',
+  stockAvailable: '🧪 库存情况',
+  orderNeeded: '📋 所需订单',
+  numDoctors: '👨‍⚕️ 医生人数',
+  // Modal info labels
+  hospitalName: '医院名称',
+  cityLocation: '城市/地点',
+  model: '型号',
+  installDate: '安装日期',
+  na: '无',
+  extReagent: '外部试剂',
+};
+
+const enLabels = {
+  searchPlaceholder: 'Search by hospital name or city…',
+  installed: 'Installed',
+  installNA: 'Installation date N/A',
+  noContact: 'No contact information available',
+  noResults: 'No hospitals found matching your filters.',
+  noResultsSub: 'Try adjusting your search or filters.',
+  showing: 'Showing',
+  of: 'of',
+  machineLabel: 'machine',
+  externalLabel: 'external',
+  hospitalInfo: '🏥 Hospital Information',
+  contactPersons: '📞 Contact Persons',
+  paymentContacts: '💳 Payment Contacts',
+  stockAvailable: '🧪 Stock Available',
+  orderNeeded: '📋 Order Needed',
+  numDoctors: '👨‍⚕️ Number of Doctors',
+  hospitalName: 'Hospital Name',
+  cityLocation: 'City / Location',
+  model: 'Model',
+  installDate: 'Installation Date',
+  na: 'N/A',
+  extReagent: 'External Reagent',
+};
+
+function t(key) {
+  return (currentLang === 'zh' ? zhLabels : enLabels)[key] || key;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('htmlRoot').lang = lang === 'zh' ? 'zh' : 'en';
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  // Update all data-en / data-zh elements
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = lang === 'zh' ? el.dataset.zh : el.dataset.en;
+  });
+  // Update search placeholder
+  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  // Update model-All button text
+  document.getElementById('model-All').textContent = lang === 'zh' ? '全部' : 'All';
+  // Re-render everything
+  renderCityButtons();
+  renderCards();
+}
+
+// ===================== INIT =====================
+renderCityButtons();
+renderCards();
+</script>
+</body>
+</html>
