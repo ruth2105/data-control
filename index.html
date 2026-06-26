@@ -89,6 +89,58 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .contact-phone{font-size:.8rem;color:#1d4ed8;font-weight:500;margin-top:1px}
 .modal-text-block{background:#f8fafc;border-radius:8px;padding:10px 12px;font-size:.85rem;color:#334155;line-height:1.6}
 .empty-field{font-size:.82rem;color:#cbd5e1;font-style:italic}
+/* VISIT FORM PAGE */
+.page{display:none}.page.active{display:block}
+.vf-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 1px 6px rgba(0,0,0,.08);margin-bottom:20px}
+.vf-title{font-size:1.1rem;font-weight:800;color:#1a56db;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid #e8edf2;display:flex;align-items:center;gap:8px}
+.vf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vf-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.vf-full{grid-column:1/-1}
+.vf-group{display:flex;flex-direction:column;gap:4px}
+.vf-label{font-size:.75rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.4px}
+.vf-input,.vf-select,.vf-textarea{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .2s;background:#fff}
+.vf-input:focus,.vf-select:focus,.vf-textarea:focus{border-color:#1a56db;box-shadow:0 0 0 3px rgba(26,86,219,.08)}
+.vf-textarea{resize:vertical;min-height:70px}
+.vf-checkbox-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.vf-checkbox-label{display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;padding:6px 12px;border:1.5px solid #e2e8f0;border-radius:8px;transition:all .15s}
+.vf-checkbox-label:hover{background:#f1f5f9}
+.vf-checkbox-label input[type=checkbox]{accent-color:#1a56db;width:15px;height:15px}
+.vf-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1a56db,#1e40af);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity .2s;letter-spacing:.3px}
+.vf-submit-btn:hover{opacity:.9}
+.vf-section-divider{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin:8px 0 4px;grid-column:1/-1;padding-top:8px;border-top:1px solid #f1f5f9}
+/* REPORTS PAGE */
+.rep-filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+.rep-search{padding:8px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none;min-width:200px;flex:1}
+.rep-search:focus{border-color:#1a56db}
+.rep-select{padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;background:#fff;cursor:pointer;outline:none}
+.rep-count{font-size:.82rem;color:#64748b;margin-bottom:12px}
+.rep-card{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1.5px solid #e8edf2;cursor:pointer;transition:all .2s;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px}
+.rep-card:hover{box-shadow:0 4px 16px rgba(26,86,219,.12);border-color:#93c5fd;transform:translateY(-1px)}
+.rep-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;flex-shrink:0}
+.rep-info{flex:1;min-width:0}
+.rep-hospital{font-size:.95rem;font-weight:700;color:#0f172a;margin-bottom:3px}
+.rep-meta{font-size:.78rem;color:#64748b;display:flex;flex-wrap:wrap;gap:8px}
+.rep-meta span{display:flex;align-items:center;gap:3px}
+.rep-type-badge{padding:2px 8px;border-radius:12px;font-size:.68rem;font-weight:700;margin-left:auto;flex-shrink:0}
+.empty-reports{text-align:center;padding:60px 20px;color:#94a3b8}
+/* REPORT DETAIL MODAL */
+.rdet-section{margin-bottom:16px}
+.rdet-section-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.rdet-section-title::after{content:'';flex:1;height:1px;background:#f1f5f9}
+.rdet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rdet-item{background:#f8fafc;border-radius:8px;padding:8px 12px}
+.rdet-label{font-size:.65rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.rdet-value{font-size:.85rem;color:#0f172a;font-weight:600;word-break:break-word}
+.rdet-full{grid-column:1/-1}
+.del-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;margin-top:12px;transition:background .2s}
+.del-btn:hover{background:#fecaca}
+/* RESPONSIVE */
+@media(max-width:640px){
+  .vf-grid,.vf-grid-3{grid-template-columns:1fr}
+  .vf-full{grid-column:1}
+  .rdet-grid{grid-template-columns:1fr}
+  .rdet-full{grid-column:1}
+}
 /* LANG TOGGLE */
 .lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
 .lang-btn{padding:6px 14px;border-radius:20px;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
@@ -138,8 +190,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
     <button class="tab-btn" onclick="switchTab('external')" id="tab-external">
       🔬 <span data-en="External Customers (13)" data-zh="外部客户 (13)">External Customers (13)</span>
     </button>
+    <button class="tab-btn" onclick="switchTab('visitform')" id="tab-visitform">
+      📝 <span data-en="Visit Form" data-zh="拜访登记">Visit Form</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">
+      📊 <span data-en="Visit Reports" data-zh="拜访报告">Visit Reports</span>
+    </button>
   </div>
 
+  <!-- HOSPITAL LIST PAGES -->
+  <div id="page-machine" class="page active">
   <div class="filters">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
@@ -156,23 +216,253 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <button class="filter-btn" onclick="setModel('A90')" id="model-A90">A90</button>
     </div>
   </div>
-
   <div class="results-info" id="resultsInfo"></div>
   <div class="cards-grid" id="cardsGrid"></div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal" id="modalBox">
-    <div class="modal-header">
-      <div class="modal-header-top">
-        <div class="modal-title" id="modalTitle"></div>
-        <button class="modal-close" onclick="closeModal()">✕</button>
-      </div>
-      <div class="modal-badges" id="modalBadges"></div>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
   </div>
+
+  <div id="page-external" class="page">
+  <div class="filters">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInputExt" placeholder="Search by hospital name or city…" oninput="applyFilters()">
+    </div>
+    <div class="filter-group">
+      <span class="filter-label" data-en="City:" data-zh="城市:">City:</span>
+      <div id="cityFiltersExt"></div>
+    </div>
+  </div>
+  <div class="results-info" id="resultsInfoExt"></div>
+  <div class="cards-grid" id="cardsGridExt"></div>
+  </div>
+
+  <!-- VISIT FORM PAGE -->
+  <div id="page-visitform" class="page">
+    <form id="visitForm" onsubmit="submitVisitForm(event)">
+
+      <div class="vf-card">
+        <div class="vf-title">📋 拜访基本信息 / Basic Visit Information</div>
+        <div class="vf-grid">
+          <div class="vf-group">
+            <label class="vf-label">填写日期 Date of Filling</label>
+            <input class="vf-input" type="date" name="fillDate" required>
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">业务员 Sales Person</label>
+            <select class="vf-select" name="salesPerson" required>
+              <option value="">-- Select --</option>
+              <option>Ephrata Tekola</option>
+              <option>Kalkidan Awoke</option>
+              <option>Tizita Tarekeg</option>
+            </select>
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">医院名字 Hospital Name</label>
+            <input class="vf-input" type="text" name="hospitalName" required placeholder="Hospital name">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">医院地址 Hospital Address</label>
+            <input class="vf-input" type="text" name="hospitalAddress" placeholder="Address">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">拜访人姓名 Visiting Person Name</label>
+            <input class="vf-input" type="text" name="visitingName" placeholder="Name">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">职称 Position</label>
+            <input class="vf-input" type="text" name="position" placeholder="Position/Title">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">科室 Department</label>
+            <input class="vf-input" type="text" name="department" placeholder="Department">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">拜访时间 Visit Time</label>
+            <input class="vf-input" type="time" name="visitTime">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">拜访地点 Visit Location (Lab)</label>
+            <input class="vf-input" type="text" name="visitLocation" placeholder="e.g. Laboratory">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">联系方式 电话 Phone</label>
+            <input class="vf-input" type="text" name="phone" placeholder="Phone number">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">医院性质 Type of Hospital</label>
+            <input class="vf-input" type="text" name="hospitalType" placeholder="e.g. Private / Government">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">在班医生人数 Doctors on Duty</label>
+            <input class="vf-input" type="number" name="doctorsOnDuty" min="0" placeholder="0">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label">兼职医生人数 Part-time Doctors</label>
+            <input class="vf-input" type="number" name="doctorsPartTime" min="0" placeholder="0">
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label">拜访类型 Visit Type</label>
+            <div class="vf-checkbox-group">
+              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="First contact"> □ 初次接触 First Contact</label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Customer relationship maintenance"> □ 客情维护 Relationship Maintenance</label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Issue follow-up"> □ 问题跟进 Issue Follow-up</label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Other"> □ 其他 Other</label>
+            </div>
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label">拜访目的 Purpose of Visit</label>
+            <textarea class="vf-textarea" name="visitPurpose" placeholder="Describe the purpose…"></textarea>
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label">目的达成情况 Achievement of Objectives</label>
+            <textarea class="vf-textarea" name="objectiveAchievement" placeholder="Describe results achieved…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-title">⚙️ 一、万孚激素分析仪 / Wondfo Hormone Machine (A8/A90)</div>
+        <div class="vf-grid">
+          <div class="vf-section-divider">A) 其他激素分析仪 Other Hormone Machines Currently Using</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand 1</label><input class="vf-input" type="text" name="otherBrand1" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin 1</label><input class="vf-input" type="text" name="otherOrigin1" placeholder="Place of production"></div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand 2</label><input class="vf-input" type="text" name="otherBrand2" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin 2</label><input class="vf-input" type="text" name="otherOrigin2" placeholder="Place of production"></div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand 3</label><input class="vf-input" type="text" name="otherBrand3" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin 3</label><input class="vf-input" type="text" name="otherOrigin3" placeholder="Place of production"></div>
+          <div class="vf-section-divider">B) 万孚 A8/A90 库存 Wondfo Stock</div>
+          <div class="vf-group vf-full"><label class="vf-label">库存试剂名称 Reagents in Stock</label><input class="vf-input" type="text" name="wondfostockName" placeholder="Reagent names"></div>
+          <div class="vf-group vf-full"><label class="vf-label">库存数量 Quantity in Stock</label><input class="vf-input" type="text" name="wondfostockQty" placeholder="Quantities"></div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-title">🔬 二、了解同类产品 / Competitor Products</div>
+        <div class="vf-grid">
+          <div class="vf-section-divider">1. 电解质分析仪 Electrolyte Analyzer</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="elecBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="elecOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">每天人份 Daily Tests</label><input class="vf-input" type="text" name="elecDaily" placeholder="Number of daily tests"></div>
+          <div class="vf-group"><label class="vf-label">试剂价格 Reagent Price</label><input class="vf-input" type="text" name="elecPrice" placeholder="Price"></div>
+
+          <div class="vf-section-divider">2. 生化设备 Biochemical Equipment</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="bioBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="bioOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">全自动 Fully Auto</label><input class="vf-input" type="text" name="bioFull" placeholder="Model/info"></div>
+          <div class="vf-group"><label class="vf-label">半自动 Semi-Auto</label><input class="vf-input" type="text" name="bioSemi" placeholder="Model/info"></div>
+          <div class="vf-group"><label class="vf-label">每天人份 Daily Tests</label><input class="vf-input" type="text" name="bioDaily" placeholder="Number"></div>
+          <div class="vf-group"><label class="vf-label">试剂价格 Reagent Price</label><input class="vf-input" type="text" name="bioPrice" placeholder="Price"></div>
+
+          <div class="vf-section-divider">3. 血液分析仪 Hematology Analyzer</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="hemBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="hemOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">每天人份 Daily Tests</label><input class="vf-input" type="text" name="hemDaily" placeholder="Number"></div>
+          <div class="vf-group"><label class="vf-label">试剂价格 Reagent Price</label><input class="vf-input" type="text" name="hemPrice" placeholder="Price"></div>
+
+          <div class="vf-section-divider">4. 采血管 Blood Collection Tube</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="tubeBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="tubeOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">每月数量 Monthly Qty</label><input class="vf-input" type="text" name="tubeQty" placeholder="Quantity"></div>
+          <div class="vf-group"><label class="vf-label">价格 Price</label><input class="vf-input" type="text" name="tubePrice" placeholder="Price"></div>
+          <div class="vf-group vf-full"><label class="vf-label">颜色比例 Color Ratio</label><input class="vf-input" type="text" name="tubeColor" placeholder="Color ratio"></div>
+
+          <div class="vf-section-divider">5. 血型检测 Blood Type Testing</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="btBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="btOrigin" placeholder="Origin"></div>
+          <div class="vf-group vf-full"><label class="vf-label">每月数量及价格 Monthly Qty & Price</label><input class="vf-input" type="text" name="btQtyPrice" placeholder="Qty and price"></div>
+
+          <div class="vf-section-divider">6. 留置针 Detaining Needle</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="needleBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="needleOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">数量 Qty</label><input class="vf-input" type="text" name="needleQty" placeholder="Quantity"></div>
+          <div class="vf-group"><label class="vf-label">型号 Model</label><input class="vf-input" type="text" name="needleModel" placeholder="Model"></div>
+          <div class="vf-group vf-full"><label class="vf-label">价格 Price</label><input class="vf-input" type="text" name="needlePrice" placeholder="Price"></div>
+
+          <div class="vf-section-divider">7. 无纺布留置针贴 Non-woven Needle Patch</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="nwBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="nwOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">数量 Qty</label><input class="vf-input" type="text" name="nwQty" placeholder="Quantity"></div>
+          <div class="vf-group"><label class="vf-label">价格 Price</label><input class="vf-input" type="text" name="nwPrice" placeholder="Price"></div>
+
+          <div class="vf-section-divider">8. 纸框留置针贴 Paper Frame Needle Patch</div>
+          <div class="vf-group"><label class="vf-label">品牌 Brand</label><input class="vf-input" type="text" name="pfBrand" placeholder="Brand"></div>
+          <div class="vf-group"><label class="vf-label">产地 Origin</label><input class="vf-input" type="text" name="pfOrigin" placeholder="Origin"></div>
+          <div class="vf-group"><label class="vf-label">数量 Qty</label><input class="vf-input" type="text" name="pfQty" placeholder="Quantity"></div>
+          <div class="vf-group"><label class="vf-label">价格 Price</label><input class="vf-input" type="text" name="pfPrice" placeholder="Price"></div>
+
+          <div class="vf-section-divider">9. 需要添加或更新的设备 Equipment to Add/Upgrade</div>
+          <div class="vf-group vf-full"><label class="vf-label">说明 Details</label><textarea class="vf-textarea" name="equipNeeds" placeholder="What equipment needs to be added or upgraded…"></textarea></div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-title">💊 三-五、其他信息 / Other Information</div>
+        <div class="vf-grid">
+          <div class="vf-group vf-full"><label class="vf-label">三、医生科室用药习惯 Doctor/Dept Medication Practices</label><textarea class="vf-textarea" name="medicationHabits" placeholder="Medication practices…"></textarea></div>
+          <div class="vf-group vf-full"><label class="vf-label">四、液体及固体药品 NS Fluid (IV) & Solid Medicine</label><textarea class="vf-textarea" name="fluidMedicine" placeholder="IV fluid and solid medicine name and quantity…"></textarea></div>
+          <div class="vf-group vf-full"><label class="vf-label">五、医生科室用药习惯(补充) Additional Medication Practices</label><textarea class="vf-textarea" name="medicationHabits2" placeholder="Additional notes…"></textarea></div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-title">📈 拜访进展及下次计划 / Progress & Next Visit</div>
+        <div class="vf-grid">
+          <div class="vf-group vf-full">
+            <label class="vf-label">此医院转入 Customer Category</label>
+            <div class="vf-checkbox-group">
+              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Active Customer"> □ 有效客户 Active</label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Customer with Needs"> □ 有需求 Needs</label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Key Customer"> □ 重点客户 Key</label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Closed Deal"> □ 已成交 Closed</label>
+            </div>
+          </div>
+          <div class="vf-group vf-full"><label class="vf-label">拜访进展及结果 Progress & Outcome</label><textarea class="vf-textarea" name="visitProgress" placeholder="Progress and outcome…"></textarea></div>
+          <div class="vf-group"><label class="vf-label">下次拜访时间 Next Visit Date</label><input class="vf-input" type="date" name="nextVisitDate"></div>
+          <div class="vf-group"><label class="vf-label">下次拜访目标 Next Visit Target</label><input class="vf-input" type="text" name="nextVisitTarget" placeholder="Target for next visit"></div>
+        </div>
+        <button type="submit" class="vf-submit-btn">✅ 提交拜访报告 / Submit Visit Report</button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- VISIT REPORTS PAGE -->
+  <div id="page-reports" class="page">
+    <div class="vf-card">
+      <div class="vf-title">📊 拜访报告列表 / All Visit Reports</div>
+      <div class="rep-filters">
+        <input type="text" class="rep-search" id="repSearch" placeholder="🔍 Search hospital or salesperson…" oninput="renderReports()">
+        <select class="rep-select" id="repFilterSales" onchange="renderReports()">
+          <option value="">All Salespersons</option>
+          <option>Ephrata Tekola</option>
+          <option>Kalkidan Awoke</option>
+          <option>Tizita Tarekeg</option>
+        </select>
+        <select class="rep-select" id="repFilterCat" onchange="renderReports()">          <option value="">All Categories</option>
+          <option>Active Customer</option>
+          <option>Customer with Needs</option>
+          <option>Key Customer</option>
+          <option>Closed Deal</option>
+        </select>
+      </div>
+      <div class="rep-count" id="repCount"></div>
+      <div id="repList"></div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="modalBox">
+      <div class="modal-header">
+        <div class="modal-header-top">
+          <div class="modal-title" id="modalTitle"></div>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-badges" id="modalBadges"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -400,8 +690,10 @@ function getCities(data) {
 // ===================== RENDER CITY BUTTONS =====================
 function renderCityButtons() {
   const data = currentTab === 'machine' ? machineCustomers : externalCustomers;
+  const containerId = currentTab === 'machine' ? 'cityFilters' : 'cityFiltersExt';
   const cities = getCities(data);
-  const container = document.getElementById('cityFilters');
+  const container = document.getElementById(containerId);
+  if (!container) return;
   const allLabel = currentLang === 'zh' ? '全部' : 'All';
   container.innerHTML = cities.map(c =>
     `<button class="filter-btn ${c===currentCity?'active':''}" onclick="setCity('${c}')">${c === 'All' ? allLabel : c}</button>`
@@ -411,10 +703,14 @@ function renderCityButtons() {
 // ===================== FILTER LOGIC =====================
 function getFiltered() {
   const data = currentTab === 'machine' ? machineCustomers : externalCustomers;
+  const si = currentTab === 'machine'
+    ? document.getElementById('searchInput')
+    : document.getElementById('searchInputExt');
+  const term = si ? si.value.toLowerCase().trim() : searchTerm;
   return data.filter(h => {
-    const matchSearch = !searchTerm ||
-      h.name.toLowerCase().includes(searchTerm) ||
-      h.city.toLowerCase().includes(searchTerm);
+    const matchSearch = !term ||
+      h.name.toLowerCase().includes(term) ||
+      h.city.toLowerCase().includes(term);
     const matchCity = currentCity === 'All' || h.city === currentCity;
     const matchModel = currentModel === 'All' || h.model === currentModel;
     return matchSearch && matchCity && matchModel;
@@ -424,8 +720,11 @@ function getFiltered() {
 // ===================== RENDER CARDS =====================
 function renderCards() {
   const filtered = getFiltered();
-  const grid = document.getElementById('cardsGrid');
-  const info = document.getElementById('resultsInfo');
+  const gridId = currentTab === 'machine' ? 'cardsGrid' : 'cardsGridExt';
+  const infoId = currentTab === 'machine' ? 'resultsInfo' : 'resultsInfoExt';
+  const grid = document.getElementById(gridId);
+  const info = document.getElementById(infoId);
+  if (!grid || !info) return;
   const total = currentTab === 'machine' ? machineCustomers.length : externalCustomers.length;
   info.textContent = `${t('showing')} ${filtered.length} ${t('of')} ${total} ${currentTab === 'machine' ? t('machineLabel') : t('externalLabel')} ${currentLang==='zh'?'客户':'customers'}`;
 
@@ -567,19 +866,26 @@ function closeModalOutside(e) {
 // ===================== CONTROLS =====================
 function switchTab(tab) {
   currentTab = tab;
-  currentCity = 'All';
-  currentModel = 'All';
-  searchTerm = '';
-  document.getElementById('searchInput').value = '';
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
-  document.getElementById('model-All').classList.add('active');
-  // Show/hide model filter for external (no A8/A90)
-  const modelFilter = document.querySelector('.filter-group:last-child');
-  modelFilter.style.display = tab === 'external' ? 'none' : 'flex';
-  renderCityButtons();
-  renderCards();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+
+  if (tab === 'machine' || tab === 'external') {
+    currentCity = 'All';
+    currentModel = 'All';
+    searchTerm = '';
+    const si = document.getElementById('searchInput');
+    const sie = document.getElementById('searchInputExt');
+    if (si) si.value = '';
+    if (sie) sie.value = '';
+    document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
+    const ma = document.getElementById('model-All');
+    if (ma) ma.classList.add('active');
+    renderCityButtons();
+    renderCards();
+  }
+  if (tab === 'reports') renderReports();
 }
 
 function setCity(city) {
@@ -602,6 +908,207 @@ function applyFilters() {
 
 // keyboard close modal
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===================== VISIT FORM =====================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5es8aX99NaIQ7iLFE3FNTmee-ONfLmYZ6SgHYFNlJlzozG9EqB-OoabAue81xz26HUQ/exec';
+const salesColors = {
+  'Ephrata Tekola':  '#6366f1',
+  'Kalkidan Awoke':  '#0e9f6e',
+  'Tizita Tarekeg':  '#e3a008'
+};
+
+function salesInitials(name) {
+  return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function submitVisitForm(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {};
+  new FormData(form).forEach((v,k) => {
+    if (data[k]) {
+      data[k] = Array.isArray(data[k]) ? [...data[k], v] : [data[k], v];
+    } else {
+      data[k] = v;
+    }
+  });
+  ['visitType','customerCategory'].forEach(name => {
+    data[name] = [...form.querySelectorAll(`input[name="${name}"]:checked`)].map(c=>c.value);
+  });
+  data.id = Date.now();
+  data.submittedAt = new Date().toISOString();
+
+  const btn = form.querySelector('.vf-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting… / 提交中…';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.status === 'ok') {
+      form.reset();
+      btn.disabled = false;
+      btn.textContent = '✅ 提交拜访报告 / Submit Visit Report';
+      alert('✅ Report submitted successfully!\n拜访报告已提交成功！');
+      switchTab('reports');
+    } else {
+      throw new Error(res.message || 'Unknown error');
+    }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btn.textContent = '✅ 提交拜访报告 / Submit Visit Report';
+    alert('❌ Submission failed. Please check your internet connection.\n提交失败，请检查网络连接。\n\n' + err.message);
+  });
+}
+
+function getReports() {
+  try { return JSON.parse(localStorage.getItem('visitReports')) || []; }
+  catch { return []; }
+}
+
+function deleteReport(id) {
+  if (!confirm('Delete this report? / 确定删除此报告？')) return;
+  const reports = getReports().filter(r => r.id !== id);
+  localStorage.setItem('visitReports', JSON.stringify(reports));
+  closeModal();
+  renderReports();
+}
+
+// ===================== RENDER REPORTS =====================
+function renderReports() {
+  const list = document.getElementById('repList');
+  const count = document.getElementById('repCount');
+  list.innerHTML = `<div class="empty-reports"><div style="font-size:36px;margin-bottom:10px">⏳</div><p>Loading reports… / 加载中…</p></div>`;
+  count.textContent = '';
+
+  fetch(SCRIPT_URL)
+  .then(r => r.json())
+  .then(res => {
+    if (res.status !== 'ok') throw new Error(res.message);
+    displayReports(res.data || []);
+  })
+  .catch(err => {
+    list.innerHTML = `<div class="empty-reports"><div style="font-size:36px;margin-bottom:10px">❌</div><p>Failed to load reports. Check internet connection.<br>加载失败，请检查网络。</p></div>`;
+  });
+}
+
+function displayReports(reports) {
+  const search = document.getElementById('repSearch').value.toLowerCase();
+  const filterSales = document.getElementById('repFilterSales').value;
+  const filterCat = document.getElementById('repFilterCat').value;
+
+  const filtered = reports.filter(r => {
+    const matchSearch = !search ||
+      (r.hospitalName||'').toLowerCase().includes(search) ||
+      (r.salesPerson||'').toLowerCase().includes(search);
+    const matchSales = !filterSales || r.salesPerson === filterSales;
+    const cats = (r.customerCategory||'').split(', ').filter(Boolean);
+    const matchCat = !filterCat || cats.includes(filterCat);
+    return matchSearch && matchSales && matchCat;
+  });
+
+  document.getElementById('repCount').textContent = `Showing ${filtered.length} of ${reports.length} reports`;
+
+  const list = document.getElementById('repList');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-reports">
+      <div style="font-size:48px;margin-bottom:12px">📋</div>
+      <p style="font-size:1rem;font-weight:600">${reports.length===0 ? 'No reports yet. Salespeople can submit visits using the Visit Form tab.' : 'No reports match your filters.'}</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => {
+    const color = salesColors[r.salesPerson] || '#1a56db';
+    const cats = (r.customerCategory||'').split(', ').filter(Boolean);
+    const types = (r.visitType||'').split(', ').filter(Boolean);
+    const date = r.fillDate || (r.submittedAt||'').slice(0,10) || '—';
+    return `<div class="rep-card" onclick='openReportDetailObj(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
+      <div class="rep-avatar" style="background:${color}">${salesInitials(r.salesPerson||'?')}</div>
+      <div class="rep-info">
+        <div class="rep-hospital">${r.hospitalName || 'Unknown Hospital'}</div>
+        <div class="rep-meta">
+          <span>👤 ${r.salesPerson||'—'}</span>
+          <span>📅 ${date}</span>
+          <span>📍 ${r.hospitalAddress||'—'}</span>
+          ${types[0] ? `<span>🏷 ${types.join(', ')}</span>` : ''}
+        </div>
+        ${cats.length ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">${cats.map(c=>`<span class="rep-type-badge" style="background:${c==='Closed Deal'?'#d1fae5':c==='Key Customer'?'#fef3c7':c==='Active Customer'?'#dbeafe':'#f3e8ff'};color:#1e293b">${c}</span>`).join('')}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openReportDetailObj(r) {
+  document.getElementById('modalTitle').textContent = r.hospitalName || 'Visit Report';
+  const cats = (r.customerCategory||'').split(', ').filter(Boolean);
+  const types = (r.visitType||'').split(', ').filter(Boolean);
+  document.getElementById('modalBadges').innerHTML =
+    `<span class="modal-badge">👤 ${r.salesPerson||'—'}</span>
+     <span class="modal-badge">📅 ${r.fillDate||'—'}</span>
+     <span class="modal-badge">📍 ${r.hospitalAddress||'—'}</span>`;
+
+  const row = (label, val) => val ? `<div class="rdet-item"><div class="rdet-label">${label}</div><div class="rdet-value">${val}</div></div>` : '';
+  const rowFull = (label, val) => val ? `<div class="rdet-item rdet-full"><div class="rdet-label">${label}</div><div class="rdet-value">${val}</div></div>` : '';
+  const sec = (title, content) => content ? `<div class="rdet-section"><div class="rdet-section-title">${title}</div><div class="rdet-grid">${content}</div></div>` : '';
+
+  let body = sec('🏥 Basic Information',
+    row('Sales Person', r.salesPerson) + row('Fill Date', r.fillDate) +
+    row('Hospital Name', r.hospitalName) + row('Hospital Address', r.hospitalAddress) +
+    row('Visiting Person', r.visitingName) + row('Position', r.position) +
+    row('Department', r.department) + row('Visit Time', r.visitTime) +
+    row('Visit Location', r.visitLocation) + row('Phone', r.phone) +
+    row('Hospital Type', r.hospitalType) + row('Doctors on Duty', r.doctorsOnDuty) +
+    row('Part-time Doctors', r.doctorsPartTime) +
+    rowFull('Visit Type', types.join(', ')) +
+    rowFull('Purpose of Visit', r.visitPurpose) +
+    rowFull('Achievement', r.objectiveAchievement)
+  );
+  body += sec('⚙️ Wondfo Machine',
+    row('Other Brand 1', r.otherBrand1) + row('Origin 1', r.otherOrigin1) +
+    row('Other Brand 2', r.otherBrand2) + row('Origin 2', r.otherOrigin2) +
+    row('Other Brand 3', r.otherBrand3) + row('Origin 3', r.otherOrigin3) +
+    rowFull('Stock Reagent Names', r.wondfostockName) +
+    rowFull('Stock Quantity', r.wondfostockQty)
+  );
+  body += sec('🔬 Competitor Products',
+    row('Electrolyte Brand', r.elecBrand) + row('Elec. Origin', r.elecOrigin) +
+    row('Elec. Daily Tests', r.elecDaily) + row('Elec. Price', r.elecPrice) +
+    row('Bio Brand', r.bioBrand) + row('Bio Origin', r.bioOrigin) +
+    row('Bio Fully Auto', r.bioFull) + row('Bio Semi-Auto', r.bioSemi) +
+    row('Bio Daily Tests', r.bioDaily) + row('Bio Price', r.bioPrice) +
+    row('Hematology Brand', r.hemBrand) + row('Hem. Origin', r.hemOrigin) +
+    row('Hem. Daily Tests', r.hemDaily) + row('Hem. Price', r.hemPrice) +
+    row('Tube Brand', r.tubeBrand) + row('Tube Origin', r.tubeOrigin) +
+    row('Tube Monthly Qty', r.tubeQty) + row('Tube Price', r.tubePrice) +
+    rowFull('Tube Color Ratio', r.tubeColor) +
+    row('Blood Type Brand', r.btBrand) + row('BT Origin', r.btOrigin) +
+    rowFull('BT Qty & Price', r.btQtyPrice) +
+    row('Needle Brand', r.needleBrand) + row('Needle Origin', r.needleOrigin) +
+    row('Needle Qty', r.needleQty) + row('Needle Model', r.needleModel) +
+    rowFull('Needle Price', r.needlePrice) +
+    rowFull('Equipment Needs', r.equipNeeds)
+  );
+  body += sec('💊 Other Information',
+    rowFull('Medication Practices', r.medicationHabits) +
+    rowFull('IV Fluid & Medicine', r.fluidMedicine) +
+    rowFull('Additional Notes', r.medicationHabits2)
+  );
+  body += sec('📈 Progress & Next Visit',
+    rowFull('Customer Category', cats.join(', ')) +
+    rowFull('Progress & Outcome', r.visitProgress) +
+    row('Next Visit Date', r.nextVisitDate) +
+    row('Next Visit Target', r.nextVisitTarget)
+  );
+
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
 // ===================== LANGUAGE =====================
 let currentLang = 'en';
@@ -681,6 +1188,7 @@ function setLang(lang) {
 }
 
 // ===================== INIT =====================
+currentTab = 'machine';
 renderCityButtons();
 renderCards();
 </script>
