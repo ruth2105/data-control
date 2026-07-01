@@ -1533,9 +1533,15 @@ function importBulkData() {
 // ===================== VISIT FORM =====================
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd3Xpe2LTQeJ84XCWpJ-HTepFOC2aLSB-aSJJ6Ff0atg1ISiIW9E8Sl295qnKYghVIvQ/exec';
 const salesColors = {
-  'Ephrata Tekola':  '#6366f1',
-  'Kalkidan Awoke':  '#0e9f6e',
-  'Tizita Tarekeg':  '#e3a008'
+  'Ephrata':           '#6366f1',
+  'Ephrata Tekola':    '#6366f1',
+  '埃弗拉塔·特科拉 (Ephrata Tekola)': '#6366f1',
+  'Kalkidan':          '#0e9f6e',
+  'Kalkidan Awoke':    '#0e9f6e',
+  '卡尔基丹·阿沃克 (Kalkidan Awoke)': '#0e9f6e',
+  'Tizita':            '#e3a008',
+  'Tizita Tarekeg':    '#e3a008',
+  '蒂齐塔·塔雷克 (Tizita Tarekeg)': '#e3a008'
 };
 
 function salesInitials(name) {
@@ -1792,7 +1798,7 @@ function displayReports(reports) {
       (r.hospitalName||'').toLowerCase().includes(search) ||
       (r.salesPerson||'').toLowerCase().includes(search) ||
       (r.hospitalAddress||'').toLowerCase().includes(search);
-    const matchSales = !filterSales || r.salesPerson === filterSales || (r.salesPerson||'').includes(filterSales);
+    const matchSales = !filterSales || r.salesPerson === filterSales || (r.salesPerson||'').includes(filterSales) || filterSales.includes(r.salesPerson||'');
     const cats = Array.isArray(r.customerCategory) ? r.customerCategory : (r.customerCategory||'').split(', ').filter(Boolean);
     const matchCat = !filterCat || cats.includes(filterCat);
     const matchPotential = !filterPotential || r.customerPotential === filterPotential;
