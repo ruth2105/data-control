@@ -551,6 +551,79 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         </div>
       </div>
 
+      <!-- SINGLE VISIT FORM (always visible) -->
+      <div class="vf-card" style="border:2px solid #3b82f6;margin-bottom:16px">
+        <div class="vf-title" style="color:#3b82f6">📝 登记拜访 / Register Visit</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">业务员 / Salesperson</label>
+            <select class="vf-select" id="visitSalesPerson">
+              <option value="">-- 请选择 --</option>
+              <option>Ephrata</option>
+              <option>Kalkidan</option>
+              <option>Tizita</option>
+            </select>
+          </div>
+          <div>
+            <label class="vf-label">日期 / Date</label>
+            <input class="vf-input" type="date" id="visitDate">
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="vf-label">医院名称 / Hospital Name</label>
+          <input class="vf-input" type="text" id="visitHospital" list="hospitalDatalist" placeholder="输入医院名称…">
+          <datalist id="hospitalDatalist"></datalist>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">被访人 / Contact Person</label>
+            <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
+          </div>
+          <div>
+            <label class="vf-label">电话 / Phone</label>
+            <input class="vf-input" type="text" id="visitPhone" placeholder="手机号码">
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="vf-label">拜访类型 / Visit Type</label>
+          <select class="vf-select" id="visitType">
+            <option value="First contact">首次接触 / First Contact</option>
+            <option value="Follow-up">跟进 / Follow-up</option>
+            <option value="Product Promotion">产品推广 / Product Promotion</option>
+            <option value="Negotiation">谈判 / Negotiation</option>
+            <option value="Other">其他 / Other</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="vf-label">讨论内容 / Discussion Notes</label>
+          <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="记录拜访中讨论的内容…" style="font-family:monospace"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">客户潜力 / Potential</label>
+            <select class="vf-select" id="visitPotential">
+              <option value="">-- 请选择 --</option>
+              <option value="Hot">🔥 热门 / Hot</option>
+              <option value="Warm">🌤️ 温暖 / Warm</option>
+              <option value="Cold">❄️ 冷淡 / Cold</option>
+            </select>
+          </div>
+          <div>
+            <label class="vf-label">现有设备 / Current Equipment</label>
+            <input class="vf-input" type="text" id="visitEquipment" placeholder="如: Finecare, Mindray">
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="vf-label">下一步计划 / Next Steps</label>
+          <input class="vf-input" type="text" id="visitNextSteps" placeholder="如: 发送报价、安排第二次拜访">
+        </div>
+        <div style="display:flex;gap:12px">
+          <button type="button" onclick="submitSingleVisit()" style="flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 提交 / Submit</button>
+          <button type="button" onclick="clearVisitForm()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">↺ 重置 / Reset</button>
+        </div>
+        <div id="singleVisitStatus" style="margin-top:12px;padding:10px;border-radius:8px;display:none"></div>
+      </div>
+
       <!-- FILTER CONTROLS -->
       <div class="rep-filters">
         <input type="text" class="rep-search" id="repSearch" placeholder="🔍 搜索医院或业务员…" oninput="renderReports()">
@@ -1335,10 +1408,7 @@ function switchTab(tab) {
     filterPotential('all'); // Show all by default
   }
   if (tab === 'dashboard') renderDashboard();
-  if (tab === 'reports') renderReports();
-  if (tab === 'visitform') {
-    // No longer used - form was removed
-  }
+  if (tab === 'reports') { renderReports(); setupVisitForm(); }
 }
 
 function setCity(city) {
@@ -1528,6 +1598,74 @@ function importBulkData() {
   
   // Start import
   importNext(0);
+}
+
+function submitSingleVisit() {
+  const salesPerson = document.getElementById('visitSalesPerson').value;
+  const date = document.getElementById('visitDate').value;
+  const hospitalName = document.getElementById('visitHospital').value.trim();
+  const contact = document.getElementById('visitContact').value.trim();
+  const phone = document.getElementById('visitPhone').value.trim();
+  const visitType = document.getElementById('visitType').value;
+  const notes = document.getElementById('visitNotes').value.trim();
+  const potential = document.getElementById('visitPotential').value;
+  const equipment = document.getElementById('visitEquipment').value.trim();
+  const nextSteps = document.getElementById('visitNextSteps').value.trim();
+  const statusDiv = document.getElementById('singleVisitStatus');
+
+  if (!salesPerson) { alert('请选择业务员 / Please select salesperson'); return; }
+  if (!date) { alert('请选择日期 / Please select date'); return; }
+  if (!hospitalName) { alert('请输入医院名称 / Please enter hospital name'); return; }
+  if (!potential) { alert('请选择客户潜力 / Please select potential'); return; }
+
+  const reportData = {
+    id: Date.now(),
+    submittedAt: new Date().toISOString(),
+    fillDate: date,
+    salesPerson: salesPerson,
+    hospitalName: hospitalName,
+    hospitalAddress: '',
+    visitingName: contact,
+    phone: phone,
+    visitType: [visitType],
+    customerCategory: [],
+    customerPotential: potential,
+    visitProgress: notes,
+    otherBrand1: equipment,
+    nextStep: nextSteps,
+    action: 'insert'
+  };
+
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#eff6ff';
+  statusDiv.style.color = '#1e40af';
+  statusDiv.innerHTML = '⏳ 提交中 / Submitting...';
+
+  // Try to send to Google Sheets (fire-and-forget)
+  fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) })
+    .then(r => r.json()).catch(() => {});
+
+  // Save locally
+  saveVisitReportLocal(reportData);
+
+  statusDiv.style.background = '#f0fdf4';
+  statusDiv.style.color = '#166534';
+  statusDiv.innerHTML = `✅ 提交成功 / Submitted!<br>${hospitalName} — ${potential}`;
+
+  clearVisitForm();
+  setTimeout(() => { statusDiv.style.display = 'none'; renderReports(); }, 2000);
+}
+
+function clearVisitForm() {
+  document.getElementById('visitHospital').value = '';
+  document.getElementById('visitContact').value = '';
+  document.getElementById('visitPhone').value = '';
+  document.getElementById('visitNotes').value = '';
+  document.getElementById('visitPotential').value = '';
+  document.getElementById('visitEquipment').value = '';
+  document.getElementById('visitNextSteps').value = '';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('visitDate').value = today;
 }
 
 // ===================== VISIT FORM =====================
@@ -1757,6 +1895,19 @@ function renderReports() {
     });
     displayReports(all);
   });
+}
+
+function setupVisitForm() {
+  const datalist = document.getElementById('hospitalDatalist');
+  if (datalist) {
+    const names = new Set();
+    potentialCustomers.forEach(c => names.add(c.name));
+    JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]').forEach(c => names.add(c.name));
+    datalist.innerHTML = [...names].sort().map(n => `<option value="${n}">`).join('');
+  }
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('visitDate');
+  if (dateInput && !dateInput.value) dateInput.value = today;
 }
 
 function displayReports(reports) {
