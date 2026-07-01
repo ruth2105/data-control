@@ -692,17 +692,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           <div class="vf-group"><label class="vf-label" data-lkey="vfQty">需求数量</label><input class="vf-input" type="text" name="needleQty" data-lkey-ph="vfQty"></div>
           <div class="vf-group"><label class="vf-label" data-lkey="vfModel">型号</label><input class="vf-input" type="text" name="needleModel" data-lkey-ph="vfModel"></div>
           <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfPrice">价格</label><input class="vf-input" type="text" name="needlePrice" data-lkey-ph="vfPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfNW">7. 无纺布留置针贴</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="nwBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="nwOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfQty">需求数量</label><input class="vf-input" type="text" name="nwQty" data-lkey-ph="vfQty"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfPrice">价格</label><input class="vf-input" type="text" name="nwPrice" data-lkey-ph="vfPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfPF">8. 纸框留置针贴</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="pfBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="pfOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfQty">需求数量</label><input class="vf-input" type="text" name="pfQty" data-lkey-ph="vfQty"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfPrice">价格</label><input class="vf-input" type="text" name="pfPrice" data-lkey-ph="vfPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfEquipNeeds">9. 需要添加或更新的设备</div>
+          <div class="vf-section-divider" data-lkey="vfEquipNeeds">7. 需要添加或更新的设备</div>
           <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfEquipDetails">说明</label><textarea class="vf-textarea" name="equipNeeds" data-lkey-ph="vfEquipDetails"></textarea></div>
         </div>
       </div>
@@ -2530,7 +2520,7 @@ function openReportDetailObj(r) {
   // Check if customer has any company product data
   const hasWondfoData = r.otherBrand1 || r.otherBrand2 || r.otherBrand3 || r.wondfostockName || r.wondfostockQty;
   const hasCompetitorData = r.elecBrand || r.bioBrand || r.hemBrand;
-  const hasConsumablesData = r.tubeBrand || r.btBrand || r.needleBrand || r.nwBrand || r.pfBrand || r.equipNeeds;
+  const hasConsumablesData = r.tubeBrand || r.btBrand || r.needleBrand || r.equipNeeds;
   const hasAnyProductData = hasWondfoData || hasCompetitorData || hasConsumablesData;
 
   // LEFT PANEL - Company Products & Equipment Info (only show if has data)
@@ -2566,10 +2556,6 @@ function openReportDetailObj(r) {
       row(t('vfNeedle') + ' ' + t('vfBrand'), r.needleBrand) + row(t('vfNeedle') + ' ' + t('vfOrigin'), r.needleOrigin) +
       row(t('vfQty'), r.needleQty) + row(t('vfModel'), r.needleModel) +
       row(t('vfPrice'), r.needlePrice) +
-      row(t('vfBrand'), r.nwBrand) + row(t('vfOrigin'), r.nwOrigin) +
-      row(t('vfQty'), r.nwQty) + row(t('vfPrice'), r.nwPrice) +
-      row(t('vfBrand'), r.pfBrand) + row(t('vfOrigin'), r.pfOrigin) +
-      row(t('vfQty'), r.pfQty) + row(t('vfPrice'), r.pfPrice) +
       rowFull(t('vfEquipNeeds'), r.equipNeeds)
     );
     
@@ -2755,8 +2741,7 @@ const LANG = {
     vfTube: '4. Blood Collection Tube',
     vfBT: '5. Blood Type Testing',
     vfNeedle: '6. Detaining Needle',
-    vfNW: '7. Non-woven Needle Patch',
-    vfPF: '8. Paper Frame Needle Patch',
+
     vfEquipNeeds: '9. Equipment to Add/Upgrade',
     vfDailyTests: 'Daily Tests',
     vfReagentPrice: 'Reagent Price',
@@ -2966,8 +2951,7 @@ const LANG = {
     vfTube: '4. 采血管',
     vfBT: '5. 血型检测',
     vfNeedle: '6. 留置针',
-    vfNW: '7. 无纺布留置针贴',
-    vfPF: '8. 纸框留置针贴',
+
     vfEquipNeeds: '9. 需要添加或更新的设备',
     vfDailyTests: '每天化验人份',
     vfReagentPrice: '试剂价格',
@@ -3578,14 +3562,6 @@ const EXPORT_COLS = [
   { key:'needleQty',                label:'需求数量 / Needle Qty',        labelEn:'Needle Qty / 需求数量',         w:12 },
   { key:'needleModel',              label:'型号 / Model',                 labelEn:'Model / 型号',                  w:14 },
   { key:'needlePrice',              label:'价格 / Price',                 labelEn:'Price / 价格',                  w:12 },
-  { key:'nwBrand',                  label:'无纺布贴品牌 / NW Brand',      labelEn:'NW Brand / 无纺布贴品牌',       w:16 },
-  { key:'nwOrigin',                 label:'无纺布贴产地 / NW Origin',     labelEn:'NW Origin / 无纺布贴产地',      w:12 },
-  { key:'nwQty',                    label:'无纺布贴需求 / NW Qty',        labelEn:'NW Qty / 无纺布贴需求',         w:14 },
-  { key:'nwPrice',                  label:'无纺布贴价格 / NW Price',      labelEn:'NW Price / 无纺布贴价格',       w:14 },
-  { key:'pfBrand',                  label:'纸框贴品牌 / PF Brand',        labelEn:'PF Brand / 纸框贴品牌',         w:16 },
-  { key:'pfOrigin',                 label:'纸框贴产地 / PF Origin',       labelEn:'PF Origin / 纸框贴产地',        w:12 },
-  { key:'pfQty',                    label:'纸框贴需求 / PF Qty',          labelEn:'PF Qty / 纸框贴需求',           w:14 },
-  { key:'pfPrice',                  label:'纸框贴价格 / PF Price',        labelEn:'PF Price / 纸框贴价格',         w:14 },
   { key:'equipNeeds',               label:'需要设备 / Equipment',         labelEn:'Equipment / 需要设备',          w:26 },
   { key:'medicationHabits',         label:'用药习惯 / Medication',        labelEn:'Medication / 用药习惯',         w:30 },
   { key:'fluidMedicine',            label:'液体固体药品 / IV & Solid',    labelEn:'IV & Solid / 液体固体药品',      w:28 },

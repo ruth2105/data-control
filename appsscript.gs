@@ -12,8 +12,6 @@ const HEADERS = [
   'tubeBrand','tubeOrigin','tubeQty','tubePrice','tubeColor',
   'btBrand','btOrigin','btQtyPrice',
   'needleBrand','needleOrigin','needleQty','needleModel','needlePrice',
-  'nwBrand','nwOrigin','nwQty','nwPrice',
-  'pfBrand','pfOrigin','pfQty','pfPrice',
   'equipNeeds','medicationHabits','fluidMedicine','medicationHabits2',
   'customerCategory','customerPotential','visitProgress','nextVisitDate','nextVisitTarget'
 ];
