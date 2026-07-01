@@ -562,12 +562,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <div class="vf-card">
         <div class="vf-title vf-title-basic">📋 拜访基本信息</div>
         <div class="vf-grid">
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfFillDate">填写日期</label>
-            <input class="vf-input" type="date" name="fillDate" id="fillDate" required>
+          <div class="vf-group" style="display:none">
+            <input class="vf-input" type="date" name="fillDate" id="fillDate">
           </div>
           <div class="vf-group">
-            <label class="vf-label" data-lkey="vfSalesPerson">业务员姓名</label>
+            <label class="vf-label" data-lkey="vfSalesPerson">业务员</label>
             <select class="vf-select" name="salesPerson" required>
               <option value="" data-lkey="vfSelectSales">-- 请选择 --</option>
               <option>埃弗拉塔·特科拉 (Ephrata Tekola)</option>
@@ -576,141 +575,50 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
             </select>
           </div>
           <div class="vf-group">
-            <label class="vf-label" data-lkey="vfHospitalName">医院名字</label>
-            <input class="vf-input" type="text" name="hospitalName" required data-lkey-ph="vfHospitalName" list="hospitalSuggestions">
+            <label class="vf-label" data-lkey="vfHospitalName">医院名称</label>
+            <input class="vf-input" type="text" name="hospitalName" required data-lkey-ph="vfHospitalName" list="hospitalSuggestions" placeholder="e.g. Yordanos Orthopedic Center">
             <datalist id="hospitalSuggestions"></datalist>
           </div>
           <div class="vf-group">
-            <label class="vf-label" data-lkey="vfHospitalAddress">医院地址</label>
-            <input class="vf-input" type="text" name="hospitalAddress" data-lkey-ph="vfHospitalAddress">
+            <label class="vf-label" data-lkey="vfVisitingName">被访人</label>
+            <input class="vf-input" type="text" name="visitingName" data-lkey-ph="vfVisitingName" placeholder="e.g. Laboratory Head">
           </div>
           <div class="vf-group">
-            <label class="vf-label" data-lkey="vfVisitingName">拜访人姓名</label>
-            <input class="vf-input" type="text" name="visitingName" data-lkey-ph="vfVisitingName">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfPosition">职称</label>
-            <input class="vf-input" type="text" name="position" data-lkey-ph="vfPosition">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfDepartment">科室</label>
-            <input class="vf-input" type="text" name="department" data-lkey-ph="vfDepartment">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfVisitTime">拜访时间</label>
-            <input class="vf-input" type="time" name="visitTime">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfVisitLocation">拜访地点（检验室）</label>
-            <input class="vf-input" type="text" name="visitLocation" data-lkey-ph="vfVisitLocation">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfPhone">联系电话</label>
-            <input class="vf-input" type="text" name="phone" data-lkey-ph="vfPhone">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfHospitalType">医院性质</label>
-            <input class="vf-input" type="text" name="hospitalType" data-lkey-ph="vfHospitalType">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfDoctorsOnDuty">在班医生人数</label>
-            <input class="vf-input" type="number" name="doctorsOnDuty" min="0" placeholder="0">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfDoctorsPartTime">兼职医生人数</label>
-            <input class="vf-input" type="number" name="doctorsPartTime" min="0" placeholder="0">
+            <label class="vf-label" data-lkey="vfPosition">职位</label>
+            <input class="vf-input" type="text" name="position" data-lkey-ph="vfPosition" placeholder="e.g. Lab Head">
           </div>
           <div class="vf-group vf-full">
             <label class="vf-label" data-lkey="vfVisitType">拜访类型</label>
             <div class="vf-checkbox-group">
               <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="First contact"> <span data-lkey="vfFirstContact">初次接触</span></label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Product promotion"> <span data-lkey="vfProdPromo">产品推广</span></label>
               <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Customer relationship maintenance"> <span data-lkey="vfRelMaintenance">客情维护</span></label>
               <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Issue follow-up"> <span data-lkey="vfIssueFollowup">问题跟进</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Other"> <span data-lkey="vfOther">其他情况</span></label>
+              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Other"> <span data-lkey="vfOther">其他</span></label>
             </div>
           </div>
           <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfPurpose">拜访目的</label>
-            <textarea class="vf-textarea" name="visitPurpose" data-lkey-ph="vfPurpose"></textarea>
-          </div>
-          <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfAchievement">目的达成情况</label>
-            <textarea class="vf-textarea" name="objectiveAchievement" data-lkey-ph="vfAchievement"></textarea>
+            <label class="vf-label" data-lkey="vfPurpose">讨论内容 / Discussion</label>
+            <textarea class="vf-textarea" name="visitPurpose" data-lkey-ph="vfPurpose" rows="4" placeholder="What did you discuss? What did you promote?"></textarea>
           </div>
         </div>
       </div>
 
       <div class="vf-card">
-        <div class="vf-title vf-title-wondfo">⚙️ 万孚激素分析仪 (A8/A90)</div>
-        <div class="vf-grid">
-          <div class="vf-section-divider" data-lkey="vfOtherMachines">A) 现在用的其他激素分析仪</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label> <span data-lkey="vfBrand" style="display:none"></span><input class="vf-input" type="text" name="otherBrand1" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="otherOrigin1" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="otherBrand2" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="otherOrigin2" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="otherBrand3" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="otherOrigin3" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-section-divider" data-lkey="vfWondfoStock">B) 万孚 A8/A90 库存</div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfStockName">库存试剂名称</label><input class="vf-input" type="text" name="wondfostockName" data-lkey-ph="vfStockName"></div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfStockQty">库存数量</label><input class="vf-input" type="text" name="wondfostockQty" data-lkey-ph="vfStockQty"></div>
-        </div>
-      </div>
-
-      <div class="vf-card">
-        <div class="vf-title vf-title-competitor">🔬 同类产品情况</div>
-        <div class="vf-grid">
-          <div class="vf-section-divider" data-lkey="vfElec">1. 电解质分析仪</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="elecBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="elecOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfDailyTests">每天化验人份</label><input class="vf-input" type="text" name="elecDaily" data-lkey-ph="vfDailyTests"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfReagentPrice">试剂价格</label><input class="vf-input" type="text" name="elecPrice" data-lkey-ph="vfReagentPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfBio">2. 生化设备</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="bioBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="bioOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfFullAuto">全自动</label><input class="vf-input" type="text" name="bioFull" data-lkey-ph="vfFullAuto"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfSemiAuto">半自动</label><input class="vf-input" type="text" name="bioSemi" data-lkey-ph="vfSemiAuto"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfDailyTests">每天化验人份</label><input class="vf-input" type="text" name="bioDaily" data-lkey-ph="vfDailyTests"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfReagentPrice">试剂价格</label><input class="vf-input" type="text" name="bioPrice" data-lkey-ph="vfReagentPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfHem">3. 血液分析仪</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="hemBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="hemOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfDailyTests">每天化验人份</label><input class="vf-input" type="text" name="hemDaily" data-lkey-ph="vfDailyTests"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfReagentPrice">试剂价格</label><input class="vf-input" type="text" name="hemPrice" data-lkey-ph="vfReagentPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfTube">4. 采血管</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="tubeBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="tubeOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfMonthlyQty">每月需求数量</label><input class="vf-input" type="text" name="tubeQty" data-lkey-ph="vfMonthlyQty"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfPrice">价格</label><input class="vf-input" type="text" name="tubePrice" data-lkey-ph="vfPrice"></div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfColorRatio">颜色比例</label><input class="vf-input" type="text" name="tubeColor" data-lkey-ph="vfColorRatio"></div>
-          <div class="vf-section-divider" data-lkey="vfBT">5. 血型检测</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="btBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="btOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfMonthlyQtyPrice">每月数量及价格</label><input class="vf-input" type="text" name="btQtyPrice" data-lkey-ph="vfMonthlyQtyPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfNeedle">6. 留置针</div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfBrand">品牌</label><input class="vf-input" type="text" name="needleBrand" data-lkey-ph="vfBrand"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfOrigin">产地</label><input class="vf-input" type="text" name="needleOrigin" data-lkey-ph="vfOrigin"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfQty">需求数量</label><input class="vf-input" type="text" name="needleQty" data-lkey-ph="vfQty"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfModel">型号</label><input class="vf-input" type="text" name="needleModel" data-lkey-ph="vfModel"></div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfPrice">价格</label><input class="vf-input" type="text" name="needlePrice" data-lkey-ph="vfPrice"></div>
-          <div class="vf-section-divider" data-lkey="vfEquipNeeds">7. 需要添加或更新的设备</div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfEquipDetails">说明</label><textarea class="vf-textarea" name="equipNeeds" data-lkey-ph="vfEquipDetails"></textarea></div>
-        </div>
-      </div>
-
-      <div class="vf-card">
-        <div class="vf-title vf-title-otherinfo">💊 其他信息</div>
-        <div class="vf-grid">
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfMedHabits">三、医生科室用药习惯</label><textarea class="vf-textarea" name="medicationHabits" data-lkey-ph="vfMedHabits"></textarea></div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfFluidMed">四、液体及固体药品</label><textarea class="vf-textarea" name="fluidMedicine" data-lkey-ph="vfFluidMed"></textarea></div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfAddNotes">五、医生科室用药习惯（补充）</label><textarea class="vf-textarea" name="medicationHabits2" data-lkey-ph="vfAddNotes"></textarea></div>
-        </div>
-      </div>
-
-      <div class="vf-card">
-        <div class="vf-title vf-title-progress">📈 拜访进展及下次计划</div>
+        <div class="vf-title" style="color:#10b981">🔬 现有设备 / Current Machines</div>
         <div class="vf-grid">
           <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfCategory">此医院转入</label>
+            <label class="vf-label" data-lkey="vfMachinesNote">客户目前使用的设备 (激素/生化/血球等) / Machines in Use</label>
+            <textarea class="vf-textarea" name="equipNeeds" rows="3" placeholder="e.g. Hormonal Analyzer: GP • Chemistry Analyzer: Semi-Automatic"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-title vf-title-progress">📈 进展及计划 / Progress & Plan</div>
+        <div class="vf-grid">
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-lkey="vfCategory">客户分类</label>
             <div class="vf-checkbox-group">
               <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Active Customer"> <span data-lkey="vfCatActive">有效客户</span></label>
               <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Customer with Needs"> <span data-lkey="vfCatNeeds">有需求客户</span></label>
@@ -718,18 +626,27 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
               <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Closed Deal"> <span data-lkey="vfCatClosed">已成交客户</span></label>
             </div>
           </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-lkey="vfProgressOutcome">拜访结果 / Outcome</label>
+            <textarea class="vf-textarea" name="visitProgress" rows="4" placeholder="e.g. No current interest. They do very few hormone tests, mainly Vitamin D, and their current analyzer is sufficient."></textarea>
+          </div>
           <div class="vf-group">
-            <label class="vf-label" data-lkey="vfPotential">🌡️ 客户潜力 / Customer Potential</label>
+            <label class="vf-label" data-lkey="vfPotential">客户潜力</label>
             <select class="vf-select" name="customerPotential" required>
-              <option value="" data-lkey="vfSelectPotential">-- 请选择潜力等级 --</option>
-              <option value="Hot">🔥 热门客户 / Hot (Ready to buy)</option>
-              <option value="Warm">🌤️ 温暖客户 / Warm (Interested)</option>
-              <option value="Cold">❄️ 冷淡客户 / Cold (Low interest)</option>
+              <option value="" data-lkey="vfSelectPotential">-- 选择 --</option>
+              <option value="Hot">🔥 Hot 热门</option>
+              <option value="Warm">🌤️ Warm 温暖</option>
+              <option value="Cold">❄️ Cold 冷淡</option>
             </select>
           </div>
-          <div class="vf-group vf-full"><label class="vf-label" data-lkey="vfProgressOutcome">拜访进展及结果</label><textarea class="vf-textarea" name="visitProgress" data-lkey-ph="vfProgressOutcome"></textarea></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfNextDate">下次拜访时间</label><input class="vf-input" type="date" name="nextVisitDate"></div>
-          <div class="vf-group"><label class="vf-label" data-lkey="vfNextTarget">下次拜访目标</label><input class="vf-input" type="text" name="nextVisitTarget" data-lkey-ph="vfNextTarget"></div>
+          <div class="vf-group">
+            <label class="vf-label" data-lkey="vfNextDate">下次拜访</label>
+            <input class="vf-input" type="date" name="nextVisitDate">
+          </div>
+          <div class="vf-group">
+            <label class="vf-label" data-lkey="vfNextTarget">下次目标</label>
+            <input class="vf-input" type="text" name="nextVisitTarget" placeholder="e.g. Follow up on Vitamin D testing">
+          </div>
         </div>
         <button type="submit" class="vf-submit-btn">✅ 提交拜访报告</button>
       </div>
@@ -2716,11 +2633,13 @@ const LANG = {
     vfDoctorsPartTime: 'Part-time Doctors',
     vfVisitType: 'Visit Type',
     vfFirstContact: 'First Contact',
+    vfProdPromo: 'Product Promotion',
     vfRelMaintenance: 'Relationship Maintenance',
     vfIssueFollowup: 'Issue Follow-up',
     vfOther: 'Other',
     vfPurpose: 'Purpose of Visit',
     vfAchievement: 'Achievement of Objectives',
+    vfMachinesNote: 'Current Machines in Use',
     vfWondfo: '⚙️ Wondfo Hormone Machine (A8/A90)',
     vfOtherMachines: 'A) Other Hormone Machines Currently Using',
     vfWondfoStock: 'B) Wondfo A8/A90 Stock',
@@ -2736,7 +2655,7 @@ const LANG = {
     vfBT: '5. Blood Type Testing',
     vfNeedle: '6. Detaining Needle',
 
-    vfEquipNeeds: '9. Equipment to Add/Upgrade',
+    vfEquipNeeds: 'Machines in Use',
     vfDailyTests: 'Daily Tests',
     vfReagentPrice: 'Reagent Price',
     vfFullAuto: 'Fully Automated',
@@ -2926,11 +2845,13 @@ const LANG = {
     vfDoctorsPartTime: '兼职医生人数',
     vfVisitType: '拜访类型',
     vfFirstContact: '初次接触',
+    vfProdPromo: '产品推广',
     vfRelMaintenance: '客情维护',
     vfIssueFollowup: '问题跟进',
     vfOther: '其他情况',
     vfPurpose: '拜访目的',
     vfAchievement: '目的达成情况',
+    vfMachinesNote: '当前使用设备',
     vfWondfo: '⚙️ 一、万孚激素分析仪 (A8/A90)',
     vfOtherMachines: 'A) 现在用的其他激素分析仪',
     vfWondfoStock: 'B) 万孚 A8/A90 库存',
@@ -2946,7 +2867,7 @@ const LANG = {
     vfBT: '5. 血型检测',
     vfNeedle: '6. 留置针',
 
-    vfEquipNeeds: '9. 需要添加或更新的设备',
+    vfEquipNeeds: '现有设备',
     vfDailyTests: '每天化验人份',
     vfReagentPrice: '试剂价格',
     vfFullAuto: '全自动',
@@ -3556,7 +3477,7 @@ const EXPORT_COLS = [
   { key:'needleQty',                label:'需求数量 / Needle Qty',        labelEn:'Needle Qty / 需求数量',         w:12 },
   { key:'needleModel',              label:'型号 / Model',                 labelEn:'Model / 型号',                  w:14 },
   { key:'needlePrice',              label:'价格 / Price',                 labelEn:'Price / 价格',                  w:12 },
-  { key:'equipNeeds',               label:'需要设备 / Equipment',         labelEn:'Equipment / 需要设备',          w:26 },
+  { key:'equipNeeds',               label:'现有设备 / Machines',           labelEn:'Machines / 现有设备',           w:26 },
   { key:'medicationHabits',         label:'用药习惯 / Medication',        labelEn:'Medication / 用药习惯',         w:30 },
   { key:'fluidMedicine',            label:'液体固体药品 / IV & Solid',    labelEn:'IV & Solid / 液体固体药品',      w:28 },
   { key:'medicationHabits2',        label:'补充用药 / Add. Medication',   labelEn:'Add. Medication / 补充用药',    w:28 },
