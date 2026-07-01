@@ -577,7 +577,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           </div>
           <div class="vf-group">
             <label class="vf-label" data-lkey="vfHospitalName">医院名字</label>
-            <input class="vf-input" type="text" name="hospitalName" required data-lkey-ph="vfHospitalName" list="hospitalSuggestions" oninput="suggestHospital(this)">
+            <input class="vf-input" type="text" name="hospitalName" required data-lkey-ph="vfHospitalName" list="hospitalSuggestions">
             <datalist id="hospitalSuggestions"></datalist>
           </div>
           <div class="vf-group">
@@ -4299,18 +4299,6 @@ function populateHospitalList() {
   if (!dl) return;
   const allCustomers = [...machineCustomers, ...externalCustomers];
   dl.innerHTML = allCustomers.map(h => `<option value="${h.name}">${h.nameZh || ''}</option>`).join('');
-}
-
-function suggestHospital(inputEl) {
-  const val = inputEl.value.toLowerCase().trim();
-  if (!val) return;
-  const allCustomers = [...machineCustomers, ...externalCustomers];
-  const match = allCustomers.find(h => 
-    h.name.toLowerCase().includes(val) || (h.nameZh && h.nameZh.includes(val))
-  );
-  if (match) {
-    inputEl.value = currentLang === 'zh' ? (match.nameZh || match.name) : match.name;
-  }
 }
 
 // ===================== EXPORT PERIOD REPORT (BILINGUAL & DETAILED) =====================
