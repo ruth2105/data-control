@@ -625,6 +625,19 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
         </div>
 
+        <div style="margin-bottom:12px;padding:16px;background:#f0fdf4;border:2px solid #86efac;border-radius:10px">
+          <label class="vf-label" style="color:#166534;font-size:1rem">📦 产品订单 / Product Orders</label>
+          <div id="orderItems" style="margin-bottom:8px">
+            <div class="order-row" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center">
+              <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
+              <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
+              <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
+              <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
+            </div>
+          </div>
+          <button type="button" onclick="addOrderRow()" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">+ 添加产品 / Add Product</button>
+        </div>
+
         <div style="margin-bottom:12px">
           <label class="vf-label">客户分类 / Customer Category</label>
           <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
@@ -686,6 +699,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         </select>
         <button class="rep-select" onclick="showLangPicker('reports')" style="background:#10b981;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📥 导出拜访报告 / Export Reports</button>
         <button class="rep-select" onclick="showLangPicker('pdf')" style="background:#6366f1;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📥 导出PDF客户数据 / Export PDF Data</button>
+        <button class="rep-select" onclick="export6MonthReport()" style="background:#dc2626;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📊 6个月报告 / 6-Month Report</button>
         <button class="rep-select" onclick="checkData()" style="background:#f59e0b;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">🔍 检查数据</button>
       </div>
       <div id="potentialStats" style="display:flex;gap:12px;margin:12px 0;padding:12px;background:#f8fafc;border-radius:8px;flex-wrap:wrap"></div>
@@ -1666,6 +1680,17 @@ function submitSingleVisit() {
     if (cb && cb.checked) categories.push(cb.value);
   });
 
+  // Collect order rows
+  const orders = [];
+  document.querySelectorAll('#orderItems .order-row').forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const product = inputs[0]?.value.trim();
+    const qty = inputs[1]?.value.trim();
+    const unit = inputs[2]?.value.trim();
+    const price = inputs[3]?.value.trim();
+    if (product) orders.push({ product, qty: qty || '1', unit: unit || 'pcs', price: price || '0' });
+  });
+
   if (!salesPerson) { alert('请选择业务员 / Please select salesperson'); return; }
   if (!date) { alert('请选择日期 / Please select date'); return; }
   if (!hospitalName) { alert('请输入医院名称 / Please enter hospital name'); return; }
@@ -1689,6 +1714,7 @@ function submitSingleVisit() {
     visitProgress: outcome,
     nextVisitDate: nextDate,
     nextVisitTarget: nextTarget,
+    orders: orders,
     action: 'insert'
   };
 
@@ -1712,6 +1738,21 @@ function submitSingleVisit() {
   setTimeout(() => { statusDiv.style.display = 'none'; renderReports(); }, 2000);
 }
 
+function addOrderRow() {
+  const container = document.getElementById('orderItems');
+  const row = document.createElement('div');
+  row.className = 'order-row';
+  row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center';
+  row.innerHTML = `
+    <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
+    <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
+    <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
+    <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
+    <button type="button" onclick="this.parentElement.remove()" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;width:32px;height:32px;cursor:pointer;font-weight:700;font-size:1rem">✕</button>
+  `;
+  container.appendChild(row);
+}
+
 function clearVisitForm() {
   document.getElementById('visitHospital').value = '';
   document.getElementById('visitContact').value = '';
@@ -1724,6 +1765,12 @@ function clearVisitForm() {
   document.getElementById('visitPotential').value = '';
   document.getElementById('visitNextDate').value = '';
   document.getElementById('visitNextTarget').value = '';
+  // Clear order rows (keep first empty one)
+  const container = document.getElementById('orderItems');
+  const rows = container.querySelectorAll('.order-row');
+  for (let i = 1; i < rows.length; i++) rows[i].remove();
+  rows[0].querySelectorAll('input').forEach(inp => inp.value = '');
+  rows[0].querySelectorAll('input[value="pcs"]').forEach(inp => inp.value = 'pcs');
   ['vtFirst','vtPromo','vtRelation','vtIssue','vtOther'].forEach(id => {
     const cb = document.getElementById(id);
     if (cb) cb.checked = false;
@@ -4194,6 +4241,211 @@ function populateHospitalList() {
   if (!dl) return;
   const allCustomers = [...machineCustomers, ...externalCustomers];
   dl.innerHTML = allCustomers.map(h => `<option value="${h.name}">${h.nameZh || ''}</option>`).join('');
+}
+
+// ===================== 6-MONTH ACTIVITY REPORT =====================
+function export6MonthReport() {
+  getReports(function(reports) {
+    if (!reports || reports.length === 0) {
+      const local = getLocalReports();
+      if (local.length > 0) reports = local;
+      else { alert('没有数据 / No data'); return; }
+    }
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const filtered = reports.filter(r => {
+      const d = new Date(r.fillDate || r.submittedAt);
+      return d >= sixMonthsAgo;
+    });
+
+    if (filtered.length === 0) {
+      alert('过去6个月没有拜访记录 / No visit reports in the last 6 months');
+      return;
+    }
+
+    // Group by hospital
+    const byHospital = {};
+    filtered.forEach(r => {
+      const name = r.hospitalName || 'Unknown';
+      if (!byHospital[name]) byHospital[name] = { visits: [], orders: [] };
+      byHospital[name].visits.push(r);
+      if (r.orders && Array.isArray(r.orders) && r.orders.length > 0) {
+        r.orders.forEach(o => byHospital[name].orders.push({ ...o, date: r.fillDate, sales: r.salesPerson }));
+      }
+    });
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'Fremenatos Trading PLC';
+    const today = new Date().toISOString().slice(0, 10);
+
+    // SHEET 1 — Summary
+    const summary = workbook.addWorksheet('6-Month Summary');
+    summary.getColumn(1).width = 3;
+    summary.getColumn(2).width = 28;
+    summary.getColumn(3).width = 18;
+    summary.getColumn(4).width = 14;
+    summary.getColumn(5).width = 14;
+    summary.getColumn(6).width = 12;
+    summary.getColumn(7).width = 20;
+
+    // Header
+    summary.mergeCells('B2:G2');
+    const title = summary.getCell('B2');
+    title.value = '📊 6-Month Activity Report / 6个月活动报告';
+    title.font = { bold: true, size: 16, color: { argb: 'FFFFFFFF' }, name: 'Microsoft YaHei' };
+    title.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A56DB' } };
+    title.alignment = { horizontal: 'center', vertical: 'middle' };
+    summary.getRow(2).height = 40;
+
+    summary.mergeCells('B3:G3');
+    const subtitle = summary.getCell('B3');
+    subtitle.value = `Generated: ${today}  |  Period: ${sixMonthsAgo.toISOString().slice(0, 10)} — ${today}  |  Total Reports: ${filtered.length}`;
+    subtitle.font = { size: 10, color: { argb: 'FF64748B' } };
+    subtitle.alignment = { horizontal: 'center' };
+
+    // Headers
+    const headers = ['Hospital / 医院', 'Salesperson / 业务员', 'Visits / 拜访次数', 'Orders / 订单数', 'Total Revenue / 总金额', 'Last Visit / 最后拜访'];
+    const headerRow = summary.getRow(5);
+    headers.forEach((h, i) => {
+      const cell = headerRow.getCell(i + 2);
+      cell.value = h;
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11, name: 'Microsoft YaHei' };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2563EB' } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    });
+    headerRow.height = 32;
+
+    let rowIdx = 6;
+    let totalVisits = 0, totalOrders = 0, totalRevenue = 0;
+
+    Object.keys(byHospital).sort().forEach(name => {
+      const h = byHospital[name];
+      const salesSet = new Set(h.visits.map(v => v.salesPerson).filter(Boolean));
+      const revenue = h.orders.reduce((sum, o) => sum + (parseFloat(o.price) || 0) * (parseInt(o.qty) || 0), 0);
+      const lastVisit = h.visits.reduce((latest, v) => {
+        const d = new Date(v.fillDate || v.submittedAt || 0);
+        return d > latest ? d : latest;
+      }, new Date(0)).toISOString().slice(0, 10);
+      totalVisits += h.visits.length;
+      totalOrders += h.orders.length;
+      totalRevenue += revenue;
+
+      const row = summary.getRow(rowIdx);
+      row.getCell(2).value = name;
+      row.getCell(3).value = [...salesSet].join(', ');
+      row.getCell(4).value = h.visits.length;
+      row.getCell(5).value = h.orders.length;
+      row.getCell(6).value = revenue > 0 ? revenue : '';
+      row.getCell(7).value = lastVisit;
+      row.height = 22;
+      row.eachCell((cell, col) => {
+        if (col >= 2) {
+          cell.font = { size: 10, name: 'Microsoft YaHei' };
+          cell.alignment = { vertical: 'middle', wrapText: true };
+          if (col >= 4) cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          if (col === 6) cell.numFmt = '#,##0.00';
+        }
+      });
+      rowIdx++;
+    });
+
+    // Totals row
+    const totalRow = summary.getRow(rowIdx);
+    totalRow.getCell(2).value = 'TOTAL / 合计';
+    totalRow.getCell(2).font = { bold: true, size: 11 };
+    totalRow.getCell(4).value = totalVisits;
+    totalRow.getCell(4).font = { bold: true };
+    totalRow.getCell(5).value = totalOrders;
+    totalRow.getCell(5).font = { bold: true };
+    totalRow.getCell(6).value = totalRevenue;
+    totalRow.getCell(6).font = { bold: true };
+    totalRow.getCell(6).numFmt = '#,##0.00';
+    totalRow.height = 24;
+    totalRow.eachCell((cell, col) => { if (col >= 2) cell.alignment = { horizontal: 'center', vertical: 'middle' }; });
+
+    // SHEET 2 — Order Details
+    const orderSheet = workbook.addWorksheet('Order Details');
+    orderSheet.getColumn(1).width = 3;
+    orderSheet.getColumn(2).width = 24;
+    orderSheet.getColumn(3).width = 16;
+    orderSheet.getColumn(4).width = 14;
+    orderSheet.getColumn(5).width = 20;
+    orderSheet.getColumn(6).width = 12;
+    orderSheet.getColumn(7).width = 12;
+    orderSheet.getColumn(8).width = 16;
+
+    orderSheet.mergeCells('B2:H2');
+    const oTitle = orderSheet.getCell('B2');
+    oTitle.value = '📦 Order Details / 订单详情';
+    oTitle.font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' }, name: 'Microsoft YaHei' };
+    oTitle.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF059669' } };
+    oTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+    orderSheet.getRow(2).height = 36;
+
+    const oHeaders = ['Hospital / 医院', 'Salesperson / 业务员', 'Product / 产品', 'Qty / 数量', 'Unit / 单位', 'Price / 单价', 'Total / 总价'];
+    const oHeaderRow = orderSheet.getRow(4);
+    oHeaders.forEach((h, i) => {
+      const cell = oHeaderRow.getCell(i + 2);
+      cell.value = h;
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10, name: 'Microsoft YaHei' };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    });
+    oHeaderRow.height = 28;
+
+    let oRowIdx = 5;
+    let grandTotal = 0;
+    Object.keys(byHospital).sort().forEach(name => {
+      const h = byHospital[name];
+      h.orders.forEach(o => {
+        const total = (parseFloat(o.price) || 0) * (parseInt(o.qty) || 0);
+        grandTotal += total;
+        const row = orderSheet.getRow(oRowIdx);
+        row.getCell(2).value = name;
+        row.getCell(3).value = o.sales || '';
+        row.getCell(4).value = o.product;
+        row.getCell(5).value = parseInt(o.qty) || 0;
+        row.getCell(6).value = o.unit || 'pcs';
+        row.getCell(7).value = parseFloat(o.price) || 0;
+        row.getCell(8).value = total;
+        row.height = 20;
+        row.eachCell((cell, col) => {
+          if (col >= 2) {
+            cell.font = { size: 10, name: 'Microsoft YaHei' };
+            cell.alignment = { vertical: 'middle' };
+            if (col >= 5) cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            if (col === 7 || col === 8) cell.numFmt = '#,##0.00';
+          }
+        });
+        oRowIdx++;
+      });
+    });
+
+    // Grand total
+    if (oRowIdx > 5) {
+      const gtRow = orderSheet.getRow(oRowIdx);
+      gtRow.getCell(2).value = 'GRAND TOTAL / 总计';
+      gtRow.getCell(2).font = { bold: true, size: 11 };
+      gtRow.getCell(8).value = grandTotal;
+      gtRow.getCell(8).font = { bold: true, size: 11 };
+      gtRow.getCell(8).numFmt = '#,##0.00';
+      gtRow.height = 24;
+    }
+
+    // Generate and download
+    workbook.xlsx.writeBuffer().then(buffer => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `6Month_Report_${today}.xlsx`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      alert(`✅ 6个月报告已生成\n${filtered.length} 条记录, ${Object.keys(byHospital).length} 家医院\n\n✅ 6-Month Report generated\n${filtered.length} reports, ${Object.keys(byHospital).length} hospitals`);
+    }).catch(err => {
+      alert('生成报告时出错 / Error generating report: ' + err.message);
+    });
+  });
 }
 
 // ===================== EXPORT PERIOD REPORT (BILINGUAL & DETAILED) =====================
