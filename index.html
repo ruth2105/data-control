@@ -554,6 +554,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <!-- SINGLE VISIT FORM (always visible) -->
       <div class="vf-card" style="border:2px solid #3b82f6;margin-bottom:16px">
         <div class="vf-title" style="color:#3b82f6">📝 登记拜访 / Register Visit</div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <label class="vf-label">业务员 / Salesperson</label>
@@ -569,36 +570,72 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
             <input class="vf-input" type="date" id="visitDate">
           </div>
         </div>
+
         <div style="margin-bottom:12px">
           <label class="vf-label">医院名称 / Hospital Name</label>
           <input class="vf-input" type="text" id="visitHospital" list="hospitalDatalist" placeholder="输入医院名称…">
           <datalist id="hospitalDatalist"></datalist>
         </div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <label class="vf-label">被访人 / Contact Person</label>
             <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
           </div>
           <div>
+            <label class="vf-label">职位 / Position</label>
+            <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
             <label class="vf-label">电话 / Phone</label>
             <input class="vf-input" type="text" id="visitPhone" placeholder="手机号码">
           </div>
+          <div>
+            <label class="vf-label">医院地址 / Address</label>
+            <input class="vf-input" type="text" id="visitAddress" placeholder="如: Bole, Ayat">
+          </div>
         </div>
+
         <div style="margin-bottom:12px">
           <label class="vf-label">拜访类型 / Visit Type</label>
-          <select class="vf-select" id="visitType">
-            <option value="First contact">首次接触 / First Contact</option>
-            <option value="Follow-up">跟进 / Follow-up</option>
-            <option value="Product Promotion">产品推广 / Product Promotion</option>
-            <option value="Negotiation">谈判 / Negotiation</option>
-            <option value="Other">其他 / Other</option>
-          </select>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtFirst" value="First contact"> 初次接触 / First Contact</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtPromo" value="Product promotion"> 产品推广 / Product Promotion</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtRelation" value="Customer relationship maintenance"> 客情维护 / Relationship</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtIssue" value="Issue follow-up"> 问题跟进 / Issue Follow-up</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtOther" value="Other"> 其他 / Other</label>
+          </div>
         </div>
+
         <div style="margin-bottom:12px">
           <label class="vf-label">讨论内容 / Discussion Notes</label>
-          <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="记录拜访中讨论的内容…" style="font-family:monospace"></textarea>
+          <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">现有设备 / Current Equipment in Use</label>
+          <textarea class="vf-textarea" id="visitEquipment" rows="2" placeholder="如: 激素: Finecare • 生化: Semi-Automatic • 血球: Mindray" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">拜访结果 / Outcome</label>
+          <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">客户分类 / Customer Category</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catActive" value="Active Customer"> 有效客户 / Active</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catNeeds" value="Customer with Needs"> 有需求客户 / With Needs</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catKey" value="Key Customer"> 重点客户 / Key</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catClosed" value="Closed Deal"> 已成交客户 / Closed Deal</label>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <label class="vf-label">客户潜力 / Potential</label>
             <select class="vf-select" id="visitPotential">
@@ -609,14 +646,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
             </select>
           </div>
           <div>
-            <label class="vf-label">现有设备 / Current Equipment</label>
-            <input class="vf-input" type="text" id="visitEquipment" placeholder="如: Finecare, Mindray">
+            <label class="vf-label">下次拜访日期 / Next Visit</label>
+            <input class="vf-input" type="date" id="visitNextDate">
+          </div>
+          <div>
+            <label class="vf-label">下次目标 / Next Target</label>
+            <input class="vf-input" type="text" id="visitNextTarget" placeholder="如: 跟进报价">
           </div>
         </div>
-        <div style="margin-bottom:12px">
-          <label class="vf-label">下一步计划 / Next Steps</label>
-          <input class="vf-input" type="text" id="visitNextSteps" placeholder="如: 发送报价、安排第二次拜访">
-        </div>
+
         <div style="display:flex;gap:12px">
           <button type="button" onclick="submitSingleVisit()" style="flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 提交 / Submit</button>
           <button type="button" onclick="clearVisitForm()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">↺ 重置 / Reset</button>
@@ -1605,13 +1643,28 @@ function submitSingleVisit() {
   const date = document.getElementById('visitDate').value;
   const hospitalName = document.getElementById('visitHospital').value.trim();
   const contact = document.getElementById('visitContact').value.trim();
+  const position = document.getElementById('visitPosition').value.trim();
   const phone = document.getElementById('visitPhone').value.trim();
-  const visitType = document.getElementById('visitType').value;
+  const address = document.getElementById('visitAddress').value.trim();
   const notes = document.getElementById('visitNotes').value.trim();
-  const potential = document.getElementById('visitPotential').value;
   const equipment = document.getElementById('visitEquipment').value.trim();
-  const nextSteps = document.getElementById('visitNextSteps').value.trim();
+  const outcome = document.getElementById('visitOutcome').value.trim();
+  const potential = document.getElementById('visitPotential').value;
+  const nextDate = document.getElementById('visitNextDate').value;
+  const nextTarget = document.getElementById('visitNextTarget').value.trim();
   const statusDiv = document.getElementById('singleVisitStatus');
+
+  // Collect checkboxes
+  const visitTypes = [];
+  ['vtFirst','vtPromo','vtRelation','vtIssue','vtOther'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) visitTypes.push(cb.value);
+  });
+  const categories = [];
+  ['catActive','catNeeds','catKey','catClosed'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) categories.push(cb.value);
+  });
 
   if (!salesPerson) { alert('请选择业务员 / Please select salesperson'); return; }
   if (!date) { alert('请选择日期 / Please select date'); return; }
@@ -1624,15 +1677,18 @@ function submitSingleVisit() {
     fillDate: date,
     salesPerson: salesPerson,
     hospitalName: hospitalName,
-    hospitalAddress: '',
+    hospitalAddress: address,
     visitingName: contact,
+    position: position,
     phone: phone,
-    visitType: [visitType],
-    customerCategory: [],
+    visitType: visitTypes,
+    customerCategory: categories,
     customerPotential: potential,
-    visitProgress: notes,
-    otherBrand1: equipment,
-    nextStep: nextSteps,
+    visitPurpose: notes,
+    equipNeeds: equipment,
+    visitProgress: outcome,
+    nextVisitDate: nextDate,
+    nextVisitTarget: nextTarget,
     action: 'insert'
   };
 
@@ -1659,11 +1715,23 @@ function submitSingleVisit() {
 function clearVisitForm() {
   document.getElementById('visitHospital').value = '';
   document.getElementById('visitContact').value = '';
+  document.getElementById('visitPosition').value = '';
   document.getElementById('visitPhone').value = '';
+  document.getElementById('visitAddress').value = '';
   document.getElementById('visitNotes').value = '';
-  document.getElementById('visitPotential').value = '';
   document.getElementById('visitEquipment').value = '';
-  document.getElementById('visitNextSteps').value = '';
+  document.getElementById('visitOutcome').value = '';
+  document.getElementById('visitPotential').value = '';
+  document.getElementById('visitNextDate').value = '';
+  document.getElementById('visitNextTarget').value = '';
+  ['vtFirst','vtPromo','vtRelation','vtIssue','vtOther'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb) cb.checked = false;
+  });
+  ['catActive','catNeeds','catKey','catClosed'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb) cb.checked = false;
+  });
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('visitDate').value = today;
 }
@@ -1784,12 +1852,12 @@ function addPotentialFromReport(data) {
     contact: data.visitingName || '',
     phone: data.phone || '',
     patientLoad: '',
-    hormoneAnalyzer: data.otherBrand1 || '',
-    chemAnalyzer: data.bioBrand || '',
-    electrolyteAnalyzer: data.elecBrand || '',
-    testTubes: data.tubeBrand || '',
+    hormoneAnalyzer: data.otherBrand1 || data.equipNeeds || '',
+    chemAnalyzer: '',
+    electrolyteAnalyzer: '',
+    testTubes: '',
     status: data.customerPotential || 'Warm',
-    notes: data.visitProgress || '',
+    notes: data.visitProgress || data.visitPurpose || data.outcome || '',
     salesRep: data.salesPerson || '',
     fromVisit: true
   };
