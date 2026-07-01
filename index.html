@@ -529,9 +529,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
               <label class="vf-label">业务员 / Salesperson</label>
               <select class="vf-select" id="bulkSalesPerson">
                 <option value="">-- 请选择 --</option>
-                <option>埃弗拉塔·特科拉 (Ephrata Tekola)</option>
-                <option>卡尔基丹·阿沃克 (Kalkidan Awoke)</option>
-                <option>蒂齐塔·塔雷克 (Tizita Tarekeg)</option>
+                <option>Ephrata</option>
+                <option>Kalkidan</option>
+                <option>Tizita</option>
               </select>
             </div>
             <div>
@@ -556,9 +556,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         <input type="text" class="rep-search" id="repSearch" placeholder="🔍 搜索医院或业务员…" oninput="renderReports()">
         <select class="rep-select" id="repFilterSales" onchange="renderReports()">
           <option value="">全部业务员</option>
-          <option>埃弗拉塔·特科拉 (Ephrata Tekola)</option>
-          <option>卡尔基丹·阿沃克 (Kalkidan Awoke)</option>
-          <option>蒂齐塔·塔雷克 (Tizita Tarekeg)</option>
+          <option>Ephrata</option>
+          <option>Kalkidan</option>
+          <option>Tizita</option>
         </select>
         <select class="rep-select" id="repFilterPotential" onchange="renderReports()" style="background:#fff;border:2px solid #e2e8f0">
           <option value="">🌡️ 全部潜力</option>
@@ -1533,19 +1533,21 @@ function importBulkData() {
 // ===================== VISIT FORM =====================
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd3Xpe2LTQeJ84XCWpJ-HTepFOC2aLSB-aSJJ6Ff0atg1ISiIW9E8Sl295qnKYghVIvQ/exec';
 const salesColors = {
-  'Ephrata':           '#6366f1',
-  'Ephrata Tekola':    '#6366f1',
-  '埃弗拉塔·特科拉 (Ephrata Tekola)': '#6366f1',
-  'Kalkidan':          '#0e9f6e',
-  'Kalkidan Awoke':    '#0e9f6e',
-  '卡尔基丹·阿沃克 (Kalkidan Awoke)': '#0e9f6e',
-  'Tizita':            '#e3a008',
-  'Tizita Tarekeg':    '#e3a008',
-  '蒂齐塔·塔雷克 (Tizita Tarekeg)': '#e3a008'
+  'Ephrata':  '#6366f1',
+  'Kalkidan': '#0e9f6e',
+  'Tizita':   '#e3a008'
 };
 
 function salesInitials(name) {
   return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function normalizeSalesName(name) {
+  if (!name) return 'Unknown';
+  if (name.includes('Ephrata') || name.includes('埃弗拉塔')) return 'Ephrata';
+  if (name.includes('Kalkidan') || name.includes('卡尔基丹')) return 'Kalkidan';
+  if (name.includes('Tizita') || name.includes('蒂齐塔')) return 'Tizita';
+  return name;
 }
 
 function submitVisitForm(e) {
@@ -1792,13 +1794,14 @@ function displayReports(reports) {
   
   // Combine visit reports and PDF customers
   const allData = [...reports.map(r => ({...r, source: 'Report'})), ...pdfCustomers];
+  allData.forEach(r => r.salesPerson = normalizeSalesName(r.salesPerson));
 
   const filtered = allData.filter(r => {
     const matchSearch = !search ||
       (r.hospitalName||'').toLowerCase().includes(search) ||
       (r.salesPerson||'').toLowerCase().includes(search) ||
       (r.hospitalAddress||'').toLowerCase().includes(search);
-    const matchSales = !filterSales || r.salesPerson === filterSales || (r.salesPerson||'').includes(filterSales) || filterSales.includes(r.salesPerson||'');
+    const matchSales = !filterSales || r.salesPerson === filterSales;
     const cats = Array.isArray(r.customerCategory) ? r.customerCategory : (r.customerCategory||'').split(', ').filter(Boolean);
     const matchCat = !filterCat || cats.includes(filterCat);
     const matchPotential = !filterPotential || r.customerPotential === filterPotential;
@@ -2974,6 +2977,7 @@ function renderDashboard() {
     
     // Combine reports and PDF customers
     const allData = [...reports, ...pdfCustomers];
+    allData.forEach(r => r.salesPerson = normalizeSalesName(r.salesPerson || r.salesRep));
     
     // Filter reports based on selected period (only for visit reports, not PDF)
     const periodReports = reports.filter(r => {
@@ -3110,7 +3114,7 @@ function renderDashboard() {
   // Chart 4: Territory Distribution (customers by salesperson)
   const territoryCount = {};
   allData.forEach(c => {
-    const sales = c.salesPerson || c.salesRep || 'Unknown';
+    const sales = c.salesPerson || 'Unknown';
     territoryCount[sales] = (territoryCount[sales] || 0) + 1;
   });
   
@@ -4538,14 +4542,7 @@ function filterPotentialCustomers() {
         !c.contact.toLowerCase().includes(search) && 
         !c.notes.toLowerCase().includes(search)) return false;
     
-    // Sales rep filter - handle both short and full names
-    if (salesRep !== 'all') {
-      const repName = c.salesRep || '';
-      // Match either "Kalkidan" or "卡尔基丹·阿沃克 (Kalkidan Awoke)"
-      const matchShort = repName.includes(salesRep);
-      const matchFull = repName.toLowerCase().includes(salesRep.toLowerCase());
-      if (!matchShort && !matchFull) return false;
-    }
+    if (salesRep !== 'all' && (c.salesRep || '') !== salesRep) return false;
     
     // Volume filter
     if (volume !== 'all') {
