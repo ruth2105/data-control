@@ -247,7 +247,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
     <button class="tab-btn" onclick="switchTab('external')" id="tab-external">🔬 外部客户 (13)</button>
     <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 数据看板</button>
     <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 拜访管理</button>
-    <button class="tab-btn" onclick="switchTab('visitform')" id="tab-visitform">📝 拜访登记</button>
   </div>
 
   <!-- HOSPITAL LIST PAGES -->
@@ -433,13 +432,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   </div>
 
   <!-- VISIT FORM PAGE -->
-  <div id="page-visitform" class="page">
-
-
-
-
-
-    <!-- CUSTOMER EDIT MODAL -->
+  <!-- CUSTOMER EDIT MODAL -->
     <div class="modal-overlay" id="customerEditOverlay" onclick="if(event.target===this)closeCustomerEdit()">
       <div class="modal" style="max-width:760px">
         <div class="modal-header">
@@ -508,17 +501,18 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       </div>
     </div>
 
-    <!-- FORM -->
-    <div id="formArea">
-      
-      <!-- BULK IMPORT BUTTON -->
-      <div style="margin-bottom:16px;display:flex;gap:8px">
-        <button type="button" onclick="showBulkImport()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.9rem;box-shadow:0 2px 8px rgba(16,185,129,0.3)">📥 批量导入 / Bulk Import</button>
-        <button type="button" onclick="showManualForm()" id="manualFormBtn" style="display:none;background:#64748b;color:#fff;border:none;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.9rem">📝 返回表单 / Back to Form</button>
+    <!-- VISIT REPORTS PAGE -->
+  <div id="page-reports" class="page">
+    <div class="vf-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div class="vf-title">📊 拜访管理 / Visit Management</div>
+        <button onclick="toggleBulkImport()" id="toggleBulkBtn" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.95rem;box-shadow:0 2px 8px rgba(16,185,129,0.3)">
+          📥 批量导入 / Bulk Import
+        </button>
       </div>
-      
-      <!-- BULK IMPORT PANEL -->
-      <div id="bulkImportPanel" style="display:none;margin-bottom:20px">
+
+      <!-- BULK IMPORT PANEL (Hidden by default) -->
+      <div id="bulkImportSection" style="display:none;margin-bottom:20px">
         <div class="vf-card" style="border:2px solid #10b981">
           <div class="vf-title" style="color:#10b981">📥 批量导入拜访记录 / Bulk Import Visits</div>
           <div style="background:#f0fdf4;padding:16px;border-radius:8px;margin-bottom:16px">
@@ -551,135 +545,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           </div>
           <div style="display:flex;gap:12px">
             <button type="button" onclick="importBulkData()" style="flex:1;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 开始导入 / Start Import</button>
-            <button type="button" onclick="showManualForm()" style="background:#ef4444;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">❌ 取消 / Cancel</button>
+            <button type="button" onclick="toggleBulkImport()" style="background:#ef4444;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">❌ 关闭 / Close</button>
           </div>
           <div id="bulkImportStatus" style="margin-top:16px;padding:12px;border-radius:8px;display:none"></div>
         </div>
       </div>
-      
-      <form id="visitForm" onsubmit="submitVisitForm(event)">
 
-      <div class="vf-card">
-        <div class="vf-title vf-title-basic">📋 拜访基本信息</div>
-        <div class="vf-grid">
-          <div class="vf-group" style="display:none">
-            <input class="vf-input" type="date" name="fillDate" id="fillDate">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfSalesPerson">业务员</label>
-            <select class="vf-select" name="salesPerson" required>
-              <option value="" data-lkey="vfSelectSales">-- 请选择 --</option>
-              <option>埃弗拉塔·特科拉 (Ephrata Tekola)</option>
-              <option>卡尔基丹·阿沃克 (Kalkidan Awoke)</option>
-              <option>蒂齐塔·塔雷克 (Tizita Tarekeg)</option>
-            </select>
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfHospitalName">医院名称</label>
-            <input class="vf-input" type="text" name="hospitalName" required data-lkey-ph="vfHospitalName" list="hospitalSuggestions" placeholder="e.g. Yordanos Orthopedic Center">
-            <datalist id="hospitalSuggestions"></datalist>
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfVisitingName">被访人</label>
-            <input class="vf-input" type="text" name="visitingName" data-lkey-ph="vfVisitingName" placeholder="e.g. Laboratory Head">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfPosition">职位</label>
-            <input class="vf-input" type="text" name="position" data-lkey-ph="vfPosition" placeholder="e.g. Lab Head">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfHospitalAddress">医院地址</label>
-            <input class="vf-input" type="text" name="hospitalAddress" data-lkey-ph="vfHospitalAddress">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfPhone">联系电话</label>
-            <input class="vf-input" type="text" name="phone" data-lkey-ph="vfPhone">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfDoctorsOnDuty">在班医生人数</label>
-            <input class="vf-input" type="number" name="doctorsOnDuty" min="0" placeholder="0">
-          </div>
-          <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfVisitType">拜访类型</label>
-            <div class="vf-checkbox-group">
-              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="First contact"> <span data-lkey="vfFirstContact">初次接触</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Product promotion"> <span data-lkey="vfProdPromo">产品推广</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Customer relationship maintenance"> <span data-lkey="vfRelMaintenance">客情维护</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Issue follow-up"> <span data-lkey="vfIssueFollowup">问题跟进</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="visitType" value="Other"> <span data-lkey="vfOther">其他</span></label>
-            </div>
-          </div>
-          <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfPurpose">讨论内容 / Discussion</label>
-            <textarea class="vf-textarea" name="visitPurpose" data-lkey-ph="vfPurpose" rows="4" placeholder="What did you discuss? What did you promote?"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="vf-card">
-        <div class="vf-title" style="color:#10b981">🔬 现有设备 / Current Machines</div>
-        <div class="vf-grid">
-          <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfMachinesNote">客户目前使用的设备 (激素/生化/血球等) / Machines in Use</label>
-            <textarea class="vf-textarea" name="equipNeeds" rows="3" placeholder="e.g. Hormonal Analyzer: GP • Chemistry Analyzer: Semi-Automatic"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="vf-card">
-        <div class="vf-title vf-title-progress">📈 进展及计划 / Progress & Plan</div>
-        <div class="vf-grid">
-          <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfCategory">客户分类</label>
-            <div class="vf-checkbox-group">
-              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Active Customer"> <span data-lkey="vfCatActive">有效客户</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Customer with Needs"> <span data-lkey="vfCatNeeds">有需求客户</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Key Customer"> <span data-lkey="vfCatKey">重点客户</span></label>
-              <label class="vf-checkbox-label"><input type="checkbox" name="customerCategory" value="Closed Deal"> <span data-lkey="vfCatClosed">已成交客户</span></label>
-            </div>
-          </div>
-          <div class="vf-group vf-full">
-            <label class="vf-label" data-lkey="vfProgressOutcome">拜访结果 / Outcome</label>
-            <textarea class="vf-textarea" name="visitProgress" rows="4" placeholder="e.g. No current interest. They do very few hormone tests, mainly Vitamin D, and their current analyzer is sufficient."></textarea>
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfPotential">客户潜力</label>
-            <select class="vf-select" name="customerPotential" required>
-              <option value="" data-lkey="vfSelectPotential">-- 选择 --</option>
-              <option value="Hot">🔥 Hot 热门</option>
-              <option value="Warm">🌤️ Warm 温暖</option>
-              <option value="Cold">❄️ Cold 冷淡</option>
-            </select>
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfNextDate">下次拜访</label>
-            <input class="vf-input" type="date" name="nextVisitDate">
-          </div>
-          <div class="vf-group">
-            <label class="vf-label" data-lkey="vfNextTarget">下次目标</label>
-            <input class="vf-input" type="text" name="nextVisitTarget" placeholder="e.g. Follow up on Vitamin D testing">
-          </div>
-        </div>
-        <button type="submit" class="vf-submit-btn">✅ 提交拜访报告</button>
-      </div>
-
-    </form>
-    </div><!-- end formArea -->
-  </div><!-- end page-visitform -->
-
-  <!-- VISIT REPORTS PAGE -->
-  <div id="page-reports" class="page">
-    <div class="vf-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
-        <div class="vf-title">📊 拜访管理 / Visit Management</div>
-        <button onclick="toggleVisitForm()" id="toggleFormBtn" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.95rem;box-shadow:0 2px 8px rgba(16,185,129,0.3)">
-          ➕ 新建拜访 / New Visit
-        </button>
-      </div>
-      
-      <!-- VISIT FORM (Hidden by default, shows when button clicked) -->
-      <div id="visitFormContainer" style="display:none;margin-bottom:24px"></div>
-      
       <!-- FILTER CONTROLS -->
       <div class="rep-filters">
         <input type="text" class="rep-search" id="repSearch" placeholder="🔍 搜索医院或业务员…" oninput="renderReports()">
@@ -1466,12 +1337,7 @@ function switchTab(tab) {
   if (tab === 'dashboard') renderDashboard();
   if (tab === 'reports') renderReports();
   if (tab === 'visitform') {
-    // Auto-fill today's date when opening visit form, but allow editing
-    const fillDateInput = document.getElementById('fillDate');
-    if (fillDateInput && !fillDateInput.value && !_editingId) {
-      const today = new Date().toISOString().split('T')[0];
-      fillDateInput.value = today;
-    }
+    // No longer used - form was removed
   }
 }
 
@@ -1500,67 +1366,20 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 // ===================== TOGGLE VISIT FORM =====================
 let visitFormLoaded = false;
-function toggleVisitForm() {
-  const container = document.getElementById('visitFormContainer');
-  const btn = document.getElementById('toggleFormBtn');
-  
-  if (container.style.display === 'none' || container.style.display === '') {
-    // Show form
-    if (!visitFormLoaded) {
-      loadVisitFormContent();
-      visitFormLoaded = true;
-    } else {
-      // Ensure date is set
-      const dateInput = container.querySelector('#fillDate');
-      if (dateInput && !dateInput.value) {
-        dateInput.valueAsDate = new Date();
-      }
-    }
-    container.style.display = 'block';
-    btn.innerHTML = '❌ 关闭表单 / Close Form';
+function toggleBulkImport() {
+  const section = document.getElementById('bulkImportSection');
+  const btn = document.getElementById('toggleBulkBtn');
+  if (section.style.display === 'none' || section.style.display === '') {
+    section.style.display = 'block';
+    btn.innerHTML = '❌ 关闭导入 / Close Import';
     btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    document.getElementById('bulkDate').value = new Date().toISOString().split('T')[0];
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   } else {
-    // Hide form
-    container.style.display = 'none';
-    btn.innerHTML = '➕ 新建拜访 / New Visit';
+    section.style.display = 'none';
+    btn.innerHTML = '📥 批量导入 / Bulk Import';
     btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
   }
-}
-
-function loadVisitFormContent() {
-  const container = document.getElementById('visitFormContainer');
-  const visitFormPage = document.getElementById('page-visitform');
-  if (visitFormPage) {
-    // Clone the formArea content
-    const formArea = visitFormPage.querySelector('#formArea');
-    if (formArea) {
-      container.innerHTML = formArea.innerHTML;
-      // Auto-set today's date
-      const dateInput = container.querySelector('#fillDate');
-      if (dateInput && !dateInput.value) {
-        dateInput.valueAsDate = new Date();
-      }
-    }
-  }
-}
-
-// ===================== BULK IMPORT =====================
-function showBulkImport() {
-  document.getElementById('visitForm').style.display = 'none';
-  document.getElementById('bulkImportPanel').style.display = 'block';
-  document.getElementById('manualFormBtn').style.display = 'inline-block';
-  // Auto-fill today's date
-  document.getElementById('bulkDate').value = new Date().toISOString().split('T')[0];
-}
-
-function showManualForm() {
-  document.getElementById('visitForm').style.display = 'block';
-  document.getElementById('bulkImportPanel').style.display = 'none';
-  document.getElementById('manualFormBtn').style.display = 'none';
-  document.getElementById('bulkImportStatus').style.display = 'none';
 }
 
 function importBulkData() {
@@ -1657,8 +1476,10 @@ function importBulkData() {
       // Refresh reports
       if (successCount > 0) {
         setTimeout(() => {
-          alert(`✅ 成功导入 ${successCount} 条记录！\n\n请前往"拜访报告"标签查看。\n\n✅ Successfully imported ${successCount} records!\n\nGo to "Visit Reports" tab to view.`);
-          showManualForm();
+          alert(`✅ 成功导入 ${successCount} 条记录！\n\n✅ Successfully imported ${successCount} records!`);
+          if (document.getElementById('bulkImportSection').style.display !== 'none') {
+            toggleBulkImport();
+          }
           switchTab('reports');
         }, 1000);
       }
@@ -1772,12 +1593,6 @@ function submitVisitForm(e) {
         // Refresh dashboard if on dashboard tab
         if (currentTab === 'dashboard') {
           renderDashboard();
-        }
-        
-        // Close form if in Visit Management page
-        const visitFormContainer = document.getElementById('visitFormContainer');
-        if (visitFormContainer && visitFormContainer.style.display !== 'none') {
-          toggleVisitForm(); // Close the form
         }
         
         switchTab('reports');
@@ -2355,59 +2170,8 @@ function deletePDFCustomer(id, src) {
 
 let _editingId = null;
 function editReport(id) {
-  // Close modal first
+  alert('Editing reports is no longer available. Please use Bulk Import to add new data, or delete and re-import.');
   closeModal();
-  
-  // Switch to visit form tab to show the full form
-  switchTab('visitform');
-  
-  // fetch reports to find the one to edit
-  fetch(SCRIPT_URL)
-  .then(r => r.json())
-  .then(res => {
-    const r = (res.data||[]).find(x => String(x.id) === String(id));
-    if (!r) return;
-    
-    _editingId = String(id);
-    
-    // Show form area
-    const formArea = document.getElementById('formArea');
-    if (formArea) formArea.style.display = 'block';
-    
-    // Get the actual visit form
-    const form = document.getElementById('visitForm');
-    if (!form) return;
-    
-    // Fill all text/select/textarea fields
-    Object.keys(r).forEach(k => {
-      const el = form.querySelector(`[name="${k}"]`);
-      if (!el) return;
-      if (el.type === 'checkbox') return; // handle separately
-      el.value = r[k] || '';
-    });
-    
-    // Handle checkboxes for visitType and customerCategory
-    ['visitType','customerCategory'].forEach(name => {
-      const vals = Array.isArray(r[name]) ? r[name] : (r[name]||'').split(', ').filter(Boolean);
-      form.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
-        cb.checked = vals.includes(cb.value);
-      });
-    });
-    
-    // Update submit button text
-    const submitBtn = form.querySelector('.vf-submit-btn');
-    if (submitBtn) submitBtn.textContent = '💾 更新报告 / Update Report';
-    
-    // Scroll to top of form
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  })
-  .catch(err => {
-    console.error('Error loading report for editing:', err);
-    alert('Failed to load report data. Please try again.');
-  });
 }
 
 function openReportDetailObj(r) {
@@ -2986,7 +2750,6 @@ function setLang(lang) {
   document.getElementById('tab-machine').textContent = t('tabMachine');
   document.getElementById('tab-external').textContent = t('tabExternal');
   document.getElementById('tab-dashboard').textContent = t('tabDashboard');
-  document.getElementById('tab-visitform').textContent = t('tabVisitForm');
   document.getElementById('tab-reports').textContent = t('tabReports');
   // Re-apply active class
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
