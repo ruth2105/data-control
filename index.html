@@ -2023,7 +2023,15 @@ function displayReports(reports) {
   const filterPotential = document.getElementById('repFilterPotential').value;
 
   // MERGE PDF customers with visit reports
-  const pdfCustomers = potentialCustomers.map(c => ({
+  // Also load any new hospitals registered via visit form (from localStorage)
+  const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  const allPotentials = [...potentialCustomers];
+  localPotentials.forEach(lp => {
+    if (!allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
+      allPotentials.push(lp);
+    }
+  });
+  const pdfCustomers = allPotentials.map(c => ({
     id: 'pdf_' + c.name.toLowerCase().replace(/\s+/g, '_'),
     hospitalName: c.name,
     hospitalAddress: c.address,
@@ -2037,7 +2045,7 @@ function displayReports(reports) {
     patientLoad: c.patientLoad,
     hormoneAnalyzer: c.hormoneAnalyzer,
     notes: c.notes,
-    source: 'PDF',
+    source: c.fromVisit ? 'New' : 'PDF',
     accre: c.accre || false
   }));
   
@@ -3263,7 +3271,14 @@ function renderDashboard() {
     const { startDate, endDate, label, period } = getDateRange();
     
     // MERGE PDF customers with visit reports for dashboard
-    const pdfCustomers = potentialCustomers.map(c => ({
+    const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+    const allPotentials = [...potentialCustomers];
+    localPotentials.forEach(lp => {
+      if (!allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
+        allPotentials.push(lp);
+      }
+    });
+    const pdfCustomers = allPotentials.map(c => ({
       id: 'pdf_' + c.name.toLowerCase().replace(/\s+/g, '_'),
       hospitalName: c.name,
       hospitalAddress: c.address,
@@ -4609,7 +4624,14 @@ function exportEquipmentAnalysis() {
 
 // ===================== EXPORT PDF CUSTOMERS =====================
 function exportPDFCustomers(lang) {
-  if (!potentialCustomers || potentialCustomers.length === 0) {
+  const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  const allPotentials = [...potentialCustomers];
+  localPotentials.forEach(lp => {
+    if (!allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
+      allPotentials.push(lp);
+    }
+  });
+  if (!allPotentials || allPotentials.length === 0) {
     alert(currentLang === 'zh' ? '⚠️ 没有PDF客户数据可导出' : '⚠️ No PDF customer data to export');
     return;
   }
@@ -4633,7 +4655,7 @@ function exportPDFCustomers(lang) {
   headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
   headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
 
-  potentialCustomers.forEach(c => {
+  allPotentials.forEach(c => {
     const statusZh = {Hot:'热门',Warm:'温暖',Cold:'冷淡','':'','hot':'热门','warm':'温暖','cold':'冷淡'}[c.status] || c.status;
     sheet.addRow([
       c.salesRep || '', c.name || '', c.address || '', c.contact || '', c.phone || '',
@@ -4644,7 +4666,7 @@ function exportPDFCustomers(lang) {
   });
 
   sheet.columns.forEach(col => { col.width = 20; });
-  sheet.autoFilter = { from: { row: 1, col: 1 }, to: { row: potentialCustomers.length + 1, col: pdfHeaders.length } };
+  sheet.autoFilter = { from: { row: 1, col: 1 }, to: { row: allPotentials.length + 1, col: pdfHeaders.length } };
   sheet.freezePanes = { xSplit: 0, ySplit: 1 };
 
   workbook.xlsx.writeBuffer().then(buffer => {
