@@ -2149,65 +2149,24 @@ let _deleteUndoTimeout = null;
 function deleteReport(id) {
   if (!confirm(t('repDeleteConfirm'))) return;
   
-  // Try to delete from Google Sheets first
-  fetch(SCRIPT_URL)
-  .then(r => r.json())
-  .then(res => {
-    const reportToDelete = (res.data||[]).find(x => String(x.id) === String(id));
-    if (reportToDelete) {
-      _lastDeleted = { type: 'report', data: reportToDelete };
-    }
-    
-    return fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'delete', id: id })
-    });
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.status === 'ok') {
-      // Also remove from localStorage if present
-      const localReports = JSON.parse(localStorage.getItem('fremenatos_reports') || '[]');
-      const idx = localReports.findIndex(r => String(r.id) === String(id));
-      if (idx !== -1) {
-        const removed = localReports.splice(idx, 1);
-        _lastDeleted = { type: 'report', data: removed[0] };
-        localStorage.setItem('fremenatos_reports', JSON.stringify(localReports));
-      }
-      closeModal();
-      renderReports();
-      showUndoNotification('Report deleted. Click UNDO to restore.', 'report');
-    } else {
-      // Fallback: try localStorage deletion
-      const localReports = JSON.parse(localStorage.getItem('fremenatos_reports') || '[]');
-      const idx = localReports.findIndex(r => String(r.id) === String(id));
-      if (idx !== -1) {
-        const removed = localReports.splice(idx, 1);
-        _lastDeleted = { type: 'report', data: removed[0] };
-        localStorage.setItem('fremenatos_reports', JSON.stringify(localReports));
-        closeModal();
-        renderReports();
-        showUndoNotification('Report deleted. Click UNDO to restore.', 'report');
-      } else {
-        alert('Delete failed: ' + (res.message || 'Unknown error'));
-      }
-    }
-  })
-  .catch(err => {
-    // Fallback: try localStorage deletion
-    const localReports = JSON.parse(localStorage.getItem('fremenatos_reports') || '[]');
-    const idx = localReports.findIndex(r => String(r.id) === String(id));
-    if (idx !== -1) {
-      const removed = localReports.splice(idx, 1);
-      _lastDeleted = { type: 'report', data: removed[0] };
-      localStorage.setItem('fremenatos_reports', JSON.stringify(localReports));
-      closeModal();
-      renderReports();
-      showUndoNotification('Report deleted. Click UNDO to restore.', 'report');
-    } else {
-      alert(t('repDeleteFail'));
-    }
-  });
+  // Remove from localStorage
+  const localReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+  const idx = localReports.findIndex(r => String(r.id) === String(id));
+  if (idx !== -1) {
+    const removed = localReports.splice(idx, 1);
+    _lastDeleted = { type: 'report', data: removed[0] };
+    localStorage.setItem('fremenatos_visitReports', JSON.stringify(localReports));
+  }
+  
+  // Also try Google Sheets (fire and forget)
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'delete', id: id })
+  }).catch(() => {});
+  
+  closeModal();
+  renderReports();
+  showUndoNotification('Report deleted. Click UNDO to restore.', 'report');
 }
 
 function showUndoNotification(message, type) {
@@ -2277,33 +2236,34 @@ function undoDelete() {
   }
   
   const data = _lastDeleted.data;
-  data.action = 'insert'; // Re-insert the deleted item
+  const type = _lastDeleted.type;
   
-  // Restore to Google Sheets
+  // Restore to localStorage
+  if (type === 'report') {
+    const localReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+    if (!localReports.some(r => String(r.id) === String(data.id))) {
+      localReports.push(data);
+      localStorage.setItem('fremenatos_visitReports', JSON.stringify(localReports));
+    }
+  }
+  
+  // Also restore to Google Sheets
+  data.action = 'insert';
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify(data)
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.status === 'ok') {
-      hideUndoNotification();
-      _lastDeleted = null;
-      
-      if (_lastDeleted && _lastDeleted.type === 'report') {
-        renderReports();
-      } else {
-        renderCards();
-      }
-      
-      alert('✅ Restored successfully! / 恢复成功！');
-    } else {
-      alert('Undo failed: ' + (res.message || 'Unknown error'));
-    }
-  })
-  .catch(err => {
-    alert('Undo failed: ' + err.message);
-  });
+  }).catch(() => {});
+  
+  hideUndoNotification();
+  _lastDeleted = null;
+  
+  if (type === 'report') {
+    renderReports();
+  } else {
+    renderCards();
+  }
+  
+  alert('✅ Restored successfully! / 恢复成功！');
 }
 
 // ===================== PDF CUSTOMER EDIT/DELETE =====================
