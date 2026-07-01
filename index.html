@@ -137,18 +137,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .edit-section-title{font-size:.9rem;font-weight:800;color:#0f172a;line-height:1.3}
 .edit-section-sub{font-size:.72rem;font-weight:500;color:#64748b;margin-top:2px}
 .edit-fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-/* LOGIN SCREEN */
-.login-screen{display:flex;align-items:center;justify-content:center;min-height:340px}
-.login-box{background:#fff;border-radius:16px;padding:32px 28px;box-shadow:0 4px 24px rgba(26,86,219,.12);width:100%;max-width:380px;text-align:center}
-.login-box h2{font-size:1.2rem;font-weight:800;color:#0f172a;margin-bottom:6px}
-.login-box p{font-size:.85rem;color:#64748b;margin-bottom:20px}
-.login-select,.login-input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.92rem;margin-bottom:12px;outline:none;font-family:inherit}
-.login-select:focus,.login-input:focus{border-color:#1a56db}
-.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1a56db,#1e40af);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .2s}
-.login-btn:hover{opacity:.9}
-.login-error{color:#dc2626;font-size:.82rem;margin-top:8px;display:none}
-.logged-in-bar{background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;font-size:.88rem;font-weight:600;color:#166534}
-.logout-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:5px 12px;font-size:.78rem;font-weight:700;cursor:pointer}
+
 /* EDIT/DELETE BUTTONS */
 .rep-actions{display:flex;gap:8px;margin-top:10px}
 .rep-edit-btn{background:#dbeafe;color:#1d4ed8;border:none;border-radius:6px;padding:5px 12px;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .15s}
@@ -445,40 +434,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   <!-- VISIT FORM PAGE -->
   <div id="page-visitform" class="page">
 
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="login-screen">
-      <div class="login-box">
-        <div style="font-size:2.5rem;margin-bottom:8px">🔐</div>
-        <h2>销售人员登录</h2>
-        <p>请选择您的姓名</p>
-        <select class="login-select" id="loginName" onchange="doLogin()">
-          <option value="">-- 请选择姓名 --</option>
-          <option>埃弗拉塔·特科拉 (Ephrata Tekola)</option>
-          <option>卡尔基丹·阿沃克 (Kalkidan Awoke)</option>
-          <option>蒂齐塔·塔雷克 (Tizita Tarekeg)</option>
-          <option value="boss">👑 管理员 (Admin)</option>
-        </select>
-        <button class="login-btn" onclick="doLogin()">登录</button>
-        <div class="login-error" id="loginError">❌ 请选择您的姓名。</div>
-      </div>
-    </div>
 
-    <!-- ADMIN PANEL (shown after admin login) -->
-    <div id="adminPanel" style="display:none">
-      <div class="logged-in-bar">
-        <span>已登录: <span id="loggedInName" style="color:#1a56db"></span></span>
-        <button class="logout-btn" onclick="doLogout()">退出</button>
-      </div>
-      <div class="vf-card">
-        <div class="vf-title" style="color:#1a56db">👑 客户数据管理</div>
-        <p style="margin-bottom:16px;color:#64748b;font-size:0.9rem">直接点击客户卡片上的 ✏️ 编辑 或 🗑 删除 按钮来管理客户数据。</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <button class="vf-submit-btn" onclick="switchTab('machine')" style="max-width:200px">📋 管理机器客户</button>
-          <button class="vf-submit-btn" onclick="switchTab('external')" style="max-width:200px;background:linear-gradient(135deg,#0e9f6e,#065f46)">📋 管理外部客户</button>
-          <button class="vf-submit-btn" onclick="showCustomerImport()" style="max-width:200px;background:linear-gradient(135deg,#e3a008,#92400e)">📥 批量导入客户</button>
-        </div>
-      </div>
-    </div>
+
+
 
     <!-- CUSTOMER EDIT MODAL -->
     <div class="modal-overlay" id="customerEditOverlay" onclick="if(event.target===this)closeCustomerEdit()">
@@ -549,12 +507,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       </div>
     </div>
 
-    <!-- FORM (shown after sales login) -->
-    <div id="formArea" style="display:none">
-      <div class="logged-in-bar">
-        <span>已登录: <span id="loggedInName" style="color:#1a56db"></span></span>
-        <button class="logout-btn" onclick="doLogout()">退出</button>
-      </div>
+    <!-- FORM -->
+    <div id="formArea">
       
       <!-- BULK IMPORT BUTTON -->
       <div style="margin-bottom:16px;display:flex;gap:8px">
@@ -1370,7 +1324,7 @@ function renderCards() {
 let _modalContext = null;
 
 function canEditCustomers() {
-  return !!currentUser; // All logged-in users can edit
+  return true;
 }
 
 function hospitalMissingFields(h) {
@@ -1622,54 +1576,7 @@ function applyFilters() {
 // keyboard close modal
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ===================== AUTH =====================
-let currentUser = null; // null = not logged in, else salesperson name
-let isAdmin = false;    // admin can edit customer data
 
-function doLogin() {
-  const name = document.getElementById('loginName').value;
-  const err = document.getElementById('loginError');
-  if (!name) { err.style.display='block'; err.textContent=t('loginNameError'); return; }
-  err.style.display='none';
-  currentUser = name;
-  isAdmin = (name === 'boss' || name === '管理员' || name === 'Admin');
-  document.getElementById('loginScreen').style.display='none';
-  if (isAdmin) {
-    document.getElementById('formArea').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-  } else {
-    document.getElementById('formArea').style.display = 'block';
-    document.getElementById('adminPanel').style.display = 'none';
-  }
-  document.getElementById('loggedInName').textContent = name + (isAdmin ? ' 👑' : '');
-  // Update logged-in bar text
-  const bar = document.querySelector('.logged-in-bar');
-  if (bar) {
-    bar.childNodes[0].textContent = '✅ ' + t('loggedInAs') + ' ';
-    const lout = bar.querySelector('.logout-btn');
-    if (lout) lout.textContent = t('logoutBtn');
-  }
-  // Map Chinese names to English for form selection
-  const nameMap = {
-    '埃弗拉塔·特科拉': 'Ephrata Tekola',
-    '卡尔基丹·阿沃克': 'Kalkidan Awoke',
-    '蒂齐塔·塔雷克': 'Tizita Tarekeg'
-  };
-  const englishName = nameMap[name] || name;
-  const selectEl = document.querySelector('select[name="salesPerson"]');
-  // Find and select the matching option
-  const options = selectEl.options;
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].value.includes(englishName.split(' ')[0]) || options[i].value === name) {
-      selectEl.value = options[i].value;
-      break;
-    }
-  }
-  selectEl.disabled = true;
-  applyFormLabels();
-  
-  // All users see all reports by default - they can filter by salesperson if needed
-}
 
 // ===================== TOGGLE VISIT FORM =====================
 let visitFormLoaded = false;
@@ -1678,28 +1585,11 @@ function toggleVisitForm() {
   const btn = document.getElementById('toggleFormBtn');
   
   if (container.style.display === 'none' || container.style.display === '') {
-    // Check if user is logged in
-    if (!currentUser) {
-      alert('请先登录 / Please login first');
-      // Show login screen from page-visitform
-      const visitFormPage = document.getElementById('page-visitform');
-      if (visitFormPage) {
-        visitFormPage.style.display = 'block';
-        visitFormPage.scrollIntoView({ behavior: 'smooth' });
-      }
-      return;
-    }
-    
     // Show form
     if (!visitFormLoaded) {
       loadVisitFormContent();
       visitFormLoaded = true;
     } else {
-      // Even if form already loaded, ensure salesperson is set
-      const salesSelect = container.querySelector('select[name="salesPerson"]');
-      if (salesSelect && currentUser) {
-        salesSelect.value = currentUser;
-      }
       // Ensure date is set
       const dateInput = container.querySelector('#fillDate');
       if (dateInput && !dateInput.value) {
@@ -1733,11 +1623,6 @@ function loadVisitFormContent() {
       if (dateInput && !dateInput.value) {
         dateInput.valueAsDate = new Date();
       }
-      // Auto-select current user
-      const salesSelect = container.querySelector('select[name="salesPerson"]');
-      if (salesSelect && currentUser) {
-        salesSelect.value = currentUser;
-      }
     }
   }
 }
@@ -1749,10 +1634,6 @@ function showBulkImport() {
   document.getElementById('manualFormBtn').style.display = 'inline-block';
   // Auto-fill today's date
   document.getElementById('bulkDate').value = new Date().toISOString().split('T')[0];
-  // Auto-select current user
-  if (currentUser) {
-    document.getElementById('bulkSalesPerson').value = currentUser;
-  }
 }
 
 function showManualForm() {
@@ -1908,18 +1789,6 @@ function importBulkData() {
   importNext(0);
 }
 
-function doLogout() {
-  currentUser = null;
-  isAdmin = false;
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('formArea').style.display='none';
-  document.getElementById('adminPanel').style.display='none';
-  document.getElementById('loginName').value='';
-  document.querySelector('select[name="salesPerson"]').disabled = false;
-  // Re-apply login screen language
-  setLang(currentLang);
-}
-
 // ===================== VISIT FORM =====================
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd3Xpe2LTQeJ84XCWpJ-HTepFOC2aLSB-aSJJ6Ff0atg1ISiIW9E8Sl295qnKYghVIvQ/exec';
 const salesColors = {
@@ -1952,13 +1821,6 @@ function submitVisitForm(e) {
   data.submittedAt = isUpdate ? data.submittedAt : new Date().toISOString();
   data.action = isUpdate ? 'update' : 'insert';
   
-  // Always set salesperson to current logged-in user
-  // For new reports, use current user
-  // For edits, keep original unless user explicitly changes it
-  if (!isUpdate && currentUser) {
-    data.salesPerson = currentUser;
-  }
-
   const btn = form.querySelector('.vf-submit-btn');
   btn.disabled = true;
   btn.textContent = t('vfSubmitting');
@@ -1983,8 +1845,8 @@ function submitVisitForm(e) {
         if (fillDateInput) {
           fillDateInput.value = new Date().toISOString().split('T')[0];
         }
-        document.querySelector('select[name="salesPerson"]').value = currentUser || '';
-        
+        document.querySelector('select[name="salesPerson"]').value = '';
+
         alert(previousEditId ? t('vfUpdateOk') : t('vfSubmitOk'));
         
         // Refresh dashboard if on dashboard tab
@@ -2012,7 +1874,7 @@ function submitVisitForm(e) {
     form.reset();
     const fillDateInput = document.getElementById('fillDate');
     if (fillDateInput) fillDateInput.value = new Date().toISOString().split('T')[0];
-    document.querySelector('select[name="salesPerson"]').value = currentUser || '';
+    document.querySelector('select[name="salesPerson"]').value = '';
     alert('报告已保存到本地 / Report saved locally');
     switchTab('reports');
   });
@@ -2242,8 +2104,6 @@ function displayReports(reports) {
     const types = Array.isArray(r.visitType) ? r.visitType : (r.visitType||'').split(', ').filter(Boolean);
     const date = r.fillDate || (r.submittedAt||'').slice(0,10) || '—';
     
-    // All logged-in users can edit/delete all reports
-    // Show buttons if currentUser exists (logged in)
     const editBtns = `<div class="rep-actions">
       <button class="rep-edit-btn" onclick="event.stopPropagation();${r.source === 'PDF' ? `editPDFCustomer('${r.id}')` : `editReport('${r.id}')`}">${t('repEdit')}</button>
       <button class="rep-del-btn" onclick="event.stopPropagation();${r.source === 'PDF' ? `deletePDFCustomer('${r.id}')` : `deleteReport('${r.id}')`}">${t('repDelete')}</button>
@@ -2588,22 +2448,9 @@ function editReport(id) {
     
     _editingId = String(id);
     
-    // Make sure user is "logged in" to access form
-    if (!currentUser) {
-      // Auto-set a temporary user so form shows
-      currentUser = r.salesPerson || 'temp';
-    }
-    
-    // Hide login screen and show form area
-    const loginScreen = document.getElementById('loginScreen');
-    if (loginScreen) loginScreen.style.display = 'none';
-    
+    // Show form area
     const formArea = document.getElementById('formArea');
     if (formArea) formArea.style.display = 'block';
-    
-    // Update logged-in display
-    const loggedInName = document.getElementById('loggedInName');
-    if (loggedInName) loggedInName.textContent = currentUser;
     
     // Get the actual visit form
     const form = document.getElementById('visitForm');
@@ -2862,16 +2709,6 @@ const LANG = {
     installDate: 'Installation Date',
     na: 'N/A',
     extReagent: 'External Reagent',
-    // Login
-    loginTitle: 'Sales Login',
-    loginSubtitle: 'Select your name',
-    loginSelectPlaceholder: '-- Select your name --',
-    loginBoss: 'Admin',
-    loginBtn: 'Login',
-    loginError: '❌ Please select your name.',
-    loginNameError: 'Please select your name.',
-    loggedInAs: 'Logged in as:',
-    logoutBtn: 'Logout',
     // Visit Form
     vfBasicInfo: '📋 Basic Visit Information',
     vfFillDate: 'Date of Filling',
@@ -3083,16 +2920,6 @@ const LANG = {
     installDate: '安装日期',
     na: '无',
     extReagent: '外部试剂',
-    // Login
-    loginTitle: '销售人员登录',
-    loginSubtitle: '请选择您的姓名',
-    loginSelectPlaceholder: '-- 请选择姓名 --',
-    loginBoss: '管理员',
-    loginBtn: '登录',
-    loginError: '❌ 请选择您的姓名。',
-    loginNameError: '请选择您的姓名。',
-    loggedInAs: '已登录:',
-    logoutBtn: '退出',
     // Visit Form
     vfBasicInfo: '📋 拜访基本信息',
     vfFillDate: '填写日期',
@@ -3266,28 +3093,6 @@ function setLang(lang) {
   
   // Update city filter buttons
   renderCityButtons();
-
-  // Login screen
-  const lh2 = document.querySelector('#loginScreen h2');
-  const lp = document.querySelector('#loginScreen p');
-  const lboss = document.querySelector('#loginName option[value="boss"]');
-  const lbtn = document.querySelector('.login-btn');
-  if (lh2) lh2.textContent = t('loginTitle');
-  if (lp) lp.textContent = t('loginSubtitle');
-  if (lboss) lboss.textContent = t('loginBoss');
-  if (lbtn) lbtn.textContent = t('loginBtn');
-  const lselFirst = document.querySelector('#loginName option[value=""]');
-  if (lselFirst) lselFirst.textContent = t('loginSelectPlaceholder');
-
-  // Logged-in bar
-  const liBar = document.querySelector('.logged-in-bar');
-  if (liBar) {
-    const nameEl = document.getElementById('loggedInName');
-    const savedName = nameEl ? nameEl.textContent : '';
-    liBar.childNodes[0].textContent = t('loggedInAs') + ' ';
-    const loutBtn = liBar.querySelector('.logout-btn');
-    if (loutBtn) loutBtn.textContent = t('logoutBtn');
-  }
 
   // Visit form labels - update all vf-label and vf-title elements
   applyFormLabels();
