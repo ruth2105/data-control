@@ -450,17 +450,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <div class="login-box">
         <div style="font-size:2.5rem;margin-bottom:8px">🔐</div>
         <h2>销售人员登录</h2>
-        <p>请选择您的姓名并输入密码</p>
-        <select class="login-select" id="loginName">
+        <p>请选择您的姓名</p>
+        <select class="login-select" id="loginName" onchange="doLogin()">
           <option value="">-- 请选择姓名 --</option>
           <option>埃弗拉塔·特科拉 (Ephrata Tekola)</option>
           <option>卡尔基丹·阿沃克 (Kalkidan Awoke)</option>
           <option>蒂齐塔·塔雷克 (Tizita Tarekeg)</option>
           <option value="boss">👑 管理员 (Admin)</option>
         </select>
-        <input class="login-input" type="password" id="loginPassword" placeholder="密码" onkeydown="if(event.key==='Enter')doLogin()">
         <button class="login-btn" onclick="doLogin()">登录</button>
-        <div class="login-error" id="loginError">❌ 密码错误，请重试。</div>
+        <div class="login-error" id="loginError">❌ 请选择您的姓名。</div>
       </div>
     </div>
 
@@ -1624,29 +1623,13 @@ function applyFilters() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ===================== AUTH =====================
-const USERS = {
-  '埃弗拉塔·特科拉': 'Ephrata',
-  'Ephrata Tekola': 'Ephrata',
-  '埃弗拉塔·特科拉 (Ephrata Tekola)': 'Ephrata',
-  '卡尔基丹·阿沃克': 'Kalkidan',
-  'Kalkidan Awoke': 'Kalkidan',
-  '卡尔基丹·阿沃克 (Kalkidan Awoke)': 'Kalkidan',
-  '蒂齐塔·塔雷克': 'Tizita',
-  'Tizita Tarekeg': 'Tizita',
-  '蒂齐塔·塔雷克 (Tizita Tarekeg)': 'Tizita',
-  'boss': 'admin123',
-  '管理员': 'admin123',
-  'Admin': 'admin123'
-};
 let currentUser = null; // null = not logged in, else salesperson name
 let isAdmin = false;    // admin can edit customer data
 
 function doLogin() {
   const name = document.getElementById('loginName').value;
-  const pass = document.getElementById('loginPassword').value;
   const err = document.getElementById('loginError');
   if (!name) { err.style.display='block'; err.textContent=t('loginNameError'); return; }
-  if (USERS[name] !== pass) { err.style.display='block'; err.textContent=t('loginError'); return; }
   err.style.display='none';
   currentUser = name;
   isAdmin = (name === 'boss' || name === '管理员' || name === 'Admin');
@@ -1931,7 +1914,6 @@ function doLogout() {
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('formArea').style.display='none';
   document.getElementById('adminPanel').style.display='none';
-  document.getElementById('loginPassword').value='';
   document.getElementById('loginName').value='';
   document.querySelector('select[name="salesPerson"]').disabled = false;
   // Re-apply login screen language
@@ -2882,12 +2864,11 @@ const LANG = {
     extReagent: 'External Reagent',
     // Login
     loginTitle: 'Sales Login',
-    loginSubtitle: 'Select your name and enter your password',
+    loginSubtitle: 'Select your name',
     loginSelectPlaceholder: '-- Select your name --',
-    loginBoss: 'Boss',
-    loginPasswordPlaceholder: 'Password',
+    loginBoss: 'Admin',
     loginBtn: 'Login',
-    loginError: '❌ Wrong password. Try again.',
+    loginError: '❌ Please select your name.',
     loginNameError: 'Please select your name.',
     loggedInAs: 'Logged in as:',
     logoutBtn: 'Logout',
@@ -3104,12 +3085,11 @@ const LANG = {
     extReagent: '外部试剂',
     // Login
     loginTitle: '销售人员登录',
-    loginSubtitle: '请选择您的姓名并输入密码',
+    loginSubtitle: '请选择您的姓名',
     loginSelectPlaceholder: '-- 请选择姓名 --',
-    loginBoss: '老板',
-    loginPasswordPlaceholder: '密码',
+    loginBoss: '管理员',
     loginBtn: '登录',
-    loginError: '❌ 密码错误，请重试。',
+    loginError: '❌ 请选择您的姓名。',
     loginNameError: '请选择您的姓名。',
     loggedInAs: '已登录:',
     logoutBtn: '退出',
@@ -3291,12 +3271,10 @@ function setLang(lang) {
   const lh2 = document.querySelector('#loginScreen h2');
   const lp = document.querySelector('#loginScreen p');
   const lboss = document.querySelector('#loginName option[value="boss"]');
-  const lpwd = document.getElementById('loginPassword');
   const lbtn = document.querySelector('.login-btn');
   if (lh2) lh2.textContent = t('loginTitle');
   if (lp) lp.textContent = t('loginSubtitle');
   if (lboss) lboss.textContent = t('loginBoss');
-  if (lpwd) lpwd.placeholder = t('loginPasswordPlaceholder');
   if (lbtn) lbtn.textContent = t('loginBtn');
   const lselFirst = document.querySelector('#loginName option[value=""]');
   if (lselFirst) lselFirst.textContent = t('loginSelectPlaceholder');
