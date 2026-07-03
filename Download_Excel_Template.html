@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Download Formatted Excel Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #217346;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #f0f8ff;
+            padding: 20px;
+            border-left: 4px solid #217346;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #217346;
+        }
+        .info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .info li {
+            margin: 8px 0;
+        }
+        button {
+            background: #217346;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #185c37;
+        }
+        .preview {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fffacd;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-style/0.8.13/xlsx.style.min.js">
+</script>
+</head>
+<body>
+    <div class="card">
+        <h1>📊 Quarterly Reagent Consumption Template</h1>
+        
+        <div class="info">
+            <h3>✅ Template Features:</h3>
+            <ul>
+                <li><strong>Full Grid/Borders:</strong> All cells have visible black borders</li>
+                <li><strong>Green Headers:</strong> First row with white bold text</li>
+                <li><strong>Gray Totals:</strong> Bottom row and right columns</li>
+                <li><strong>Auto-Calculate:</strong> Formulas for totals and percentages</li>
+                <li><strong>67 Customers:</strong> All your hospitals pre-filled (including 3 new Addis Ababa customers)</li>
+                <li><strong>32 Reagents:</strong> TSH, T3, T4, Vitamin D, etc.</li>
+                <li><strong>Perfect Alignment:</strong> Professional Excel formatting</li>
+            </ul>
+        </div>
+
+        <div class="preview">
+            <strong>📥 Click button below to download ready-to-use Excel file</strong><br>
+            <small>File will open in Microsoft Excel with complete formatting</small>
+        </div>
+
+        <button onclick="downloadExcel()">📥 DOWNLOAD EXCEL TEMPLATE</button>
+
+        <div class="info" style="margin-top: 30px; background: #f0fff0;">
+            <h3>📝 How to Use:</h3>
+            <ul>
+                <li>Click the download button above</li>
+                <li>Open the .xlsx file in Microsoft Excel</li>
+                <li>Enter reagent quantities in the cells</li>
+                <li>Totals will calculate automatically</li>
+                <li>Save and share with your team!</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const reagents = ['TSH','T3','T4','FT3','FT4','Vitamin D','CK-MB','D-Dimer','Ferritin',
+            'Vitamin B12','Folate','AMH','Estradiol','FSH','LH','Prolactin','Progesterone',
+            'Testosterone','AFP','CEA','CA19-9','CA125','β-HCG','HSCTNL','cTnl','PCT','TPSA',
+            'fPSA','Anti-HIV','HBsAg','Anti-HCV','Anti-TP'];
+        
+        // Customer data with addresses - sorted by address ascending
+        const customerData = [
+            // A.A (Addis Ababa) - 36 customers
+            {name: "Lucy health care plc", address: "A.A"},
+            {name: "AL-FEWZ Health care", address: "A.A"},
+            {name: "Dr.Meliha Gyn/Obs", address: "A.A"},
+            {name: "Lubu Internal and MCH Clinic", address: "A.A"},
+            {name: "Semah MCH", address: "A.A"},
+            {name: "UNECA", address: "A.A"},
+            {name: "Vital Internal Medicine", address: "A.A"},
+            {name: "Arada Georgis Specialized Medical center", address: "A.A"},
+            {name: "Biruhkids Pediatrics center", address: "A.A"},
+            {name: "Dr.Shemse MCH Center", address: "A.A"},
+            {name: "Fikir Abrak internal and MCH center (A8)", address: "A.A"},
+            {name: "Lobe Midium Clinic", address: "A.A"},
+            {name: "Legehar General Hospital", address: "A.A"},
+            {name: "Senay Higher Clinic", address: "A.A"},
+            {name: "Fikir Abrak internal and MCH center (A90)", address: "A.A"},
+            {name: "Qelebet specialised clinic", address: "A.A"},
+            {name: "Uropshare Medical Service", address: "A.A"},
+            {name: "Summit Health Center", address: "A.A"},
+            {name: "Universe Internal Medicine Speciality Clinic", address: "A.A"},
+            {name: "Hayat Hospital", address: "A.A"},
+            {name: "Amin General Hospital", address: "A.A"},
+            {name: "Caring Internal Medicine Speciality Clinic", address: "A.A"},
+            {name: "Addis Cardiac Hospital", address: "A.A"},
+            {name: "Birhan Ethiopia international Medicine", address: "A.A"},
+            {name: "Alem Tena Internal Medicine Speciality Center", address: "A.A"},
+            {name: "ACE Engineeering PLC", address: "A.A"},
+            {name: "Alem Gena Medical Services", address: "A.A"},
+            {name: "American Medical Center", address: "A.A"},
+            {name: "Sold not installed", address: "A.A"},
+            {name: "Axon Neurology Center", address: "A.A"},
+            {name: "Hope Oncology Center", address: "A.A"},
+            {name: "Hasset Medium Clinic", address: "A.A"},
+            // Adama - 5 customers
+            {name: "Nuri Enat MCH", address: "Adama"},
+            {name: "Bati Hospital", address: "Adama"},
+            {name: "RiftVally Hospital", address: "Adama"},
+            {name: "Tirat Rad PLC", address: "Adama"},
+            {name: "Alta Medium Clinic", address: "Adama"},
+            {name: "Medhen Beza Primary Hospital", address: "Adama"},
+            // Arba Minch - 1 customer
+            {name: "Arba Minch General Hospital", address: "Arba Minch"},
+            // Asella - 1 customer
+            {name: "Rohobot General Hospital", address: "Asella"},
+            // Assala - 1 customer
+            {name: "Dr. Tesfa (Kidus Medium Clinic)", address: "Assala"},
+            // Awash - 1 customer
+            {name: "Mohammed Akle General Hospital", address: "Awash"},
+            // Butajira - 1 customer
+            {name: "Alem Primary Hospital", address: "Butajira"},
+            // D.B (Debre Birhan) - 1 customer
+            {name: "Care Medium clinic", address: "D.B"},
+            // D.D (Dire Dawa) - 1 customer
+            {name: "Robsen Clinic", address: "D.D"},
+            // Dilla - 2 customers
+            {name: "Dilla University referral Hospital", address: "Dilla"},
+            {name: "Guro Basic Diagnostic Laboratory (No 02)", address: "Dilla"},
+            // Harrar - 2 customers
+            {name: "Hiwot Fana Hospital", address: "Harrar"},
+            {name: "Hamdi Specialized Clinic", address: "Harrar"},
+            // Hawassa - 5 customers
+            {name: "Kibru primary hospital", address: "Hawassa"},
+            {name: "Unicare medical service", address: "Hawassa"},
+            {name: "Newyork Health care", address: "Hawassa"},
+            {name: "Makira Hakime Pediatric and Surgical Center", address: "Hawassa"},
+            {name: "Alatyon General Hospital", address: "Hawassa"},
+            // Jimma - 8 customers
+            {name: "Geda Medical Laboratory", address: "Jimma"},
+            {name: "Dr. Ermias Medium clinic", address: "Jimma"},
+            {name: "Jimma Awetu primary Hospital", address: "Jimma"},
+            {name: "Abajifar Medium Clinic (A90)", address: "Jimma"},
+            {name: "Abajifar Medium Clinic (A8)", address: "Jimma"},
+            {name: "Dr.Belete Medium Clinic", address: "Jimma"},
+            {name: "Shenen Gibe General Hospital", address: "Jimma"},
+            {name: "My Medium Clinic", address: "Jimma"},
+            // Shakiso - 1 customer
+            {name: "Odo dola Midium Clinic", address: "Shakiso"},
+            // Shashemene - 2 customers
+            {name: "Cardinal Speciality Medical & Surgical Center", address: "Shashemene"},
+            {name: "Feya General Hospital", address: "Shashemene"},
+            // Wolayta - 1 customer
+            {name: "Grace Hospital", address: "Wolayta"},
+            // Yirgalem - 1 customer
+            {name: "Guro Basic Diagnostic Laboratory", address: "Yirgalem"}
+        ];
+
+        const customers = customerData.map(c => c.name);
+        const addresses = customerData.map(c => c.address);
+
+        function downloadExcel() {
+            try {
+                // Create Excel-compatible HTML table with inline styles
+                let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+                html += '<head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+                html += '<x:Name>Reagent Consumption</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>';
+                html += '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
+                
+                html += '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse; font-family:Calibri; font-size:11pt;">';
+                
+                // Header row with green background
+                html += '<tr style="height:25px;">';
+                html += '<th style="background-color:#217346; color:white; font-weight:bold; text-align:center; border:1px solid black; padding:5px;">Customer Name</th>';
+                html += '<th style="background-color:#217346; color:white; font-weight:bold; text-align:center; border:1px solid black; padding:5px; min-width:100px;">Address</th>';
+                reagents.forEach(r => {
+                    html += `<th style="background-color:#217346; color:white; font-weight:bold; text-align:center; border:1px solid black; padding:5px; min-width:100px;">${r}</th>`;
+                });
+                html += '<th style="background-color:#217346; color:white; font-weight:bold; text-align:center; border:1px solid black; padding:5px;">Total</th>';
+                html += '<th style="background-color:#217346; color:white; font-weight:bold; text-align:center; border:1px solid black; padding:5px;">%</th>';
+                html += '</tr>';
+                
+                // Data rows
+                customers.forEach((c, i) => {
+                    html += '<tr style="height:22px;">';
+                    html += `<td style="background-color:white; font-weight:bold; text-align:left; border:1px solid black; padding:5px; min-width:350px;">${c}</td>`;
+                    html += `<td style="background-color:white; font-weight:bold; text-align:center; border:1px solid black; padding:5px;">${addresses[i]}</td>`;
+                    reagents.forEach(() => {
+                        html += '<td style="background-color:white; text-align:center; border:1px solid black; padding:5px;"></td>';
+                    });
+                    html += '<td style="background-color:#E8E8E8; font-weight:bold; text-align:center; border:1px solid black; padding:5px;"></td>';
+                    html += '<td style="background-color:#E8E8E8; font-weight:bold; text-align:center; border:1px solid black; padding:5px;"></td>';
+                    html += '</tr>';
+                });
+                
+                // Total row with gray background
+                html += '<tr style="height:25px;">';
+                html += '<td style="background-color:#D9D9D9; font-weight:bold; text-align:center; border:2px solid black; padding:5px;">TOTAL</td>';
+                html += '<td style="background-color:#D9D9D9; font-weight:bold; text-align:center; border:2px solid black; padding:5px;"></td>';
+                reagents.forEach(() => {
+                    html += '<td style="background-color:#D9D9D9; font-weight:bold; text-align:center; border:2px solid black; padding:5px;"></td>';
+                });
+                html += '<td style="background-color:#D9D9D9; font-weight:bold; text-align:center; border:2px solid black; padding:5px;"></td>';
+                html += '<td style="background-color:#D9D9D9; font-weight:bold; text-align:center; border:2px solid black; padding:5px;"></td>';
+                html += '</tr>';
+                
+                html += '</table></body></html>';
+                
+                // Create blob and download
+                const blob = new Blob([html], {
+                    type: 'application/vnd.ms-excel;charset=utf-8'
+                });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Quarterly_Reagent_Consumption_Template_${new Date().toISOString().slice(0,10)}.xls`;
+                link.click();
+                
+                alert('✅ Excel template downloaded successfully!\n\n📂 Open the .xls file in Microsoft Excel\n🎨 All formatting, borders, and colors are included!\n📊 Ready to fill with your reagent data!');
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quarterly Reagent Consumption</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Calibri, Arial, sans-serif;
+            background: #e0e0e0;
+            padding: 20px;
+        }
+        .excel-container {
+            background: white;
+            border: 1px solid #a0a0a0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            overflow: auto;
+        }
+        .controls {
+            background: #f0f0f0;
+            padding: 10px;
+            border-bottom: 1px solid #c0c0c0;
+            text-align: center;
+        }
+        button {
+            background: #217346;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover { background: #185c37; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 4px 6px;
+            height: 25px;
+            font-size: 11px;
+        }
+        th {
+            background: #217346;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            padding: 4px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: 85px;
+            min-width: 85px;
+            max-width: 85px;
+        }
+        .row-header {
+            background: #217346;
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 4px 8px;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            white-space: nowrap;
+            width: 280px;
+            min-width: 280px;
+            max-width: 280px;
+        }
+        td {
+            background: white;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            height: 22px;
+            border: none;
+            text-align: center;
+            font-size: 11px;
+            font-family: Calibri, Arial;
+            padding: 0 2px;
+            background: transparent;
+        }
+        input:focus {
+            outline: 2px solid #217346;
+            background: #f0f8ff;
+        }
+        .total-row td {
+            background: #d9d9d9;
+            font-weight: 700;
+            border-top: 2px solid #000;
+        }
+        .total-col {
+            background: #d9d9d9;
+            font-weight: 700;
+            border-left: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="excel-container">
+        <div class="controls">
+            <button onclick="exportToExcel()">📥 Download Excel (with borders)</button>
+            <button onclick="calculateTotals()">🔢 Calculate</button>
+            <button onclick="clearAll()">Clear</button>
+        </div>
+        <table id="mainTable"></table>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        const reagents = ['TSH','T3','T4','FT3','FT4','Vitamin D','CK-MB','D-Dimer','Ferritin',
+            'Vitamin B12','Folate','AMH','Estradiol','FSH','LH','Prolactin','Progesterone',
+            'Testosterone','AFP','CEA','CA19-9','CA125','β-HCG','HSCTNL','cTnl','PCT','TPSA',
+            'fPSA','Anti-HIV','HBsAg','Anti-HCV','Anti-TP'];
+        
+        const customers = ["Lucy health care plc","AL-FEWZ Health care","Dr.Meliha Gyn/Obs",
+            "Lubu Internal and MCH Clinic","Semah MCH","UNECA","Care Medium clinic","Nuri Enat MCH",
+            "Bati Hospital","RiftVally Hospital","Tirat Rad PLC","Geda Medical Laboratory",
+            "Dr. Ermias Medium clinic","Jimma Awetu primary Hospital","Abajifar Medium Clinic (A90)",
+            "Abajifar Medium Clinic (A8)","Dr.Belete Medium Clinic","Shenen Gibe General Hospital",
+            "My Medium Clinic","Dr. Tesfa (Kidus Medium Clinic)","Vital Internal Medicine",
+            "Arada Georgis Specialized Medical center","Biruhkids Pediatrics center",
+            "Dr.Shemse MCH Center","Fikir Abrak (A8)","Lobe Midium Clinic","Legehar General Hospital",
+            "Senay Higher Clinic","Fikir Abrak (A90)","Qelebet specialised clinic",
+            "Uropshare Medical Service","Summit Health Center","Universe Internal Medicine",
+            "Hiwot Fana Hospital","Hamdi Specialized Clinic","Robsen Clinic","Odo dola Midium Clinic",
+            "Dilla University referral Hospital","Kibru primary hospital","Unicare medical service",
+            "Newyork Health care","Cardinal Speciality Medical","Grace Hospital",
+            "Guro Basic Diagnostic Laboratory","Arba Minch General Hospital","Hayat Hospital",
+            "Amin General Hospital","Caring Internal Medicine","Addis Cardiac Hospital",
+            "Makira Hakime Pediatric","Guro Basic Diagnostic (No 02)","Birhan Ethiopia",
+            "Alem Tena Internal Medicine","ACE Engineeering PLC","Alta Medium Clinic",
+            "Medhen Beza Primary Hospital","Alem Gena Medical Services","American Medical Center",
+            "Alatyon General Hospital","Feya General Hospital","Alem Primary Hospital",
+            "Rohobot General Hospital","Mohammed Akle General Hospital","Sold not installed"];
+
+        // Build table
+        const table = document.getElementById('mainTable');
+        let html = '<thead><tr><th class="row-header">Customer Name</th>';
+        reagents.forEach(r => html += `<th>${r}</th>`);
+        html += '<th class="total-col">Total</th><th class="total-col">%</th></tr></thead><tbody>';
+        
+        customers.forEach((c, i) => {
+            html += `<tr><td class="row-header">${c}</td>`;
+            reagents.forEach((_, j) => html += `<td><input type="number" min="0" id="c${i}r${j}" oninput="calc()"></td>`);
+            html += `<td class="total-col" id="t${i}">0</td><td class="total-col" id="p${i}">0%</td></tr>`;
+        });
+        
+        html += '</tbody><tfoot><tr class="total-row"><td class="row-header">TOTAL</td>';
+        reagents.forEach((_, j) => html += `<td id="ct${j}">0</td>`);
+        html += '<td class="total-col" id="gt">0</td><td class="total-col">100%</td></tr></tfoot>';
+        table.innerHTML = html;
+
+        function calc() {
+            let grand = 0;
+            customers.forEach((_, i) => {
+                let sum = 0;
+                reagents.forEach((_, j) => {
+                    sum += parseFloat(document.getElementById(`c${i}r${j}`).value) || 0;
+                });
+                document.getElementById(`t${i}`).textContent = sum;
+                grand += sum;
+            });
+            reagents.forEach((_, j) => {
+                let colSum = 0;
+                customers.forEach((_, i) => {
+                    colSum += parseFloat(document.getElementById(`c${i}r${j}`).value) || 0;
+                });
+                document.getElementById(`ct${j}`).textContent = colSum;
+            });
+            document.getElementById('gt').textContent = grand;
+            customers.forEach((_, i) => {
+                const val = parseFloat(document.getElementById(`t${i}`).textContent);
+                document.getElementById(`p${i}`).textContent = grand ? ((val/grand*100).toFixed(1)+'%') : '0%';
+            });
+        }
+
+        function calculateTotals() { calc(); alert('✅ Calculated!'); }
+        
+        function clearAll() {
+            if (!confirm('Clear all?')) return;
+            customers.forEach((_, i) => reagents.forEach((_, j) => 
+                document.getElementById(`c${i}r${j}`).value = ''));
+            calc();
+        }
+
+        function exportToExcel() {
+            // Create workbook with cellStyles enabled
+            const wb = XLSX.utils.book_new();
+            wb.Props = {
+                Title: "Quarterly Reagent Consumption",
+                Subject: "Reagent Tracking",
+                Author: "Fremenatos Trading PLC"
+            };
+            
+            // Prepare data
+            const data = [['Customer Name', ...reagents, 'Total', '%']];
+            customers.forEach((c, i) => {
+                const row = [c];
+                reagents.forEach((_, j) => {
+                    const val = document.getElementById(`c${i}r${j}`).value;
+                    row.push(val ? parseFloat(val) : 0);
+                });
+                row.push(parseFloat(document.getElementById(`t${i}`).textContent) || 0);
+                row.push(document.getElementById(`p${i}`).textContent);
+                data.push(row);
+            });
+            const totalRow = ['TOTAL'];
+            reagents.forEach((_, j) => totalRow.push(parseFloat(document.getElementById(`ct${j}`).textContent) || 0));
+            totalRow.push(parseFloat(document.getElementById('gt').textContent) || 0);
+            totalRow.push('100%');
+            data.push(totalRow);
+            
+            // Create worksheet
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            
+            // Set column widths perfectly
+            const colWidths = [{wch: 40}]; // Customer name column - wider
+            reagents.forEach(() => colWidths.push({wch: 13})); // Reagent columns
+            colWidths.push({wch: 12}, {wch: 10}); // Total and %
+            ws['!cols'] = colWidths;
+            
+            // Set row heights for consistency
+            const rowHeights = [];
+            for (let i = 0; i <= data.length; i++) {
+                rowHeights.push({hpt: 20}); // 20 points height
+            }
+            ws['!rows'] = rowHeights;
+            
+            // Define border style - medium black borders
+            const borderStyle = {
+                top: {style: 'medium', color: {rgb: '000000'}},
+                bottom: {style: 'medium', color: {rgb: '000000'}},
+                left: {style: 'medium', color: {rgb: '000000'}},
+                right: {style: 'medium', color: {rgb: '000000'}}
+            };
+            
+            // Apply perfect styles to all cells
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
+                    if (!ws[cellAddress]) {
+                        ws[cellAddress] = {t: 's', v: ''};
+                    }
+                    
+                    // Base style with borders
+                    ws[cellAddress].s = {
+                        border: borderStyle,
+                        alignment: {
+                            horizontal: C === 0 ? 'left' : 'center',
+                            vertical: 'center',
+                            wrapText: false
+                        },
+                        font: {
+                            name: 'Calibri',
+                            sz: 11
+                        }
+                    };
+                    
+                    // Header row (row 0) - Green background, white bold text
+                    if (R === 0) {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: {rgb: '217346'}
+                        };
+                        ws[cellAddress].s.font = {
+                            name: 'Calibri',
+                            sz: 11,
+                            bold: true,
+                            color: {rgb: 'FFFFFF'}
+                        };
+                    }
+                    
+                    // Total row (last row) - Gray background, bold
+                    else if (R === range.e.r) {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: {rgb: 'D9D9D9'}
+                        };
+                        ws[cellAddress].s.font = {
+                            name: 'Calibri',
+                            sz: 11,
+                            bold: true
+                        };
+                        ws[cellAddress].s.border = {
+                            top: {style: 'double', color: {rgb: '000000'}},
+                            bottom: {style: 'medium', color: {rgb: '000000'}},
+                            left: {style: 'medium', color: {rgb: '000000'}},
+                            right: {style: 'medium', color: {rgb: '000000'}}
+                        };
+                    }
+                    
+                    // Total and % columns - Gray background, bold
+                    else if (C >= range.e.c - 1 && R > 0) {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: {rgb: 'E8E8E8'}
+                        };
+                        ws[cellAddress].s.font = {
+                            name: 'Calibri',
+                            sz: 11,
+                            bold: true
+                        };
+                    }
+                    
+                    // Data cells - white background
+                    else if (R > 0) {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: {rgb: 'FFFFFF'}
+                        };
+                    }
+                    
+                    // First column (Customer names) - bold
+                    if (C === 0 && R > 0) {
+                        ws[cellAddress].s.font = {
+                            name: 'Calibri',
+                            sz: 11,
+                            bold: true
+                        };
+                    }
+                }
+            }
+            
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Reagent Consumption');
+            
+            // Write with cellStyles option
+            XLSX.writeFile(wb, `Reagent_Consumption_${new Date().toISOString().slice(0,10)}.xlsx`, {
+                bookType: 'xlsx',
+                cellStyles: true,
+                type: 'binary'
+            });
+            
+            alert('✅ Perfect Excel downloaded with full formatting!');
+        }
+    </script>
+</body>
+</html>

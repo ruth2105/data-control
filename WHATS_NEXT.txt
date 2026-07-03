@@ -1,0 +1,104 @@
+================================================================================
+🎯 NEXT STEPS TO FIX MULTI-DEVICE DATA SYNC / 修复多设备数据同步的下一步
+================================================================================
+
+PROBLEM / 问题:
+Your visit reports only show on ONE device because they're saved in localStorage
+(browser memory). Other devices can't see the data.
+
+您的拜访报告只显示在一台设备上，因为它们保存在localStorage（浏览器内存）中。
+其他设备无法看到数据。
+
+SOLUTION / 解决方案:
+Use Google Sheets as a cloud database so ALL devices can access the same data.
+
+使用Google表格作为云数据库，以便所有设备都可以访问相同的数据。
+
+================================================================================
+📋 YOUR TO-DO LIST / 您的待办事项清单
+================================================================================
+
+□ STEP 1: Create a new Google Sheet
+          创建一个新的Google表格
+          → Go to: https://sheets.google.com
+          → Click: + Blank
+          → Copy the Sheet ID from the URL
+
+□ STEP 2: Update appsscript.gs with your Sheet ID
+          使用您的表格ID更新appsscript.gs
+          → Open file: appsscript.gs
+          → Line 1: Replace the SHEET_ID with yours
+          → Save the file
+
+□ STEP 3: Deploy Google Apps Script as Web App
+          将Google应用脚本部署为网络应用
+          → Open your Google Sheet
+          → Extensions > Apps Script
+          → Paste the code from appsscript.gs
+          → Deploy > New deployment > Web app
+          → Copy the Web App URL
+
+□ STEP 4: Tell me your credentials
+          告诉我您的凭据
+          → Reply with your Sheet ID
+          → Reply with your Web App URL
+
+□ STEP 5: I will update index.html automatically
+          我将自动更新index.html
+          → I'll update the code to use Google Sheets
+          → You just need to refresh your browser!
+
+================================================================================
+📄 DETAILED INSTRUCTIONS / 详细说明
+================================================================================
+
+I've created two guide files for you:
+
+我为您创建了两个指南文件：
+
+1. 📘 GOOGLE_SHEETS_SETUP_GUIDE.md
+   → Complete step-by-step tutorial with screenshots descriptions
+   → 包含屏幕截图描述的完整分步教程
+
+2. 📗 INSTRUCTIONS_FOR_USER.md
+   → Quick reference guide
+   → 快速参考指南
+
+Please open and read these files!
+请打开并阅读这些文件！
+
+================================================================================
+💬 WHEN YOU'RE READY / 准备好后
+================================================================================
+
+Just reply to me with:
+
+只需回复我：
+
+"Ready! Here is my information:
+- Sheet ID: [your Sheet ID]
+- Web App URL: [your Web App URL]"
+
+Then I'll automatically update your code! 🚀
+然后我将自动更新您的代码！🚀
+
+================================================================================
+❓ QUESTIONS? / 有问题吗？
+================================================================================
+
+If you have any questions about these steps, just ask me:
+- "How do I find the Sheet ID?"
+- "Where do I paste the Apps Script code?"
+- "How do I deploy the Web App?"
+- "What is the Web App URL?"
+
+如果您对这些步骤有任何疑问，请问我：
+- "如何找到表格ID？"
+- "我在哪里粘贴应用脚本代码？"
+- "如何部署网络应用？"
+- "什么是网络应用网址？"
+
+I'm here to help! 我在这里帮助您！
+
+================================================================================
+

@@ -234,23 +234,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   <div class="stats-bar">
     <div class="stats-inner">
       <div class="stat-item"><div class="stat-dot"></div><strong id="statTotal">0</strong> <span data-en="Total Customers" data-zh="客户总数">客户总数</span></div>
-      <div class="stat-item"><div class="stat-dot" style="background:#fde68a"></div><strong id="statMachine">0</strong> <span data-en="Machine Customers" data-zh="机器客户">机器客户</span></div>
-      <div class="stat-item"><div class="stat-dot" style="background:#6ee7b7"></div><strong id="statExternal">0</strong> <span data-en="External Customers" data-zh="外部客户">外部客户</span></div>
-      <div class="stat-item"><div class="stat-dot" style="background:#fbbf24"></div><span data-en="A8 & A90 Models" data-zh="A8 和 A90 型号">A8 和 A90 型号</span></div>
+      <div class="stat-item"><div class="stat-dot" style="background:#fde68a"></div><strong id="statMachine">0</strong> <span data-en="Machine (A8/A90)" data-zh="机器客户">机器客户</span></div>
+      <div class="stat-item"><div class="stat-dot" style="background:#6ee7b7"></div><strong id="statExternal">0</strong> <span data-en="External" data-zh="外部客户">外部客户</span></div>
+      <div class="stat-item"><div class="stat-dot" style="background:#a78bfa"></div><span data-en="All Cities" data-zh="所有城市">所有城市</span></div>
     </div>
   </div>
 </div>
 
 <div class="main">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('machine')" id="tab-machine">🏥 机器客户 (51)</button>
-    <button class="tab-btn" onclick="switchTab('external')" id="tab-external">🔬 外部客户 (13)</button>
+    <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 All Customers (76)</button>
     <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 数据看板</button>
     <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 拜访管理</button>
   </div>
 
-  <!-- HOSPITAL LIST PAGES -->
-  <div id="page-machine" class="page active">
+  <!-- ALL CUSTOMERS PAGE -->
+  <div id="page-all" class="page active">
   <div class="filters">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
@@ -265,16 +264,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <button class="filter-btn active" onclick="setModel('All')" id="model-All" data-en="All" data-zh="全部">全部</button>
       <button class="filter-btn" onclick="setModel('A8')" id="model-A8" data-en="A8" data-zh="A8">A8</button>
       <button class="filter-btn" onclick="setModel('A90')" id="model-A90" data-en="A90" data-zh="A90">A90</button>
+      <button class="filter-btn" onclick="setModel('EXT')" id="model-EXT" data-en="External" data-zh="外部">外部</button>
     </div>
     <div class="filter-group" style="margin-left:auto">
-      <button class="filter-btn" onclick="exportCustomerList('machine')" style="background:#10b981;color:#fff;border:2px solid #10b981;font-weight:700">📥 导出客户列表 / Export List</button>
+      <button class="filter-btn" onclick="exportCustomerList('all')" style="background:#10b981;color:#fff;border:2px solid #10b981;font-weight:700">📥 导出客户列表 / Export List</button>
     </div>
   </div>
   <div class="results-info" id="resultsInfo"></div>
   <div class="cards-grid" id="cardsGrid"></div>
   </div>
 
-  <!-- WEEKLY DASHBOARD PAGE -->
+  <!-- DASHBOARD PAGE -->
   <div id="page-dashboard" class="page">
     <div class="vf-card" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;margin-bottom:20px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
@@ -901,6 +901,7 @@ function showCustomerImport() {
 
 let machineCustomers = [];
 let externalCustomers = [];
+let allCustomers = []; // Combined list
 
 const MACHINE_DEFAULTS = [
   {id:1,name:"Lucy health care plc",nameZh:"露西医疗保健有限公司",city:"A.A",date:"29/08/2024",model:"A8",
@@ -1070,7 +1071,31 @@ const MACHINE_DEFAULTS = [
    payment:[],stock:"",order:"",doctors:""},
   {id:51,name:"Guro Basic Diagnostic Laboratory (No 02)",nameZh:"古罗基础诊断实验室（二号）",city:"Dilla",date:"03/01/2026",model:"A8",
    contacts:[{role:"G/Manager",roleZh:"总经理",name:"Mukerim",nameZh:"穆克里姆",phone:"0920542672"}],
-   payment:[],stock:"",order:"",doctors:""}
+   payment:[],stock:"",order:"",doctors:""},
+  {id:52,name:"yehulshet internal medicine",nameZh:"叶胡尔谢特内科",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:53,name:"United Nation Economic Commission for Africa",nameZh:"联合国非洲经济委员会（全称）",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"Note: Might be duplicate of UNECA (ID:6). Has 42 tests in 6-month report vs UNECA 57 tests. Verify if same customer.",stockZh:"注意：可能与UNECA（ID:6）重复。6个月报告中有42次测试，UNECA有57次。需核实是否为同一客户。",order:"",doctors:""},
+  {id:54,name:"Abrak medical service plc",nameZh:"阿布拉克医疗服务有限公司",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:55,name:"Lebu st mechael internal",nameZh:"勒布圣迈克尔内科",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"Important customer with 30 tests (2.3% of total consumption). Note: Check if this is same as Lubu Internal and MCH Clinic (ID:4) - possible typo.",stockZh:"重要客户，30次测试（占总消费的2.3%）。注意：检查是否与Lubu Internal and MCH Clinic（ID:4）相同 - 可能拼写错误。",order:"",doctors:""},
+  {id:56,name:"mander trading plc",nameZh:"曼德尔贸易有限公司",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:57,name:"Medan pediatric clinic",nameZh:"美丹儿科诊所",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:58,name:"Alta medium clinic",nameZh:"阿尔塔中型诊所",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"Note: Different from Alta Medium Clinic in Adama (External customer ID:4)",stockZh:"注意：与阿达玛的Alta Medium Clinic（外部客户ID:4）不同",order:"",doctors:""},
+  {id:59,name:"Jedunave Pharmacetical plc",nameZh:"杰杜纳韦制药有限公司",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:60,name:"Gibe medium Hospital",nameZh:"吉贝中型医院",city:"Jimma",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:""},
+  {id:61,name:"Axon Neurology Center",nameZh:"阿克森神经病学中心",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"6-month consumption: 21 tests (1.6% of total)",stockZh:"6个月消费：21次测试（占总数1.6%）",order:"",doctors:""},
+  {id:62,name:"Hasset Medium Clinic",nameZh:"哈塞特中型诊所",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"6-month consumption: 14 tests (1.1% of total)",stockZh:"6个月消费：14次测试（占总数1.1%）",order:"",doctors:""},
+  {id:63,name:"Hope Oncology Center",nameZh:"希望肿瘤中心",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"6-month consumption: 7 tests (0.5% of total). Specializes in cancer care.",stockZh:"6个月消费：7次测试（占总数0.5%）。专门从事癌症护理。",order:"",doctors:""}
 ];
 
 const EXTERNAL_DEFAULTS = [
@@ -1119,7 +1144,7 @@ const EXTERNAL_DEFAULTS = [
 ];
 
 // ===================== STATE =====================
-let currentTab = 'machine';
+let currentTab = 'all';
 let currentCity = 'All';
 let currentModel = 'All';
 let searchTerm = '';
@@ -1156,8 +1181,8 @@ function getCityName(city) {
 
 // ===================== RENDER CITY BUTTONS =====================
 function renderCityButtons() {
-  const data = currentTab === 'machine' ? machineCustomers : externalCustomers;
-  const containerId = currentTab === 'machine' ? 'cityFilters' : 'cityFiltersExt';
+  const data = allCustomers;
+  const containerId = 'cityFilters';
   const cities = getCities(data);
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -1168,10 +1193,8 @@ function renderCityButtons() {
 
 // ===================== FILTER LOGIC =====================
 function getFiltered() {
-  const data = currentTab === 'machine' ? machineCustomers : externalCustomers;
-  const si = currentTab === 'machine'
-    ? document.getElementById('searchInput')
-    : document.getElementById('searchInputExt');
+  const data = allCustomers;
+  const si = document.getElementById('searchInput');
   const term = si ? si.value.toLowerCase().trim() : searchTerm;
   return data.filter(h => {
     const matchSearch = !term ||
@@ -1186,13 +1209,13 @@ function getFiltered() {
 // ===================== RENDER CARDS =====================
 function renderCards() {
   const filtered = getFiltered();
-  const gridId = currentTab === 'machine' ? 'cardsGrid' : 'cardsGridExt';
-  const infoId = currentTab === 'machine' ? 'resultsInfo' : 'resultsInfoExt';
+  const gridId = 'cardsGrid';
+  const infoId = 'resultsInfo';
   const grid = document.getElementById(gridId);
   const info = document.getElementById(infoId);
   if (!grid || !info) return;
-  const total = currentTab === 'machine' ? machineCustomers.length : externalCustomers.length;
-  info.textContent = `${t('showing')} ${filtered.length} ${t('of')} ${total} ${currentTab === 'machine' ? t('machineCustomers') : t('externalCustomers')}`;
+  const total = allCustomers.length;
+  info.textContent = `${t('showing')} ${filtered.length} ${t('of')} ${total} ${t('customers')}`;
 
   if (filtered.length === 0) {
     grid.innerHTML = `<div class="no-results" style="grid-column:1/-1">
@@ -1216,7 +1239,11 @@ function renderCards() {
     const dateDisplay = h.date && h.date !== '—' && h.date
       ? `📅 ${t('installed')}: ${h.date}`
       : `📅 ${t('installNA')}`;
-    return `<div class="hospital-card" onclick="openModal(${currentTab==='machine'?'machineCustomers':'externalCustomers'},${h.id-1})">
+    
+    // Find index in allCustomers
+    const customerIndex = allCustomers.findIndex(c => c.id === h.id && c.model === h.model);
+    
+    return `<div class="hospital-card" onclick="openModal(allCustomers,${customerIndex})">
       <div class="card-number">${h.id}</div>
       <div class="card-header-block">
         <div class="card-name">${hn(h)}</div>
@@ -1229,8 +1256,7 @@ function renderCards() {
       <div class="card-date">${dateDisplay}</div>
       <div class="card-contact">${contactPreview}</div>
       <div style="margin-top:8px;display:flex;gap:6px">
-        <button class="rep-edit-btn" onclick="event.stopPropagation();openCustomerEdit('${currentTab==='machine'?'machine':'external'}',${h.id})">${t('editCustomer')}</button>
-        <button class="rep-del-btn" onclick="event.stopPropagation();deleteCustomer('${currentTab==='machine'?'machine':'external'}',${h.id})">${t('deleteCustomer')}</button>
+        <button class="rep-edit-btn" onclick="event.stopPropagation();openCustomerEdit('all',${h.id})">${t('editCustomer')}</button>
       </div>
     </div>`;
   }).join('');
@@ -1441,14 +1467,12 @@ function switchTab(tab) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
 
-  if (tab === 'machine' || tab === 'external') {
+  if (tab === 'all') {
     currentCity = 'All';
     currentModel = 'All';
     searchTerm = '';
     const si = document.getElementById('searchInput');
-    const sie = document.getElementById('searchInputExt');
     if (si) si.value = '';
-    if (sie) sie.value = '';
     document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
     const ma = document.getElementById('model-All');
     if (ma) ma.classList.add('active');
@@ -2581,6 +2605,7 @@ const LANG = {
     totalCustomers: 'Total Customers',
     machineCustomers: 'Machine Customers',
     externalCustomers: 'External Customers',
+    customers: 'customers',
     models: 'A8 & A90 Models',
     tabMachine: '🏥 Machine Customers (51)',
     tabExternal: '🔬 External Customers (13)',
@@ -2793,6 +2818,7 @@ const LANG = {
     totalCustomers: '客户总数',
     machineCustomers: '机器客户',
     externalCustomers: '外部客户',
+    customers: '位客户',
     models: 'A8 和 A90 型号',
     tabMachine: '🏥 机器客户 (51)',
     tabExternal: '🔬 外部客户 (13)',
@@ -3204,6 +3230,16 @@ function applyCustomRange() {
 
 // Show/hide custom date range
 document.addEventListener('DOMContentLoaded', () => {
+  // Combine all customers into one array
+  machineCustomers = MACHINE_DEFAULTS.slice();
+  externalCustomers = EXTERNAL_DEFAULTS.slice();
+  allCustomers = [...machineCustomers, ...externalCustomers];
+  
+  // Initialize the page
+  renderCityButtons();
+  renderCards();
+  updateStats();
+  
   const periodSelect = document.getElementById('reportPeriod');
   if (periodSelect) {
     periodSelect.addEventListener('change', (e) => {
