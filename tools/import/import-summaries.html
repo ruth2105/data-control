@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Hospital Summaries</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 {
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+.subtitle {
+  color: #64748b;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+.upload-area {
+  border: 3px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  background: #f8fafc;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-area:hover {
+  border-color: #667eea;
+  background: #f1f5f9;
+}
+.upload-area.dragover {
+  border-color: #667eea;
+  background: #ede9fe;
+}
+.upload-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+.btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.9; }
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.preview {
+  margin-top: 30px;
+  display: none;
+}
+.preview.show { display: block; }
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+.preview-table th,
+.preview-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+.preview-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: #475569;
+}
+.preview-table td {
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+.status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.status.success {
+  background: #dcfce7;
+  color: #166534;
+}
+.status.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.alert {
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.alert.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 2px solid #86efac;
+}
+.alert.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 2px solid #fecaca;
+}
+.instructions {
+  background: #eff6ff;
+  border: 2px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+.instructions h3 {
+  color: #1e40af;
+  margin-bottom: 12px;
+}
+.instructions ol {
+  margin-left: 20px;
+  color: #1e40af;
+}
+.instructions li {
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📝 Import Hospital Summaries</h1>
+  <p class="subtitle">Add summaries to existing hospital records</p>
+
+  <div class="instructions">
+    <h3>📋 Instructions:</h3>
+    <ol>
+      <li>Use the CSV file: <strong>HOSPITAL_SUMMARIES_IMPORT.csv</strong></li>
+      <li>Click "Select CSV File" or drag & drop the file</li>
+      <li>Review the preview</li>
+      <li>Click "Import Summaries" to add them to your reports</li>
+    </ol>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <div class="upload-area" id="uploadArea">
+    <div class="upload-icon">📁</div>
+    <h3>Click to select CSV file or drag & drop here</h3>
+    <p style="color:#64748b;margin-top:8px">Upload HOSPITAL_SUMMARIES_IMPORT.csv</p>
+    <input type="file" id="fileInput" accept=".csv" style="display:none">
+  </div>
+
+  <div class="preview" id="preview">
+    <h3>Preview (First 10 records):</h3>
+    <div style="overflow-x:auto">
+      <table class="preview-table" id="previewTable"></table>
+    </div>
+    <div style="margin-top:20px;text-align:center">
+      <button class="btn" id="importBtn">✅ Import Summaries to Visit Reports</button>
+    </div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+// Check authentication
+const currentUser = requireAuth('admin');
+if (!currentUser && !isAdmin()) {
+  alert('Admin access required');
+  window.location.href = 'login.html';
+}
+
+let csvData = [];
+
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const previewTable = document.getElementById('previewTable');
+const importBtn = document.getElementById('importBtn');
+const alertBox = document.getElementById('alertBox');
+
+// Click to upload
+uploadArea.addEventListener('click', () => fileInput.click());
+
+// Drag & drop
+uploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.endsWith('.csv')) {
+    processFile(file);
+  } else {
+    showAlert('Please upload a CSV file', 'error');
+  }
+});
+
+// File input change
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+});
+
+// Process CSV file
+function processFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    parseCSV(text);
+  };
+  reader.readAsText(file);
+}
+
+// Parse CSV
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (lines.length < 2) {
+    showAlert('CSV file is empty or invalid', 'error');
+    return;
+  }
+
+  // Skip header line
+  csvData = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    // Parse CSV line (handle quotes)
+    const match = line.match(/^"?([^"]+)"?,"(.+)"$/);
+    if (match) {
+      const hospitalName = match[1].trim();
+      const summary = match[2].trim();
+      csvData.push({ hospitalName, summary });
+    }
+  }
+
+  if (csvData.length === 0) {
+    showAlert('No valid data found in CSV', 'error');
+    return;
+  }
+
+  showAlert(`✅ Loaded ${csvData.length} hospital summaries`, 'success');
+  showPreview();
+}
+
+// Show preview
+function showPreview() {
+  preview.classList.add('show');
+  
+  let html = '<thead><tr><th>Hospital Name</th><th>Summary</th></tr></thead><tbody>';
+  
+  const displayCount = Math.min(10, csvData.length);
+  for (let i = 0; i < displayCount; i++) {
+    const row = csvData[i];
+    html += `<tr>
+      <td><strong>${row.hospitalName}</strong></td>
+      <td>${row.summary.substring(0, 150)}...</td>
+    </tr>`;
+  }
+  
+  if (csvData.length > 10) {
+    html += `<tr><td colspan="2" style="text-align:center;color:#64748b;font-style:italic">
+      ... and ${csvData.length - 10} more hospitals
+    </td></tr>`;
+  }
+  
+  html += '</tbody>';
+  previewTable.innerHTML = html;
+}
+
+// Import summaries
+importBtn.addEventListener('click', () => {
+  if (csvData.length === 0) {
+    showAlert('No data to import', 'error');
+    return;
+  }
+
+  if (!confirm(`Import ${csvData.length} summaries to existing reports?\n\nThis will add summaries to the "notes" field of matching hospitals.`)) {
+    return;
+  }
+
+  importBtn.disabled = true;
+  importBtn.textContent = '⏳ Importing...';
+
+  // Get existing reports and potential customers
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+  const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  
+  let updated = 0;
+  let notFound = 0;
+
+  // Match and update visit reports
+  csvData.forEach(item => {
+    const report = reports.find(r => 
+      r.hospitalName && 
+      r.hospitalName.toLowerCase().trim() === item.hospitalName.toLowerCase().trim()
+    );
+
+    if (report) {
+      // Add summary to notes
+      report.notes = item.summary;
+      updated++;
+    } else {
+      // Try to find in potentials
+      const potential = potentials.find(p =>
+        p.name &&
+        p.name.toLowerCase().trim() === item.hospitalName.toLowerCase().trim()
+      );
+      
+      if (potential) {
+        // Add notes to potential
+        potential.notes = item.summary;
+        updated++;
+      } else {
+        notFound++;
+      }
+    }
+  });
+
+  // Save updated reports and potentials
+  localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
+  localStorage.setItem('fremenatos_potentials', JSON.stringify(potentials));
+
+  // Also save to facility_summaries for reports.html display
+  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  csvData.forEach(item => {
+    facilitySummaries[item.hospitalName] = item.summary;
+  });
+  localStorage.setItem('fremenatos_facility_summaries', JSON.stringify(facilitySummaries));
+
+  // Show results
+  importBtn.disabled = false;
+  importBtn.textContent = '✅ Import Complete!';
+  
+  showAlert(
+    `✅ Import complete!\n\n` +
+    `• ${updated} summaries added\n` +
+    `• ${notFound} hospitals not found in reports\n\n` +
+    `Summaries have been added to the "notes" field of matching reports and to facility summaries storage.`,
+    'success'
+  );
+
+  setTimeout(() => {
+    if (confirm('Import complete! Go to Visit Reports page to view?')) {
+      window.location.href = 'admin.html';
+    }
+  }, 2000);
+});
+
+// Show alert
+function showAlert(message, type) {
+  alertBox.innerHTML = `<div class="alert ${type}">${message.replace(/\n/g, '<br>')}</div>`;
+  setTimeout(() => {
+    if (type === 'success') alertBox.innerHTML = '';
+  }, 5000);
+}
+</script>
+
+</body>
+</html>

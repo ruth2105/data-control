@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Hospital Management System</title>
+<script src="auth.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:linear-gradient(135deg,#1a56db 0%,#1e40af 100%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+.login-container{
+  background:#fff;
+  border-radius:16px;
+  padding:40px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  width:100%;
+  max-width:420px
+}
+.logo-circle{
+  width:60px;
+  height:60px;
+  background:linear-gradient(135deg,#1a56db,#1e40af);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  font-weight:900;
+  color:#fff;
+  margin:0 auto 20px
+}
+h1{
+  text-align:center;
+  color:#1a56db;
+  font-size:1.5rem;
+  font-weight:800;
+  margin-bottom:8px
+}
+.subtitle{
+  text-align:center;
+  color:#64748b;
+  font-size:0.9rem;
+  margin-bottom:30px
+}
+.tabs{
+  display:flex;
+  gap:4px;
+  margin-bottom:24px;
+  background:#f1f5f9;
+  border-radius:10px;
+  padding:4px
+}
+.tab-btn{
+  flex:1;
+  padding:10px;
+  border:none;
+  background:transparent;
+  border-radius:8px;
+  font-size:0.9rem;
+  font-weight:600;
+  cursor:pointer;
+  color:#64748b;
+  transition:all .2s
+}
+.tab-btn.active{
+  background:#fff;
+  color:#1a56db;
+  box-shadow:0 2px 4px rgba(0,0,0,0.1)
+}
+.form-group{
+  margin-bottom:16px
+}
+label{
+  display:block;
+  font-size:0.8rem;
+  font-weight:600;
+  color:#475569;
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.5px
+}
+input{
+  width:100%;
+  padding:12px 16px;
+  border:2px solid #e2e8f0;
+  border-radius:8px;
+  font-size:0.95rem;
+  outline:none;
+  transition:border-color .2s
+}
+input:focus{
+  border-color:#1a56db
+}
+.btn{
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,#1a56db,#1e40af);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:opacity .2s;
+  margin-top:8px
+}
+.btn:hover{
+  opacity:0.9
+}
+.btn:disabled{
+  opacity:0.5;
+  cursor:not-allowed
+}
+.remember-me{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:20px;
+  font-size:0.85rem;
+  color:#64748b
+}
+.remember-me input{
+  width:auto;
+  padding:0
+}
+.error{
+  background:#fee2e2;
+  color:#dc2626;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:16px;
+  font-size:0.85rem;
+  font-weight:600;
+  border:1px solid #fecaca
+}
+.success{
+  background:#dcfce7;
+  color:#166534;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:16px;
+  font-size:0.85rem;
+  font-weight:600;
+  border:1px solid #86efac
+}
+.register-fields{
+  display:none
+}
+.register-fields.show{
+  display:block
+}
+</style>
+</head>
+<body>
+<div class="login-container">
+  <div class="logo-circle">弗</div>
+  <h1>弗雷米纳托斯贸易有限公司</h1>
+  <p class="subtitle">Hospital & Laboratory Customer Management System</p>
+  
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('login')" id="tab-login">Login</button>
+    <button class="tab-btn" onclick="switchTab('register')" id="tab-register">Register</button>
+  </div>
+  
+  <div id="errorBox" class="error" style="display:none"></div>
+  <div id="successBox" class="success" style="display:none"></div>
+  
+  <!-- LOGIN FORM -->
+  <form id="loginForm" onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="loginUsername" required placeholder="Enter username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPassword" required placeholder="Enter password">
+    </div>
+    <div class="remember-me">
+      <input type="checkbox" id="rememberMe">
+      <label for="rememberMe" style="margin:0;font-weight:400">Remember me for 8 hours</label>
+    </div>
+    <button type="submit" class="btn">🚀 Login</button>
+  </form>
+  
+  <!-- REGISTER FORM -->
+  <form id="registerForm" class="register-fields" onsubmit="handleRegister(event)">
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="regName" required placeholder="Enter your full name">
+    </div>
+    <div class="form-group">
+      <label>Username *</label>
+      <input type="text" id="regUsername" required placeholder="Choose a username">
+    </div>
+    <div class="form-group">
+      <label>Password * (min 6 characters)</label>
+      <input type="password" id="regPassword" required minlength="6" placeholder="Choose a password">
+    </div>
+    <div class="form-group">
+      <label>Confirm Password *</label>
+      <input type="password" id="regConfirmPassword" required placeholder="Confirm password">
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="regPhone" placeholder="09xxxxxxxxx">
+    </div>
+    <div style="margin-bottom:16px;padding:12px;background:#f8fafc;border-radius:8px;font-size:0.8rem;color:#64748b">
+      <strong>� Note:</strong> Your team will be assigned by the administrator after registration approval.
+    </div>
+    <button type="submit" class="btn">📝 Register</button>
+  </form>
+  
+  <div style="margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;font-size:0.8rem;color:#64748b">
+    <strong>Default Admin Login:</strong><br>
+    Username: <code>admin</code><br>
+    Password: <code>admin123</code>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').classList.toggle('show', tab === 'register');
+  hideMessages();
+}
+
+function showError(message) {
+  const errorBox = document.getElementById('errorBox');
+  errorBox.textContent = message;
+  errorBox.style.display = 'block';
+  document.getElementById('successBox').style.display = 'none';
+}
+
+function showSuccess(message) {
+  const successBox = document.getElementById('successBox');
+  successBox.textContent = message;
+  successBox.style.display = 'block';
+  document.getElementById('errorBox').style.display = 'none';
+}
+
+function hideMessages() {
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('successBox').style.display = 'none';
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  hideMessages();
+  
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const rememberMe = document.getElementById('rememberMe').checked;
+  
+  const result = login(username, password, rememberMe);
+  
+  if (result.success) {
+    showSuccess('Login successful! Redirecting...');
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1000);
+  } else {
+    showError(result.message || 'Login failed');
+  }
+}
+
+function handleRegister(event) {
+  event.preventDefault();
+  hideMessages();
+  
+  const name = document.getElementById('regName').value.trim();
+  const username = document.getElementById('regUsername').value.trim().toLowerCase();
+  const password = document.getElementById('regPassword').value;
+  const confirmPassword = document.getElementById('regConfirmPassword').value;
+  const phone = document.getElementById('regPhone').value.trim();
+  
+  if (password !== confirmPassword) {
+    showError('Passwords do not match');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showError('Password must be at least 6 characters');
+    return;
+  }
+  
+  // Check if username already exists
+  const localUsers = JSON.parse(localStorage.getItem('fremenatos_users') || '[]');
+  if (localUsers.some(u => u.username === username) || USERS[username]) {
+    showError('Username already exists');
+    return;
+  }
+  
+  // Create new user (team will be assigned by admin)
+  const newUser = {
+    username: username,
+    password: password,
+    name: name,
+    nameZh: name,
+    role: 'sales',
+    teamId: null, // Will be assigned by admin
+    status: 'pending',
+    registeredAt: new Date().toISOString(),
+    phone: phone
+  };
+  
+  localUsers.push(newUser);
+  localStorage.setItem('fremenatos_users', JSON.stringify(localUsers));
+  
+  showSuccess('Registration successful! Please wait for admin approval.');
+  
+  // Clear form
+  document.getElementById('registerForm').reset();
+  
+  // Switch to login tab after 2 seconds
+  setTimeout(() => {
+    switchTab('login');
+  }, 2000);
+}
+</script>
+</body>
+</html>

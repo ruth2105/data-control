@@ -1,0 +1,216 @@
+════════════════════════════════════════════════════════════════════
+  📐 TWO-PANEL VIEW DIAGRAM
+════════════════════════════════════════════════════════════════════
+
+WHAT YOU ASKED:
+"they don have to side about the hospital and about they use 
+from our compony"
+
+ANSWER: 
+You WILL see two panels when visit report has company product data!
+
+════════════════════════════════════════════════════════════════════
+  SCENARIO 1: TWO PANELS (When Product Data Exists)
+════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    VISIT REPORT DETAIL MODAL                    │
+│                                                                 │
+│ 🏥 Lotus MCH    👤 Sales Person    📅 2024-01-15    📍 Garment │
+│                                                                 │
+├───────────────────────────┬─────────────────────────────────────┤
+│                           │                                     │
+│  🏭 OUR COMPANY PRODUCTS  │    🏥 HOSPITAL INFORMATION          │
+│  (LEFT PANEL)             │    (RIGHT PANEL)                    │
+│                           │                                     │
+│  What they use from       │    Basic Info:                      │
+│  OUR company:             │    ─────────────                    │
+│                           │    • Hospital: Lotus MCH            │
+│  📦 Wondfo Products       │    • Address: Garment               │
+│  ─────────────────        │    • Contact: [name]                │
+│  • Other Brand 1: ACCRE   │    • Phone: [phone]                 │
+│  • Stock Name: Reagents   │    • Position: Lab Head             │
+│  • Stock Qty: 100 boxes   │                                     │
+│                           │    Visit Details:                   │
+│  🔧 Competitor Equipment  │    ──────────────                   │
+│  ────────────────────     │    • Visit Type: First Contact      │
+│  • Electrolyte: B&E       │    • Purpose: Product demo          │
+│  • Bio Brand: Mindray     │    • Achievement: Interested        │
+│  • Daily Tests: 20        │                                     │
+│  • Reagent Price: $500    │    Progress:                        │
+│                           │    ─────────                        │
+│  🧪 Consumables           │    • Category: Active Customer      │
+│  ───────────               │    • Potential: 🔥 Hot              │
+│  • Tube Brand: Vacutainer │    • Outcome: Follow-up needed     │
+│  • Monthly Qty: 500 tubes │    • Next Visit: 2024-02-15         │
+│  • Price: $0.50 each      │                                     │
+│                           │    📝 Hospital Summary:             │
+│                           │    ─────────────────────            │
+│                           │    ┌─────────────────────────────┐  │
+│                           │    │ Hot priority facility in    │  │
+│                           │    │ Garment. Uses Finecare      │  │
+│                           │    │ (hormone), Mindray          │  │
+│                           │    │ (chemistry), B&E            │  │
+│                           │    │ (electrolyte). 10-20        │  │
+│                           │    │ tests/day. Interested in    │  │
+│                           │    │ reagent placement...        │  │
+│                           │    └─────────────────────────────┘  │
+│                           │                                     │
+└───────────────────────────┴─────────────────────────────────────┘
+
+       ↑                              ↑
+   ABOUT WHAT                    ABOUT THE
+   THEY USE FROM                 HOSPITAL
+   OUR COMPANY                   (INFO + SUMMARY)
+
+
+════════════════════════════════════════════════════════════════════
+  SCENARIO 2: ONE PANEL (When NO Product Data)
+════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    VISIT REPORT DETAIL MODAL                    │
+│                                                                 │
+│ 🏥 Novamed Clinic    👤 Sales Person    📅 2024-01-10    📍 Goro│
+│                                                                 │
+│                                                                 │
+│              🏥 HOSPITAL INFORMATION (FULL WIDTH)               │
+│                                                                 │
+│              Basic Info:                                        │
+│              ─────────────                                      │
+│              • Hospital: Novamed Clinic                         │
+│              • Address: Goro                                    │
+│              • Contact: Zeaman                                  │
+│              • Phone: [phone]                                   │
+│              • Position: Laboratory Head                        │
+│                                                                 │
+│              Visit Details:                                     │
+│              ──────────────                                     │
+│              • Visit Type: First Contact                        │
+│              • Purpose: Initial visit and demo                  │
+│              • Achievement: Good interest shown                 │
+│                                                                 │
+│              Progress:                                          │
+│              ─────────                                          │
+│              • Category: Needs Analysis                         │
+│              • Potential: 🔥 Hot                                │
+│              • Outcome: Will discuss with management            │
+│              • Next Visit: 2024-02-10                           │
+│                                                                 │
+│              📝 Hospital Summary:                               │
+│              ─────────────────────                              │
+│              ┌─────────────────────────────────────────────┐   │
+│              │ Hot priority facility in Goro. Uses         │   │
+│              │ Finecare (hormone), no chemistry analyzer,  │   │
+│              │ interested in B&E electrolyte. 10-15        │   │
+│              │ tests/day. Interested in electrolyte        │   │
+│              │ analyzer. Follow-up with Zeaman             │   │
+│              │ (Laboratory Head).                          │   │
+│              └─────────────────────────────────────────────┘   │
+│                                                                 │
+│                   (No left panel - no product data)             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+                              ↑
+                         ONLY SHOWS
+                         HOSPITAL INFO
+                         (NO PRODUCT DATA)
+
+
+════════════════════════════════════════════════════════════════════
+  WHEN DO YOU SEE WHICH LAYOUT?
+════════════════════════════════════════════════════════════════════
+
+TWO PANELS (Left + Right):
+✅ Visit report has company product data
+✅ Any of these fields filled: otherBrand1, wondfostockName,
+   elecBrand, bioBrand, hemBrand, tubeBrand, btBrand, needleBrand
+
+ONE PANEL (Right only):
+✅ Visit report has NO company product data
+✅ None of the product fields filled
+✅ Summary still shows at bottom!
+
+
+════════════════════════════════════════════════════════════════════
+  SUMMARY SECTION (ALWAYS SHOWS IF EXISTS)
+════════════════════════════════════════════════════════════════════
+
+The "📝 Hospital Summary" section appears at the BOTTOM of the 
+right panel in BOTH scenarios:
+
+✅ TWO PANELS: Shows at bottom of right panel
+✅ ONE PANEL: Shows at bottom of single panel
+
+The summary is IMPORTED from CSV or WRITTEN by sales people when
+they create new visit reports in "Discussion Notes" field.
+
+
+════════════════════════════════════════════════════════════════════
+  HOW TO GET TWO-PANEL VIEW
+════════════════════════════════════════════════════════════════════
+
+If you want to see TWO PANELS for a hospital:
+
+1. Edit the visit report
+2. Fill in company product data:
+   
+   OPTION 1 - Wondfo Products:
+   • Other Brand 1: ACCRE A8
+   • Stock Name: Hormone reagents
+   • Stock Qty: 50 boxes
+   
+   OPTION 2 - Competitor Equipment:
+   • Electrolyte Brand: B&E
+   • Bio Brand: Mindray
+   • Hem Brand: Sysmex
+   
+   OPTION 3 - Consumables:
+   • Tube Brand: Vacutainer
+   • BT Brand: [brand]
+   • Needle Brand: [brand]
+
+3. Save the report
+4. Reopen the report detail
+5. You'll see TWO PANELS!
+
+
+════════════════════════════════════════════════════════════════════
+  QUICK REFERENCE
+════════════════════════════════════════════════════════════════════
+
+LEFT PANEL = 🏭 Our Company Products
+─────────────────────────────────────
+Shows: What they use from OUR company
+Displays: ACCRE machines, reagents, competitor comparison
+Condition: Only if product data exists
+
+
+RIGHT PANEL = 🏥 Hospital Info
+──────────────────────────────
+Shows: Hospital details + Visit info + Summary
+Displays: All basic info, contacts, progress, summary
+Condition: Always shows
+
+
+SUMMARY SECTION = 📝 Hospital Summary
+─────────────────────────────────────
+Shows: Detailed summary (imported or written)
+Location: Bottom of right panel
+Condition: Shows if notes field has data
+
+
+════════════════════════════════════════════════════════════════════
+  NEXT STEPS
+════════════════════════════════════════════════════════════════════
+
+1. Import summaries using import-summaries.html
+2. View reports in admin.html → Visit Reports
+3. Click any hospital card
+4. Scroll down to see summary section
+5. Fill in product data to see two-panel view
+6. Done! 🎉
+
+
+════════════════════════════════════════════════════════════════════

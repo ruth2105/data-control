@@ -1,0 +1,225 @@
+=================================================================================
+COPY THIS PROMPT TO ANOTHER AI PLATFORM TO RECREATE THE PROJECT
+=================================================================================
+
+I need help building a Hospital & Laboratory Customer Management System. Here are the complete specifications:
+
+PROJECT OVERVIEW:
+- Company: Fremenatos Trading PLC (Medical equipment & reagent distribution in Ethiopia)
+- System Type: Web-based CRM/Customer Management
+- Languages: Bilingual (English & Chinese)
+- Tech Stack: HTML, CSS, JavaScript (vanilla), Google Apps Script backend
+- Users: 6 sales teams + admin, managing 76 hospitals/labs
+
+CORE FEATURES NEEDED:
+
+1. CUSTOMER DATABASE (76 hospitals):
+   - 63 machine customers (A8/A90 equipment installed)
+   - 12 external customers (potential clients)
+   - Data per customer: name (EN/ZH), city, model, contacts, payment contacts, stock status, orders, doctors, team assignment, potential level (Hot/Warm/Cold)
+   - Customer data must match this Excel file EXACTLY (including typos): [I will provide Excel file]
+
+2. USER ROLES & ACCESS:
+   - Admin/Boss: Full access, all territories
+   - Sales Rep (6 teams): View assigned customers only
+   - Teams:
+     * Team 1 - sales person 1 and sales person 2
+     * Team 2 -  sales person 3 and sales person 4
+     * Team 3 -  sales person 5 and sales person 6
+     * Team 4 -  sales person 7 and sales person 8
+     * Team 5 -  sales person 9 and sales person 10
+     * Team 6 -  sales person 11 and sales person 12
+
+3. AUTHENTICATION:
+   - Two options: Local (hardcoded in auth.js) OR Google Sheets backend
+   - Login page with username/password
+   - Registration page with admin approval (backend option)
+   - Role-based access control
+
+4. MAIN DASHBOARD (index.html):
+   - Display customers as cards
+   - Filters: City (17 cities), Model (A8/A90/External), Team (admin only), Potential
+   - Real-time search
+   - Statistics bar: total customers, machine customers, external customers
+   - Click card → modal with full details
+   - Language toggle (EN ↔ 中文)
+   - Edit/delete customers (admin only)
+   - Export to Excel with Chinese headers
+
+5. ADMIN DASHBOARD (admin.html):
+   - Same as main dashboard plus:
+   - User management
+   - Team performance analytics
+   - Advanced filtering
+   - Bulk operations
+
+6. VISIT REPORT SYSTEM:
+   - Submit visit form: date, hospital, visit type, purpose, feedback, stock check, machine status, orders, next steps
+   - View all reports (filterable by date, hospital, team)
+   - Edit/delete reports
+   - Export reports to Excel
+
+7. ANALYTICS DASHBOARD:
+   - Charts using Chart.js:
+     * Bar chart: visits by sales person
+     * Pie chart: customer categories
+     * Doughnut chart: customer potential distribution
+   - KPI cards: total visits, total customers, top sales person, closed deals
+
+8. BILINGUAL SUPPORT:
+   - All UI elements have data-en and data-zh attributes
+   - JavaScript function setLang(lang) switches language
+   - Language preference saved in localStorage
+   - Default: Chinese
+
+9. DESIGN REQUIREMENTS:
+   - Color scheme:
+     * Primary: #1a56db (blue)
+     * Success: #10b981 (green)
+     * Warning: #f59e0b (yellow)
+     * Background: #f0f4f8
+   - Header: Blue gradient, logo, company name, language toggle, user info, logout
+   - Cards: White with shadow, blue left border, hover effect
+   - Modals: Split layout, blue header, organized sections
+   - Responsive: Mobile-friendly, breakpoints at 640px and 1024px
+
+10. EXPORT FEATURES:
+    - Excel export using ExcelJS library
+    - CSV export option
+    - Bilingual headers (English and Chinese)
+    - Date range filtering
+    - Include all customer/report data
+
+KEY TECHNICAL REQUIREMENTS:
+
+- Libraries:
+  * ExcelJS v4.4.0 (Excel generation)
+  * Chart.js v4.4.0 (analytics charts)
+
+- Data Structure Example:
+```javascript
+{
+  id: 1,
+  name: "Hayat Hospital",
+  nameZh: "哈亚特医院",
+  city: "A.A",
+  date: "05/12/2025",
+  model: "A90",
+  contacts: [{
+    role: "Lab Head",
+    roleZh: "检验科主任",
+    name: "Biniam",
+    nameZh: "比尼亚姆",
+    phone: "0913817632"
+  }],
+  payment: [...],
+  stock: "Vitamin D, Vitamin B12, Ferritin (1 pack)",
+  stockZh: "维生素D, 维生素B12, 铁蛋白 (各一盒)",
+  order: "Fertility, cancer markers, thyroid",
+  orderZh: "生育类、肿瘤标志物、甲状腺",
+  doctors: "Above 30 with speciality",
+  doctorsZh: "超过30名专科医生",
+  teamId: "team2",
+  potential: "Hot"
+}
+```
+
+- Cities (17 total): A.A, Adama, Jimma, Hawassa, Harrar, Dilla, Arba Minch, Shashemene, Wolayta, Yirgalem, Asella, D.B, D.D, Shakiso, Butajira, Awash
+
+- Google Apps Script Backend (optional):
+  * Sheets: Customers, VisitReports, Users
+  * Functions: getCustomers(), addCustomer(), updateCustomer(), deleteCustomer(), getVisitReports(), addVisitReport(), authenticate(), registerUser()
+  * Deploy as Web App, provide deployment URL
+
+CRITICAL REQUIREMENTS:
+
+1. Hospital names MUST match Excel source EXACTLY (including typos like "commision", lowercase "plc", "Midium" instead of "Medium")
+
+2. Language toggle must be visible in header between company name and user info
+
+3. All data stored in localStorage with option to sync to Google Sheets
+
+4. Security: Login required, role-based access, XSS prevention
+
+5. Performance: Page load < 3 seconds, smooth animations, responsive
+
+6. Customer potential tracking with color coding:
+   - Hot (🔥, red): High priority
+   - Warm (🌡️, yellow): Medium priority  
+   - Cold (❄️, blue): Low priority
+
+FILES TO CREATE:
+
+1. index.html - Main customer dashboard
+2. admin.html - Admin dashboard with advanced features
+3. login.html - Login page
+4. login_v2.html - Backend login (Google Sheets)
+5. register.html - User registration
+6. auth.js - Authentication module
+7. appsscript.gs - Google Apps Script backend code
+
+TESTING CHECKLIST:
+
+- [ ] All 76 customers display correctly
+- [ ] Search works (hospital name, city)
+- [ ] Filters work (city, model, team, potential)
+- [ ] Language toggle switches all text
+- [ ] Modal shows complete customer info
+- [ ] Visit reports submit successfully
+- [ ] Charts display accurate data
+- [ ] Export generates valid Excel files
+- [ ] Mobile responsive
+- [ ] Role-based access enforced
+- [ ] Browser cache clearing shows updates
+
+SAMPLE CUSTOMERS (first 5 from 76):
+
+1. Biruhkids Pediatrics center, A.A, A90, Team: Melat
+2. UNECA, A.A, A90, Team: Boss
+3. Hayat Hospital, A.A, A90, Team: Melat
+4. united nation economic commision for africa, A.A, A90, Team: Boss
+5. Dr.Shemse MCH Center, A.A, A8, Team: Kalkidan
+
+IMPORTANT NOTES:
+
+- Use lowercase where specified in Excel (e.g., "Lucy health care plc" not "Lucy Health Care PLC")
+- Include typos from Excel (e.g., "commision" not "commission", "Midium" not "Medium")
+- RiftVally is one word (not "Rift Valley")
+- "Biruhkids Pediatrics center" has lowercase "center"
+- Some hospitals have (A8) or (A90) suffix to distinguish duplicates
+
+START WITH: 
+1. Setting up the HTML structure with header (logo, company name, language toggle, user info, logout)
+2. Creating the customer data array with all 76 hospitals (I will provide Excel)
+3. Implementing the card grid display
+4. Adding search and filter functionality
+5. Creating the detail modal
+6. Setting up authentication
+
+Please confirm you understand these requirements and ask any clarifying questions before starting implementation.
+
+=================================================================================
+END OF PROMPT
+=================================================================================
+
+ADDITIONAL FILES TO SHARE:
+1. Excel file: 6month-sorted-by-cityyy.xlsx (customer data source)
+2. Current working files: index.html, admin.html, auth.js (as reference)
+3. Screenshots of UI/UX (if needed)
+
+EXPECTED DELIVERABLES:
+1. All HTML files (index, admin, login, register)
+2. JavaScript files (auth.js, any utilities)
+3. Google Apps Script code (if backend option)
+4. Documentation (setup guide, user manual)
+5. Testing checklist completed
+
+TIMELINE ESTIMATE:
+- Phase 1 (Basic Setup): 4-6 hours
+- Phase 2 (Core Features): 8-10 hours
+- Phase 3 (Advanced Features): 6-8 hours
+- Phase 4 (Backend Integration): 4-6 hours
+- Phase 5 (Testing & Polish): 4-6 hours
+Total: 26-36 hours
+
+=================================================================================

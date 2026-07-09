@@ -1,0 +1,1 @@
+id	hospitalName	hospitalAddress	salesPerson	customerPotential	customerCategory	visitType	fillDate	phone	contact	patientLoad	hormoneAnalyzer	notes	submittedAt	teamId

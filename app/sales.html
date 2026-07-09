@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>弗雷米纳托斯贸易有限公司 – 客户门户</title>
+<title>Sales Dashboard - Fremenatos Trading PLC</title>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -224,8 +224,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   <div class="header-inner">
     <div class="logo-circle">弗</div>
     <div class="header-text">
-      <h1>弗雷米纳托斯贸易有限公司</h1>
-      <p data-en="Hospital & Laboratory Customer Management System" data-zh="医院和实验室客户管理系统">医院和实验室客户管理系统</p>
+      <h1>📊 Sales Team Dashboard</h1>
+      <p>Customer Management & Visit Reports</p>
     </div>
     <div class="lang-toggle">
       <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
@@ -236,7 +236,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         <div style="font-size:0.9rem;font-weight:600" id="userName">Administrator</div>
         <div style="font-size:0.75rem;opacity:0.8" id="userRole">Admin</div>
       </div>
-      <button onclick="accessReportsWithPassword()" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600" data-en="📋 Reports" data-zh="📋 报告">📋 Reports</button>
+      <button onclick="window.location.href='reports.html'" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600">📋 Reports</button>
       <button onclick="logout()" style="background:rgba(255,255,255,0.2);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600">🚪 Logout</button>
     </div>
   </div>
@@ -254,9 +254,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 Customers</button>
     <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Statistics</button>
-    <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 Visit Reports</button>
-    <button class="tab-btn" onclick="switchTab('updates')" id="tab-updates">🔄 Updates</button>
-    <button class="tab-btn" onclick="switchTab('users')" id="tab-users" style="display:none">👥 Users</button>
+    <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 My Team Reports</button>
+    <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">👤 Profile</button>
   </div>
 
   <!-- ALL CUSTOMERS PAGE -->
@@ -287,35 +286,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 
   <!-- STATISTICS PAGE -->
   <div id="page-dashboard" class="page">
-    <!-- HOT CUSTOMERS PRIORITY SECTION (BOSS PRIORITY!) -->
-    <div class="vf-card" style="border:3px solid #dc2626;background:linear-gradient(135deg,#fee2e2 0%,#fecaca 50%);margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
-        <h3 style="font-size:1.3rem;font-weight:900;color:#991b1b;display:flex;align-items:center;gap:8px">
-          🔥 HOT CUSTOMERS (Priority)
-          <span id="hotCustomersCount" style="background:#dc2626;color:#fff;padding:4px 12px;border-radius:12px;font-size:0.9rem">0</span>
-        </h3>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <select id="hotCustomersTeamFilter" onchange="renderHotCustomers()" style="padding:8px 12px;border-radius:6px;border:2px solid #dc2626;font-weight:600;cursor:pointer">
-            <option value="all">All Teams</option>
-            <option value="1">Team 1</option>
-            <option value="2">Team 2</option>
-            <option value="3">Team 3</option>
-            <option value="4">Team 4</option>
-            <option value="5">Team 5</option>
-            <option value="6">Team 6</option>
-          </select>
-          <button onclick="exportHotCustomers()" style="background:#dc2626;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;cursor:pointer">📥 Export</button>
-        </div>
-      </div>
-      <div id="hotCustomersList" style="max-height:400px;overflow-y:auto"></div>
-    </div>
-
-    <!-- TEAM PERFORMANCE SECTION -->
-    <div class="vf-card" style="margin-bottom:20px">
-      <h3 style="font-size:1.2rem;font-weight:800;color:#1a56db;margin-bottom:16px">👥 Team Performance This Month</h3>
-      <div id="teamPerformanceGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px"></div>
-    </div>
-
     <div class="vf-card" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;margin-bottom:20px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
         <div>
@@ -453,120 +423,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
     </div>
   </div>
 
-  <div id="page-external" class="page">
-  <div class="filters">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInputExt" placeholder="按医院名称或城市搜索…" oninput="applyFilters()">
-    </div>
-    <div class="filter-group">
-      <span class="filter-label" data-type="city">城市:</span>
-      <div id="cityFiltersExt"></div>
-    </div>
-    <div class="filter-group" style="margin-left:auto">
-      <button class="filter-btn" onclick="exportCustomerList('external')" style="background:#10b981;color:#fff;border:2px solid #10b981;font-weight:700">📥 导出客户列表 / Export List</button>
-    </div>
-  </div>
-  <div class="results-info" id="resultsInfoExt"></div>
-  <div class="cards-grid" id="cardsGridExt"></div>
-  </div>
-
-  <!-- USER MANAGEMENT PAGE -->
-  <div id="page-users" class="page">
-    <!-- CHANGE PASSWORD SECTION -->
-    <div class="vf-card" style="border:2px solid #6366f1;background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);margin-bottom:20px">
-      <h3 style="font-size:1.1rem;font-weight:800;color:#6366f1;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-        🔐 Change Admin Password
-      </h3>
-      <form id="changePasswordForm" onsubmit="changePassword(event)">
-        <div class="vf-grid">
-          <div class="vf-group vf-full">
-            <label class="vf-label">Current Password *</label>
-            <input type="password" id="currentPassword" class="vf-input" required placeholder="Enter current password">
-          </div>
-          <div class="vf-group vf-full">
-            <label class="vf-label">New Password * (min 6 characters)</label>
-            <input type="password" id="newPassword" class="vf-input" required minlength="6" placeholder="Enter new password">
-          </div>
-          <div class="vf-group vf-full">
-            <label class="vf-label">Confirm New Password *</label>
-            <input type="password" id="confirmPassword" class="vf-input" required placeholder="Re-enter new password">
-          </div>
-        </div>
-        <button type="submit" class="vf-submit-btn" style="margin-top:12px">✅ Update Password</button>
-      </form>
-      <div style="margin-top:12px;padding:10px;background:rgba(99,102,241,0.1);border-radius:6px;font-size:0.8rem;color:#4338ca">
-        💡 <strong>Note:</strong> You will be automatically logged out after changing your password. Please login again with your new password.
-      </div>
-    </div>
-
-    <div class="vf-card" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-        <div>
-          <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:4px">👥 User Management</h2>
-          <p style="opacity:0.9;font-size:0.9rem">Manage sales team members and approvals</p>
-        </div>
-        <div style="display:flex;gap:12px">
-          <button onclick="refreshUsers()" style="background:rgba(255,255,255,0.2);border:2px solid #fff;color:#fff;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer">🔄 Refresh</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pending Approvals -->
-    <div class="vf-card" style="border:2px solid #f59e0b;margin-bottom:20px">
-      <h3 style="font-size:1.1rem;font-weight:800;color:#f59e0b;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-        ⏳ Pending Approvals
-        <span id="pendingCount" style="background:#fef3c7;color:#92400e;padding:2px 12px;border-radius:12px;font-size:0.8rem">0</span>
-      </h3>
-      <div id="pendingUsersList"></div>
-    </div>
-
-    <!-- Active Users -->
-    <div class="vf-card">
-      <h3 style="font-size:1.1rem;font-weight:800;color:#1a56db;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-        ✅ Active Sales Team
-        <span id="activeCount" style="background:#dbeafe;color:#1e40af;padding:2px 12px;border-radius:12px;font-size:0.8rem">0</span>
-      </h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px" id="activeUsersList"></div>
-    </div>
-  </div>
-
-  <!-- UPDATES PAGE -->
-  <div id="page-updates" class="page">
-    <div class="vf-card" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-        <div>
-          <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:4px">🔔 Purchase Announcements</h2>
-          <p style="opacity:0.9;font-size:0.9rem">Customer purchase confirmations from sales team</p>
-        </div>
-        <div style="display:flex;gap:12px">
-          <button onclick="refreshAnnouncements()" style="background:rgba(255,255,255,0.2);border:2px solid #fff;color:#fff;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer">🔄 Refresh</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pending Announcements (Customers who agreed to buy) -->
-    <div class="vf-card" style="border:2px solid #10b981;margin-bottom:20px">
-      <h3 style="font-size:1.1rem;font-weight:800;color:#10b981;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-        🎉 Pending Purchase Confirmations
-        <span id="pendingAnnouncementsCount" style="background:#d1fae5;color:#065f46;padding:2px 12px;border-radius:12px;font-size:0.8rem">0</span>
-      </h3>
-      <div style="background:#f0fdf4;padding:12px;border-radius:8px;margin-bottom:16px;font-size:0.85rem;color:#065f46">
-        💡 <strong>Instructions:</strong> When a customer confirms purchase, click <strong>"✅ Confirm Purchase"</strong> to move them to the main customers list.
-      </div>
-      <div id="pendingAnnouncementsList"></div>
-    </div>
-
-    <!-- Confirmed Purchases (Recently added to customers) -->
-    <div class="vf-card">
-      <h3 style="font-size:1.1rem;font-weight:800;color:#3b82f6;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-        ✅ Recently Confirmed Purchases
-        <span id="confirmedAnnouncementsCount" style="background:#dbeafe;color:#1e40af;padding:2px 12px;border-radius:12px;font-size:0.8rem">0</span>
-      </h3>
-      <div id="confirmedAnnouncementsList"></div>
-    </div>
-  </div>
-
   <!-- VISIT FORM PAGE -->
   <!-- CUSTOMER EDIT MODAL -->
     <div class="modal-overlay" id="customerEditOverlay" onclick="if(event.target===this)closeCustomerEdit()">
@@ -596,20 +452,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
                 <div class="vf-group"><label class="vf-label" data-lkey="ceCity"></label><input class="vf-input" name="city" required list="cityList"></div>
                 <div class="vf-group"><label class="vf-label">Specialty</label><input class="vf-input" name="specialty" placeholder="e.g., General, Cardiology"></div>
                 <div class="vf-group"><label class="vf-label">专科</label><input class="vf-input" name="specialtyZh" placeholder="例如：综合、心脏科"></div>
-                <div class="vf-group"><label class="vf-label">Ownership</label>
-                  <select class="vf-select" name="ownership">
-                    <option value="">Select...</option>
-                    <option value="Government">Government</option>
-                    <option value="Private">Private</option>
-                  </select>
-                </div>
-                <div class="vf-group"><label class="vf-label">所有权</label>
-                  <select class="vf-select" name="ownershipZh">
-                    <option value="">选择...</option>
-                    <option value="政府">政府</option>
-                    <option value="私立">私立</option>
-                  </select>
-                </div>
+                <div class="vf-group"><label class="vf-label">Ownership</label><input class="vf-input" name="ownership" placeholder="Government/Private"></div>
+                <div class="vf-group"><label class="vf-label">所有权</label><input class="vf-input" name="ownershipZh" placeholder="政府/私立"></div>
                 <div class="vf-group"><label class="vf-label" data-lkey="ceDoctors"></label><input class="vf-input" name="doctors" data-lkey-ph="ceDoctorsPh"></div>
                 <div class="vf-group vf-full"><label class="vf-label" data-lkey="ceDoctorsZh"></label><input class="vf-input" name="doctorsZh" data-lkey-ph="ceDoctorsZhPh"></div>
                 <div class="vf-group vf-full"><label class="vf-label" data-lkey="ceContacts"></label><textarea class="vf-textarea" name="contacts" rows="3" data-lkey-ph="ceContactsPh"></textarea></div>
@@ -680,7 +524,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
             <div>
               <label class="vf-label">业务员 / Salesperson</label>
               <select class="vf-select" id="bulkSalesPerson">
-                <option value="">-- 请选择 / Select --</option>
+                <option value="">-- 请选择 --</option>
+                <option>Ephrata</option>
+                <option>Kalkidan</option>
+                <option>Tizita</option>
               </select>
             </div>
             <div>
@@ -700,54 +547,219 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         </div>
       </div>
 
-      <!-- TEAM PERFORMANCE FILTERS -->
+      <!-- SINGLE VISIT FORM (always visible) -->
+      <div class="vf-card" style="border:2px solid #3b82f6;margin-bottom:16px">
+        <div class="vf-title" style="color:#3b82f6">📝 登记拜访 / Register Visit</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">业务员 / Salesperson</label>
+            <select class="vf-select" id="visitSalesPerson">
+              <option value="">-- 请选择 --</option>
+              <option>Ephrata</option>
+              <option>Kalkidan</option>
+              <option>Tizita</option>
+            </select>
+          </div>
+          <div>
+            <label class="vf-label">日期 / Date</label>
+            <input class="vf-input" type="date" id="visitDate">
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">医院名称 / Hospital Name</label>
+          <input class="vf-input" type="text" id="visitHospital" list="hospitalDatalist" placeholder="输入医院名称…">
+          <datalist id="hospitalDatalist"></datalist>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">被访人 / Contact Person</label>
+            <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
+          </div>
+          <div>
+            <label class="vf-label">职位 / Position</label>
+            <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">电话 / Phone</label>
+            <input class="vf-input" type="text" id="visitPhone" placeholder="手机号码">
+          </div>
+          <div>
+            <label class="vf-label">医院地址 / Address</label>
+            <input class="vf-input" type="text" id="visitAddress" placeholder="如: Bole, Ayat">
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">拜访类型 / Visit Type</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtFirst" value="First contact"> 初次接触 / First Contact</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtPromo" value="Product promotion"> 产品推广 / Product Promotion</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtRelation" value="Customer relationship maintenance"> 客情维护 / Relationship</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtIssue" value="Issue follow-up"> 问题跟进 / Issue Follow-up</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtOther" value="Other"> 其他 / Other</label>
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">讨论内容 / Discussion Notes</label>
+          <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">现有设备 / Current Equipment in Use</label>
+          <textarea class="vf-textarea" id="visitEquipment" rows="2" placeholder="如: 激素: Finecare • 生化: Semi-Automatic • 血球: Mindray" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">拜访结果 / Outcome</label>
+          <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
+          <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
+          <textarea class="vf-textarea" id="visitSummary" rows="4" placeholder="请简要总结本次拜访的关键要点、达成的共识、下一步行动计划等。此总结将显示在报告中。" style="font-family:monospace;background:#fff"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px;padding:16px;background:#f0fdf4;border:2px solid #86efac;border-radius:10px">
+          <label class="vf-label" style="color:#166534;font-size:1rem">📦 产品订单 / Product Orders</label>
+          <div id="orderItems" style="margin-bottom:8px">
+            <div class="order-row" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center">
+              <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
+              <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
+              <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
+              <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
+            </div>
+          </div>
+          <button type="button" onclick="addOrderRow()" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">+ 添加产品 / Add Product</button>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">客户分类 / Customer Category</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catActive" value="Active Customer"> 有效客户 / Active</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catNeeds" value="Customer with Needs"> 有需求客户 / With Needs</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catKey" value="Key Customer"> 重点客户 / Key</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catClosed" value="Closed Deal"> 已成交客户 / Closed Deal</label>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label class="vf-label">客户潜力 / Potential</label>
+            <select class="vf-select" id="visitPotential">
+              <option value="">-- 请选择 --</option>
+              <option value="Hot">🔥 热门 / Hot</option>
+              <option value="Warm">🌤️ 温暖 / Warm</option>
+              <option value="Cold">❄️ 冷淡 / Cold</option>
+            </select>
+          </div>
+          <div>
+            <label class="vf-label">下次拜访日期 / Next Visit</label>
+            <input class="vf-input" type="date" id="visitNextDate">
+          </div>
+          <div>
+            <label class="vf-label">下次目标 / Next Target</label>
+            <input class="vf-input" type="text" id="visitNextTarget" placeholder="如: 跟进报价">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px">
+          <button type="button" onclick="submitSingleVisit()" style="flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 提交 / Submit</button>
+          <button type="button" onclick="clearVisitForm()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">↺ 重置 / Reset</button>
+        </div>
+        <div id="singleVisitStatus" style="margin-top:12px;padding:10px;border-radius:8px;display:none"></div>
+      </div>
+
+      <!-- FILTER CONTROLS -->
       <div class="rep-filters">
-        <input type="text" class="rep-search" id="repSearch" placeholder="🔍 Search by hospital or team..." oninput="renderReports()">
-        
-        <!-- TEAM FILTER (hidden for sales users) -->
-        <select class="rep-select" id="repFilterTeam" onchange="renderReports()" style="background:#667eea;color:#fff;font-weight:700;border:none;font-size:1rem;display:none">
-          <option value="">📊 All Teams</option>
-          <option value="1">Team 1</option>
-          <option value="2">Team 2</option>
-          <option value="3">Team 3</option>
-          <option value="4">Team 4</option>
-          <option value="5">Team 5</option>
-          <option value="6">Team 6</option>
+        <input type="text" class="rep-search" id="repSearch" placeholder="🔍 搜索医院或业务员…" oninput="renderReports()">
+        <select class="rep-select" id="repFilterSales" onchange="renderReports()">
+          <option value="">全部业务员</option>
+          <option>Ephrata</option>
+          <option>Kalkidan</option>
+          <option>Tizita</option>
         </select>
-        
-        <!-- SALESPERSON FILTER (dynamically populated) -->
-        <select class="rep-select" id="repFilterSales" onchange="renderReports()" style="background:#f59e0b;color:#fff;font-weight:700;border:none;font-size:1rem">
-          <option value="">👥 All Salespeople</option>
+        <select class="rep-select" id="repFilterPotential" onchange="renderReports()" style="background:#fff;border:2px solid #e2e8f0">
+          <option value="">🌡️ 全部潜力</option>
+          <option value="Hot">🔥 热门客户</option>
+          <option value="Warm">🌤️ 温暖客户</option>
+          <option value="Cold">❄️ 冷淡客户</option>
         </select>
-        
-        <!-- CATEGORY FILTER -->
-        <select class="rep-select" id="repFilterCat" onchange="renderReports()" style="background:#8b5cf6;color:#fff;font-weight:700;border:none;font-size:1rem">
-          <option value="">🏥 All Categories</option>
-          <option value="A8">A8</option>
-          <option value="A90">A90</option>
-          <option value="External">External</option>
+        <select class="rep-select" id="repFilterCat" onchange="renderReports()">
+          <option value="">全部类别</option>
+          <option>有效客户</option>
+          <option>有需求客户</option>
+          <option>重点客户</option>
+          <option>已成交客户</option>
         </select>
-        
-        <!-- POTENTIAL FILTER -->
-        <select class="rep-select" id="repFilterPotential" onchange="renderReports()" style="background:#06b6d4;color:#fff;font-weight:700;border:none;font-size:1rem">
-          <option value="">🌡️ All Potential</option>
-          <option value="Hot">🔥 Hot</option>
-          <option value="Warm">🌤️ Warm</option>
-          <option value="Cold">❄️ Cold</option>
-        </select>
-        
-        <button class="rep-select" onclick="showLangPicker('reports')" style="background:#10b981;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📥 Export Team Reports</button>
+        <button class="rep-select" onclick="showLangPicker('reports')" style="background:#10b981;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📥 导出拜访报告 / Export Reports</button>
+        <button class="rep-select" onclick="showLangPicker('pdf')" style="background:#6366f1;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📥 导出PDF客户数据 / Export PDF Data</button>
+        <button class="rep-select" onclick="export6MonthReport()" style="background:#dc2626;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">📊 6个月报告 / 6-Month Report</button>
+        <button class="rep-select" onclick="checkData()" style="background:#f59e0b;color:#fff;font-weight:700;border:none;cursor:pointer;padding:8px 16px">🔍 检查数据</button>
       </div>
       <div id="potentialStats" style="display:flex;gap:12px;margin:12px 0;padding:12px;background:#f8fafc;border-radius:8px;flex-wrap:wrap"></div>
-      
-      <!-- TEAM STATISTICS (Admin Only) -->
-      <div id="teamStats" style="display:none;margin:12px 0;padding:16px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;color:#fff">
-        <div style="font-size:1.1rem;font-weight:700;margin-bottom:12px">📊 Team Performance Overview</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px" id="teamStatsGrid"></div>
-      </div>
-      
       <div class="rep-count" id="repCount"></div>
       <div id="repList"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div id="page-profile" class="page">
+    <!-- CHANGE PASSWORD SECTION -->
+    <div class="vf-card" style="border:2px solid #6366f1;background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);margin-bottom:20px;max-width:600px">
+      <h3 style="font-size:1.1rem;font-weight:800;color:#6366f1;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        🔐 <span data-en="Change Password" data-zh="修改密码">Change Password</span>
+      </h3>
+      <form id="salesChangePasswordForm" onsubmit="salesChangePassword(event)">
+        <div class="vf-grid">
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-en="Current Password" data-zh="当前密码">Current Password</label>
+            <input type="password" class="vf-input" id="salesCurrentPassword" required minlength="1" data-en-placeholder="Enter current password" data-zh-placeholder="输入当前密码" placeholder="Enter current password">
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-en="New Password" data-zh="新密码">New Password</label>
+            <input type="password" class="vf-input" id="salesNewPassword" required minlength="6" data-en-placeholder="Enter new password (min 6 characters)" data-zh-placeholder="输入新密码（至少6个字符）" placeholder="Enter new password (min 6 characters)">
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-en="Confirm New Password" data-zh="确认新密码">Confirm New Password</label>
+            <input type="password" class="vf-input" id="salesConfirmPassword" required minlength="6" data-en-placeholder="Re-enter new password" data-zh-placeholder="重新输入新密码" placeholder="Re-enter new password">
+          </div>
+        </div>
+        <button type="submit" class="vf-btn" style="background:#6366f1;width:100%;margin-top:12px">
+          <span data-en="Change Password" data-zh="修改密码">Change Password</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- USER INFO -->
+    <div class="vf-card" style="max-width:600px">
+      <h3 style="font-size:1.1rem;font-weight:800;color:#1e293b;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        👤 <span data-en="Your Information" data-zh="您的信息">Your Information</span>
+      </h3>
+      <div style="display:grid;gap:12px">
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px">
+          <span style="font-weight:600;color:#64748b" data-en="Username:" data-zh="用户名：">Username:</span>
+          <span style="font-weight:700;color:#1e293b" id="profileUsername"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px">
+          <span style="font-weight:600;color:#64748b" data-en="Name:" data-zh="姓名：">Name:</span>
+          <span style="font-weight:700;color:#1e293b" id="profileName"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px">
+          <span style="font-weight:600;color:#64748b" data-en="Team:" data-zh="团队：">Team:</span>
+          <span style="font-weight:700;color:#1e293b" id="profileTeam"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px">
+          <span style="font-weight:600;color:#64748b" data-en="Role:" data-zh="角色：">Role:</span>
+          <span style="font-weight:700;color:#1e293b" data-en="Sales" data-zh="销售">Sales</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -769,24 +781,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="auth.js"></script>
-<script src="google-sheets-sync.js"></script>
 <script>
 // ===================== AUTHENTICATION CHECK =====================
-const currentUser = getCurrentUser();
+const currentUser = requireAuth('sales');
 if (!currentUser) {
-  window.location.href = 'login.html';
-}
-
-// Show team filter and Users tab only for admin users
-if (currentUser && currentUser.role === 'admin') {
-  const teamFilter = document.getElementById('repFilterTeam');
-  if (teamFilter) {
-    teamFilter.style.display = 'block';
-  }
-  const usersTab = document.getElementById('tab-users');
-  if (usersTab) {
-    usersTab.style.display = 'block';
-  }
+  // Will redirect to login.html
 }
 
 // ===================== CITY MAP (English → Chinese) =====================
@@ -821,22 +820,7 @@ function hDoctors(h) { return currentLang==='zh' ? (h.doctorsZh||h.doctors) : h.
 
 // ===================== DATA =====================
 // ===================== CUSTOMER DATA MANAGEMENT =====================
-async function getCustomerData(type) {
-  // Try to sync with Google Sheets first
-  try {
-    const syncedData = await syncCustomers();
-    if (syncedData && syncedData.length > 0) {
-      if (type === 'machine') {
-        return syncedData.filter(c => c.model === 'A8' || c.model === 'A90');
-      } else {
-        return syncedData.filter(c => !c.model || c.model === 'External');
-      }
-    }
-  } catch (error) {
-    console.log('Sync failed, using local data:', error);
-  }
-  
-  // Fall back to localStorage
+function getCustomerData(type) {
   const key = 'fremenatos_' + type;
   const stored = localStorage.getItem(key);
   if (stored) {
@@ -846,16 +830,8 @@ async function getCustomerData(type) {
   return type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
 }
 
-async function saveCustomerData(type, data) {
+function saveCustomerData(type, data) {
   localStorage.setItem('fremenatos_' + type, JSON.stringify(data));
-  
-  // Sync with Google Sheets
-  try {
-    await saveToGoogleSheets(DATA_TYPES.CUSTOMERS, data);
-  } catch (error) {
-    console.log('Failed to sync customer data:', error);
-  }
-  
   // Reload the references
   if (type === 'machine') {
     machineCustomers.length = 0;
@@ -870,23 +846,23 @@ async function saveCustomerData(type, data) {
   renderCards();
 }
 
-async function addCustomer(type, customer) {
-  const data = await getCustomerData(type);
+function addCustomer(type, customer) {
+  const data = getCustomerData(type);
   customer.id = data.length > 0 ? Math.max(...data.map(c => c.id)) + 1 : 1;
   data.push(customer);
-  await saveCustomerData(type, data);
+  saveCustomerData(type, data);
 }
 
-async function updateCustomer(type, id, updates) {
-  const data = await getCustomerData(type);
+function updateCustomer(type, id, updates) {
+  const data = getCustomerData(type);
   const idx = data.findIndex(c => c.id === id);
   if (idx >= 0) {
     Object.assign(data[idx], updates);
-    await saveCustomerData(type, data);
+    saveCustomerData(type, data);
   }
 }
 
-async function deleteCustomer(type, id) {
+function deleteCustomer(type, id) {
   if (!confirm(currentLang === 'zh' ? '确定删除此客户？所有关联的拜访报告不会删除。' : 'Delete this customer? Related visit reports will be kept.')) return;
   
   // If type is 'all', determine actual type from the customer
@@ -898,37 +874,25 @@ async function deleteCustomer(type, id) {
     }
   }
   
-  const data = (await getCustomerData(actualType)).filter(c => c.id !== id);
-  await saveCustomerData(actualType, data);
+  const data = getCustomerData(actualType).filter(c => c.id !== id);
+  saveCustomerData(actualType, data);
   closeModal();
 }
 
-async function refreshAllCustomers() {
-  // Don't refresh from localStorage if arrays already have data
-  if (machineCustomers.length === 0 || externalCustomers.length === 0) {
-    machineCustomers = await getCustomerData('machine');
-    externalCustomers = await getCustomerData('external');
-  }
-  allCustomers = [...machineCustomers, ...externalCustomers];
-}
-
-async function openCustomerEdit(type, id) {
-  // Refresh allCustomers from localStorage to ensure it's up to date
-  await refreshAllCustomers();
-  
+function openCustomerEdit(type, id) {
   // If type is 'all', determine actual type from the customer
   let actualType = type;
+  let customer = null;
   
   if (type === 'all') {
-    const customer = allCustomers.find(x => x.id === id);
+    customer = allCustomers.find(x => x.id === id);
     if (customer) {
       actualType = (customer.model === 'A8' || customer.model === 'A90') ? 'machine' : 'external';
     }
   }
   
-  // Get fresh data from localStorage for the specific type
-  const data = await getCustomerData(actualType);
-  const c = data.find(x => x.id === id);
+  const data = getCustomerData(actualType);
+  const c = customer || data.find(x => x.id === id);
   if (!c) { alert('Customer not found'); return; }
   
   document.getElementById('editType').value = actualType;
@@ -1000,19 +964,20 @@ function saveCustomerEdit(e) {
   updateCustomer(type, id, updates);
   closeCustomerEdit();
   alert(currentLang === 'zh' ? '✅ 客户数据已更新！' : '✅ Customer data updated!');
-  // Refresh allCustomers to ensure it's up to date
-  refreshAllCustomers();
   renderCards();
   if (_modalContext && _modalContext.type === 'hospital' && _modalContext.id === id) {
-    // Find the updated customer in the fresh allCustomers array
-    const updatedIdx = allCustomers.findIndex(x => x.id === id);
-    if (updatedIdx >= 0) {
-      openModal(allCustomers, updatedIdx);
+    // Find the updated customer in allCustomers array
+    const newIdx = allCustomers.findIndex(x => x.id === id);
+    if (newIdx >= 0) {
+      // Refresh the modal context with updated data
+      _modalContext.datasetName = allCustomers;
+      _modalContext.idx = newIdx;
+      openModal(allCustomers, newIdx);
     }
   }
 }
 
-async function showCustomerImport() {
+function showCustomerImport() {
   // Simple approach: prompt for JSON data
   const json = prompt(currentLang === 'zh'
     ? '粘贴客户 JSON 数据 (数组格式 [{...},{...}]):'
@@ -1022,9 +987,9 @@ async function showCustomerImport() {
     const data = JSON.parse(json);
     if (!Array.isArray(data)) throw new Error('Need array');
     const type = confirm(currentLang === 'zh' ? '确定导入为机器客户？(取消=外部客户)' : 'Import as machine customers? (Cancel=external)') ? 'machine' : 'external';
-    const existing = await getCustomerData(type);
+    const existing = getCustomerData(type);
     data.forEach(c => { c.id = existing.length > 0 ? Math.max(...existing.map(x => x.id)) + 1 : 1; existing.push(c); });
-    await saveCustomerData(type, existing);
+    saveCustomerData(type, existing);
     alert(`✅ 已导入 ${data.length} 条客户记录`);
   } catch(e) {
     alert('❌ JSON 解析失败: ' + e.message);
@@ -1036,7 +1001,7 @@ let externalCustomers = [];
 let allCustomers = []; // Combined list
 
 const MACHINE_DEFAULTS = [
-  {id:1,name:"Lucy Health Care PLC",nameZh:"露西医疗保健有限公司",city:"A.A",date:"29/08/2024",model:"A8",
+  {id:1,name:"Lucy health care plc",nameZh:"露西医疗保健有限公司",city:"A.A",date:"29/08/2024",model:"A8",
    contacts:[{role:"Laboratory Head",roleZh:"检验科主任",name:"Foziya",nameZh:"福齐娅",phone:"0911563600"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"Specialty Health Center (General / Multi-specialty Services)",specialtyZh:"专科医疗中心（综合/多专科服务）",ownership:"Private",ownershipZh:"私立"},
   {id:2,name:"AL-FEWZ Health care",nameZh:"阿尔菲伍兹医疗保健",city:"A.A",date:"08/12/2024",model:"A8",
@@ -1054,7 +1019,7 @@ const MACHINE_DEFAULTS = [
   {id:6,name:"UNECA",nameZh:"联合国非洲经济委员会",city:"A.A",date:"28/10/2024",model:"A90",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Yohannes",nameZh:"约翰内斯",phone:"0929908429"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
-  {id:7,name:"Care Medium clinic",nameZh:"关爱中型诊所",city:"D.B",date:"14/08/2025",model:"A8",
+  {id:7,name:"Care Medium Clinic",nameZh:"关爱中型诊所",city:"D.B",date:"14/08/2025",model:"A8",
    contacts:[{role:"Owner",roleZh:"业主",name:"Dr.Abebe",nameZh:"阿贝贝医生",phone:"0978789879 / 0905703752"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
   {id:8,name:"Nuri Enat MCH",nameZh:"努里埃纳特妇幼诊所",city:"Adama",date:"26/05/2025",model:"A90",
@@ -1072,22 +1037,22 @@ const MACHINE_DEFAULTS = [
   {id:12,name:"Geda Medical Laboratory",nameZh:"格达医学检验所",city:"Jimma",date:"31/10/2024",model:"A90",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Awel",nameZh:"阿维尔",phone:"0919611436"},{role:"Owner",roleZh:"业主",name:"Gentnet",nameZh:"根特内特",phone:"0911386169"}],
     payment:[],stock:"No company reagent stock. Machines: Finecare, Accre 90, Zybio (fully auto chemistry), Dymind (CBC), K-Lite 8 (electrolyte).",stockZh:"无公司试剂库存。设备: Finecare, Accre 90, Zybio(全自动生化), Dymind(血球), K-Lite 8(电解质)。",order:"",doctors:"",specialty:"Medical Laboratory / Diagnostic Laboratory",specialtyZh:"医学检验所/诊断实验室",ownership:"Private",ownershipZh:"私立"},
-   {id:13,name:"Dr. Ermias Medium clinic",nameZh:"埃尔米亚医生中型诊所",city:"Jimma",date:"08/02/2025",model:"A90",
+   {id:13,name:"Dr. Ermias Medium Clinic",nameZh:"埃尔米亚医生中型诊所",city:"Jimma",date:"08/02/2025",model:"A90",
     contacts:[{role:"Owner",roleZh:"业主",name:"Dr.Ermias",nameZh:"埃尔米亚医生",phone:"0911441098"}],
    payment:[],stock:"Vitamin D 2p, TSH 1p, FT4 1p, VB12 1p, PCT 1p. Machines: Human (chemistry), Diatron (CBC), Accre 90.",stockZh:"维生素D 2盒, TSH 1盒, FT4 1盒, VB12 1盒, PCT 1盒。设备: Human(生化), Diatron(血球机), Accre 90。",order:"",doctors:"",specialty:"Medium Clinic (General Medical Services)",specialtyZh:"中型诊所（综合医疗服务）",ownership:"Private",ownershipZh:"私立"},
-   {id:14,name:"Jimma Awetu primary Hospital",nameZh:"吉玛阿韦图初级医院",city:"Jimma",date:"08/06/2025",model:"A90",
+   {id:14,name:"Jimma Awetu Primary Hospital",nameZh:"吉玛阿韦图初级医院",city:"Jimma",date:"08/06/2025",model:"A90",
     contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Abdo",nameZh:"阿卜杜",phone:"0913438154"},{role:"G/Manager",roleZh:"总经理",name:"Jemila",nameZh:"杰米拉",phone:"0930812206"}],
     payment:[],stock:"FT3 3p, FT4 2p, Testosterone 2p, FSH 3p+18pcs, Vitamin D 8p, CEA 2p+6pcs, Progesterone 2p, AMH 1p+6pcs, CA19-9 1p+24pcs, LH 2p, PCT 1p+18pcs, TSH 6p+12pcs, CA125 3p, TT4 4p, TT3 2p, HsTnl 1p. Machines: Human (chem), Afias 6 & Accre 90 (hormonal), Mindray (CBC), K-Lite 8G & Human (electrolyte).",stockZh:"FT3 3盒, FT4 2盒, 睾酮2盒, FSH 3盒+18个, 维生素D 8盒, CEA 2盒+6个, 孕酮2盒, AMH 1盒+6个, CA19-9 1盒+24个, LH 2盒, PCT 1盒+18个, TSH 6盒+12个, CA125 3盒, TT4 4盒, TT3 2盒, HsTnl 1盒。设备: Human(生化), Afias 6 & Accre 90(激素), Mindray(血球), K-Lite 8G & Human(电解质)。",order:"",doctors:"",specialty:"Primary Hospital (General Healthcare Services)",specialtyZh:"初级医院（综合医疗服务）",ownership:"Private",ownershipZh:"私立"},
-   {id:15,name:"Abajifar Medium Clinic (A90)",nameZh:"阿巴吉法中型诊所",city:"Jimma",date:"08/04/2025",model:"A90",
+   {id:15,name:"Abajifar Medium Clinic",nameZh:"阿巴吉法中型诊所",city:"Jimma",date:"08/04/2025",model:"A90",
     contacts:[{role:"Owner",roleZh:"业主",name:"Dr.Fedlu",nameZh:"费德鲁医生",phone:"0913082564"},{role:"Laboratorist",roleZh:"检验师",name:"Wonde",nameZh:"旺德",phone:"0921429878"},{role:"Store",roleZh:"库管",name:"Fatima",nameZh:"法蒂玛",phone:"0917800810"}],
     payment:[],stock:"TSH 3p+1pc, Vitamin D 4p, FSH 3p, Testosterone 1p. Machines: Accre 90 & Finecare (hormonal), Mindray (chem), Mindray (CBC). Interested in Electrolyte analyzer.",stockZh:"TSH 3盒+1个, 维生素D 4盒, FSH 3盒, 睾酮1盒。设备: Accre 90 & Finecare(激素), Mindray(生化), Mindray(血球)。对电解质分析仪有兴趣。",order:"Electrolyte analyzer",orderZh:"电解质分析仪",doctors:"",specialty:"Medium Clinic (General Outpatient Services)",specialtyZh:"中型诊所（综合门诊服务）",ownership:"Private",ownershipZh:"私立"},
-   {id:16,name:"Abajifar Medium Clinic (A8)",nameZh:"阿巴吉法中型诊所",city:"Jimma",date:"31/10/2024",model:"A8",
+   {id:16,name:"Abajifar Medium Clinic",nameZh:"阿巴吉法中型诊所",city:"Jimma",date:"31/10/2024",model:"A8",
     contacts:[{role:"Owner",roleZh:"业主",name:"Dr.Fedlu",nameZh:"费德鲁医生",phone:"0913082564"}],
     payment:[],stock:"Complaint: Prolactin results fluctuate.",stockZh:"客户反馈: 泌乳素结果波动。",order:"",doctors:"",specialty:"Medium Clinic (General Outpatient Services)",specialtyZh:"中型诊所（综合门诊服务）",ownership:"Private",ownershipZh:"私立"},
    {id:17,name:"Dr.Belete Medium Clinic",nameZh:"贝莱特医生中型诊所",city:"Jimma",date:"11/01/2024",model:"A8",
     contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Mesay",nameZh:"梅赛",phone:"0912363131"},{role:"Laboratorist",roleZh:"检验师",name:"Melika",nameZh:"梅利卡",phone:"0979843838"},{role:"Owner",roleZh:"业主",name:"Dr.Belete",nameZh:"贝莱特医生",phone:"0911340588"}],
     payment:[],stock:"FT3 1p, FT4 1p, VB12 8pcs, Ferritin 22pcs, HsTnl 16pcs, TT4 5pcs, Folate 6pcs. Machines: Maglumi & Accre 8 (hormonal), URIT fully auto (chem), BH 70P (CBC). Interested in Electrolyte.",stockZh:"FT3 1盒, FT4 1盒, VB12 8个, 铁蛋白22个, HsTnl 16个, TT4 5个, 叶酸6个。设备: Maglumi & Accre 8(激素), URIT全自动(生化), BH 70P(血球)。对电解质分析仪有兴趣。",order:"Electrolyte analyzer",orderZh:"电解质分析仪",doctors:"",specialty:"Medium Clinic (General Medical Services)",specialtyZh:"中型诊所（综合医疗服务）",ownership:"Private",ownershipZh:"私立"},
-   {id:18,name:"Shenen Gibe general hospital",nameZh:"谢嫩吉贝综合医院",city:"Jimma",date:"30/08/2025",model:"A90",
+   {id:18,name:"Shenen Gibe General Hospital",nameZh:"谢嫩吉贝综合医院",city:"Jimma",date:"30/08/2025",model:"A90",
     contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Chala",nameZh:"查拉",phone:"0917444004"}],
     payment:[],stock:"Vitamin D 3p, CA125 3pcs, B-HCG 2pcs, Progesterone 1p, TT4 1p, TT3 1p, TSH 2p. Machines: Finecare & Accre 90 (hormonal), Sysmex (CBC), Human (electrolyte). Interested in Chemistry & Electrolyte analyzer.",stockZh:"维生素D 3盒, CA125 3个, B-HCG 2个, 孕酮1盒, TT4 1盒, TT3 1盒, TSH 2盒。设备: Finecare & Accre 90(激素), Sysmex(血球), Human(电解质)。对生化仪和电解质分析仪有兴趣。",order:"Chemistry analyzer, Electrolyte analyzer",orderZh:"生化分析仪, 电解质分析仪",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"Government",ownershipZh:"政府"},
    {id:19,name:"My Medium Clinic",nameZh:"我的中型诊所",city:"Jimma",date:"29/08/2025",model:"A90",
@@ -1104,7 +1069,7 @@ const MACHINE_DEFAULTS = [
    stock:"TSH, TT3, TT4, PRL, LH, FT4 (31 tests), Folate, Vitamin B12 – Stock Mar 10",
    stockZh:"TSH, TT3, TT4, PRL, LH, FT4 (31人份), 叶酸, 维生素B12 – 3月10日库存",
    order:"Vitamin D",orderZh:"维生素D",doctors:"1 full time + 4 part time internal medicine",doctorsZh:"1名全职 + 4名兼职内科医生",specialty:"Specialized Medical Center",specialtyZh:"专科医疗中心",ownership:"Private",ownershipZh:"私立"},
-  {id:23,name:"Biruhkids Pediatrics center",nameZh:"比尔鲁克儿科中心",city:"A.A",date:"04/04/2025",model:"A90",
+  {id:23,name:"Biruhkids Pediatrics Center",nameZh:"比尔鲁克儿科中心",city:"A.A",date:"04/04/2025",model:"A90",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Abraham",nameZh:"亚伯拉罕",phone:"0968400961"},{role:"Owner",roleZh:"业主",name:"Dr.Fassil",nameZh:"法西尔医生",phone:"0929135785"}],
    payment:[{role:"Finance Head",roleZh:"财务主管",name:"Mezegbe",nameZh:"梅泽格贝",phone:"0907391480"}],stock:"",order:"",doctors:"",specialty:"Pediatrics (Child Health)",specialtyZh:"儿科（儿童健康）",ownership:"Private",ownershipZh:"私立"},
   {id:24,name:"Dr.Shemse MCH Center",nameZh:"谢姆塞医生妇幼中心",city:"A.A",date:"26/03/2025",model:"A8",
@@ -1150,13 +1115,13 @@ const MACHINE_DEFAULTS = [
   {id:36,name:"Robsen Clinic",nameZh:"罗布森诊所",city:"D.D",date:"25/12/2024",model:"A8",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Addis",nameZh:"阿迪斯",phone:""}],
    payment:[],stock:"",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
-  {id:37,name:"Odo dola Midium Clinic",nameZh:"奥多多拉中型诊所",city:"Shakiso",date:"28/07/2025",model:"A8",
+  {id:37,name:"Odo Dola Medium Clinic",nameZh:"奥多多拉中型诊所",city:"Shakiso",date:"28/07/2025",model:"A8",
    contacts:[{role:"Owner",roleZh:"业主",name:"Tamerat",nameZh:"塔梅拉特",phone:"0949187474"}],
    payment:[{role:"Owner",roleZh:"业主",name:"Tamerat",nameZh:"塔梅拉特",phone:"0949187474"}],stock:"",order:"",doctors:"",specialty:"Medium Clinic (General Medical Services)",specialtyZh:"中型诊所（综合医疗服务）",ownership:"Private",ownershipZh:"私立"},
-  {id:38,name:"Dilla University referral Hospital",nameZh:"迪拉大学转诊医院",city:"Dilla",date:"23/07/2025",model:"A90",
+  {id:38,name:"Dilla University Referral Hospital",nameZh:"迪拉大学转诊医院",city:"Dilla",date:"23/07/2025",model:"A90",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Jemberu",nameZh:"杰姆贝鲁",phone:"0916189770 / 0777496646"}],
    payment:[{role:"Lab Head",roleZh:"检验科主任",name:"Jemberu",nameZh:"杰姆贝鲁",phone:"0916189770 / 0777496646"}],stock:"",order:"",doctors:"",specialty:"Referral Hospital (Teaching & Specialized Healthcare Services)",specialtyZh:"转诊医院（教学及专科医疗服务）",ownership:"Government",ownershipZh:"政府"},
-  {id:39,name:"Kibru primary hospital",nameZh:"基布鲁初级医院",city:"Hawassa",date:"20/08/2025",model:"A90",
+  {id:39,name:"Kibru Primary Hospital",nameZh:"基布鲁初级医院",city:"Hawassa",date:"20/08/2025",model:"A90",
    contacts:[{role:"Owner",roleZh:"业主",name:"Dr.Tizazu",nameZh:"蒂扎祖医生",phone:"0977729696"}],
    payment:[{role:"Owner",roleZh:"业主",name:"Dr.Tizazu",nameZh:"蒂扎祖医生",phone:"0977729696"}],stock:"",order:"",doctors:"",specialty:"Primary Hospital (General Healthcare Services)",specialtyZh:"初级医院（综合医疗服务）",ownership:"Private",ownershipZh:"私立"},
   {id:40,name:"Unicare Medical Service",nameZh:"优尼凯尔医疗服务",city:"Hawassa",date:"22/08/2025",model:"A90",
@@ -1204,54 +1169,30 @@ const MACHINE_DEFAULTS = [
   {id:51,name:"Guro Basic Diagnostic Laboratory (No 02)",nameZh:"古罗基础诊断实验室（二号）",city:"Dilla",date:"03/01/2026",model:"A8",
    contacts:[{role:"G/Manager",roleZh:"总经理",name:"Mukerim",nameZh:"穆克里姆",phone:"0920542672"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"Diagnostic Laboratory",specialtyZh:"诊断实验室",ownership:"Private",ownershipZh:"私立"},
-  {id:52,name:"Yehulshet Internal Medicine",nameZh:"叶胡尔谢特内科",city:"A.A",date:"",model:"A8",
-   contacts:[{role:"purchaser",roleZh:"采购员",name:"derb",nameZh:"德布",phone:"0936286410"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
-  {id:53,name:"Abrak Medical Service PLC",nameZh:"阿布拉克医疗服务有限公司",city:"A.A",date:"",model:"A90",
-   contacts:[{role:"Medical Director",roleZh:"医疗主任",name:"Dr.Eden",nameZh:"伊登医生",phone:"0919155293"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"Internal Medicine and Maternal & Child Health (MCH)",specialtyZh:"内科及妇幼",ownership:"Private",ownershipZh:"私立"},
-  {id:54,name:"Lebu St Michael Internal",nameZh:"勒布圣迈克尔内科",city:"A.A",date:"",model:"A90",
-   contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Natnaeal",nameZh:"纳塔纳埃尔",phone:"0912650834"}],
-   payment:[],stock:"Important customer with 30 tests (2.3% of total consumption). Note: Check if this is same as Lubu Internal and MCH Clinic (ID:4) - possible typo.",stockZh:"重要客户，30次测试（占总消费的2.3%）。注意：检查是否与Lubu Internal and MCH Clinic（ID:4）相同 - 可能拼写错误。",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
-  {id:55,name:"Mander Trading PLC",nameZh:"曼德尔贸易有限公司",city:"A.A",date:"",model:"A8",
+  {id:52,name:"yehulshet internal medicine",nameZh:"叶胡尔谢特内科",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
+  {id:53,name:"United Nation Economic Commission for Africa",nameZh:"联合国非洲经济委员会（全称）",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"Note: Might be duplicate of UNECA (ID:6). Has 42 tests in 6-month report vs UNECA 57 tests. Verify if same customer.",stockZh:"注意：可能与UNECA（ID:6）重复。6个月报告中有42次测试，UNECA有57次。需核实是否为同一客户。",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
+  {id:54,name:"Abrak medical service plc",nameZh:"阿布拉克医疗服务有限公司",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"Medical Service Provider",specialtyZh:"医疗服务提供商",ownership:"Private",ownershipZh:"私立"},
+  {id:55,name:"Lebu st mechael internal",nameZh:"勒布圣迈克尔内科",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"Important customer with 30 tests (2.3% of total consumption). Note: Check if this is same as Lubu Internal and MCH Clinic (ID:4) - possible typo.",stockZh:"重要客户，30次测试（占总消费的2.3%）。注意：检查是否与Lubu Internal and MCH Clinic（ID:4）相同 - 可能拼写错误。",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
+  {id:56,name:"mander trading plc",nameZh:"曼德尔贸易有限公司",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"Trading Company (Medical Supplies)",specialtyZh:"贸易公司（医疗用品）",ownership:"Private",ownershipZh:"私立"},
+  {id:57,name:"Medan pediatric clinic",nameZh:"美丹儿科诊所",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"Pediatrics (Child Health Specialty Clinic)",specialtyZh:"儿科（儿童健康专科诊所）",ownership:"Private",ownershipZh:"私立"},
+  {id:58,name:"Alta medium clinic",nameZh:"阿尔塔中型诊所",city:"A.A",date:"",model:"A8",
+   contacts:[],payment:[],stock:"Note: Different from Alta Medium Clinic in Adama (External customer ID:4)",stockZh:"注意：与阿达玛的Alta Medium Clinic（外部客户ID:4）不同",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
+  {id:59,name:"Jedunave Pharmacetical plc",nameZh:"杰杜纳韦制药有限公司",city:"A.A",date:"",model:"A90",
    contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
-  {id:56,name:"Medan Pediatric Clinic",nameZh:"美丹儿科诊所",city:"A.A",date:"",model:"A8",
-   contacts:[{role:"Owner",roleZh:"业主",name:"Dr.mahlet",nameZh:"马赫莱特医生",phone:"0921029676"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"Pediatrics (Child Health Specialty Clinic)",specialtyZh:"儿科（儿童健康专科诊所）",ownership:"Private",ownershipZh:"私立"},
-  {id:57,name:"Alta Medium Clinic",nameZh:"阿尔塔中型诊所",city:"A.A",date:"",model:"A8",
-   contacts:[],payment:[],stock:"Note: Different from Alta Medium Clinic in Adama (External customer ID:4)",stockZh:"注意：与阿达玛的Alta Medium Clinic（外部客户ID:4）不同",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"",ownershipZh:""},
-  {id:58,name:"Jedunave Pharmaceutical PLC",nameZh:"杰杜纳韦制药有限公司",city:"A.A",date:"",model:"A90",
-   contacts:[{role:"Owner",roleZh:"业主",name:"mazuza",nameZh:"马祖扎",phone:"0912990226"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"importer",specialtyZh:"进口商",ownership:"Private",ownershipZh:"私立"},
-  {id:59,name:"Gibe Medium Hospital",nameZh:"吉贝中型医院",city:"Jimma",date:"",model:"A8",
-   contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"medium hospital",specialtyZh:"中型医院",ownership:"private",ownershipZh:"私立"},
-  {id:60,name:"Axon Neurology Center",nameZh:"阿克森神经病学中心",city:"A.A",date:"",model:"A90",
-   contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Tlksew",nameZh:"特克塞乌",phone:"0911564765"}],
-   payment:[],stock:"6-month consumption: 21 tests (1.6% of total)",stockZh:"6个月消费：21次测试（占总数1.6%）",order:"",doctors:"",specialty:"Neurology (Brain & Nervous System Care)",specialtyZh:"神经科（脑及神经系统护理）",ownership:"Private",ownershipZh:"私立"},
-  {id:61,name:"Hasset Medium Clinic",nameZh:"哈塞特中型诊所",city:"A.A",date:"",model:"A8",
-   contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"dese",nameZh:"德塞",phone:"0913867939"}],
-   payment:[],stock:"6-month consumption: 14 tests (1.1% of total)",stockZh:"6个月消费：14次测试（占总数1.1%）",order:"",doctors:"",specialty:"Maternal and Child Health (MCH)",specialtyZh:"妇幼",ownership:"Private",ownershipZh:"私立"},
-  {id:62,name:"Hope Oncology Center",nameZh:"希望肿瘤中心",city:"A.A",date:"",model:"A8",
-   contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"luel",nameZh:"卢埃尔",phone:"0919888446"}],
-   payment:[],stock:"6-month consumption: 7 tests (0.5% of total). Specializes in cancer care.",stockZh:"6个月消费：7次测试（占总数0.5%）。专门从事癌症护理。",order:"",doctors:"",specialty:"Oncology (Cancer Care Center)",specialtyZh:"肿瘤科（癌症护理中心）",ownership:"Private",ownershipZh:"私立"},
-  {id:63,name:"American Medical Center",nameZh:"美国医疗中心",city:"A.A",date:"",model:"A6",
-   contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Mekdes",nameZh:"梅克德斯",phone:"0922820286"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"General Medical Service",specialtyZh:"综合医疗服务",ownership:"Private",ownershipZh:"私立"},
-  {id:64,name:"Alatyon General Hospital",nameZh:"阿拉顿综合医院",city:"Hawassa",date:"",model:"A90",
-   contacts:[{role:"Purchaser",roleZh:"采购员",name:"tezzera",nameZh:"泰泽拉",phone:"0917053726"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"Private",ownershipZh:"私立"},
-  {id:65,name:"Feya General Hospital",nameZh:"费亚综合医院",city:"Shashemene",date:"",model:"A8",
-   contacts:[{role:"Owner",roleZh:"业主",name:"Dr kelemu",nameZh:"凯莱穆医生",phone:"0911714904"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"Private",ownershipZh:"私立"},
-  {id:66,name:"Alem Primary Hospital",nameZh:"阿勒姆初级医院",city:"Butajira",date:"",model:"A6",
-   contacts:[{role:"G/Manager",roleZh:"总经理",name:"yilkal",nameZh:"伊尔卡尔",phone:"0920271225"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"Primary Hospital (General Healthcare Services)",specialtyZh:"初级医院（综合医疗服务）",ownership:"",ownershipZh:""},
-  {id:67,name:"Rohobot General Hospital",nameZh:"罗博特综合医院",city:"Asella",date:"",model:"A90",
-   contacts:[{role:"owner",roleZh:"业主",name:"Dr kedir",nameZh:"基德尔医生",phone:"0927713200"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"",ownershipZh:""},
-  {id:68,name:"Mohammed Akle General Hospital",nameZh:"穆罕默德·阿克勒综合医院",city:"Awash",date:"",model:"A6",
-   contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Ahemed",nameZh:"艾哈迈德",phone:"0920546849"}],
-   payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"",ownershipZh:""}
+  {id:60,name:"Gibe medium Hospital",nameZh:"吉贝中型医院",city:"Jimma",date:"",model:"A8",
+   contacts:[],payment:[],stock:"",order:"",doctors:"",specialty:"",specialtyZh:"",ownership:"",ownershipZh:""},
+  {id:61,name:"Axon Neurology Center",nameZh:"阿克森神经病学中心",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"6-month consumption: 21 tests (1.6% of total)",stockZh:"6个月消费：21次测试（占总数1.6%）",order:"",doctors:"",specialty:"Neurology (Brain & Nervous System Care)",specialtyZh:"神经科（脑及神经系统护理）",ownership:"Private",ownershipZh:"私立"},
+  {id:62,name:"Hasset Medium Clinic",nameZh:"哈塞特中型诊所",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"6-month consumption: 14 tests (1.1% of total)",stockZh:"6个月消费：14次测试（占总数1.1%）",order:"",doctors:"",specialty:"Maternal and Child Health (MCH)",specialtyZh:"妇幼",ownership:"Private",ownershipZh:"私立"},
+  {id:63,name:"Hope Oncology Center",nameZh:"希望肿瘤中心",city:"A.A",date:"",model:"A90",
+   contacts:[],payment:[],stock:"6-month consumption: 7 tests (0.5% of total). Specializes in cancer care.",stockZh:"6个月消费：7次测试（占总数0.5%）。专门从事癌症护理。",order:"",doctors:"",specialty:"Oncology (Cancer Care Center)",specialtyZh:"肿瘤科（癌症护理中心）",ownership:"Private",ownershipZh:"私立"}
 ];
 
 const EXTERNAL_DEFAULTS = [
@@ -1578,12 +1519,6 @@ function openModal(datasetName, idx) {
         ? `<div class="modal-text-block">${doctorsVal}</div>`
         : renderEmptyState('emptyDoctorsPrompt', 'all', h.id)}
     </div>
-    <div class="modal-subsection">
-      ${renderSubHead('6', 'secSummary', !!h.summary)}
-      ${h.summary
-        ? `<div class="modal-text-block" style="white-space:pre-line;background:#fef3c7;border:2px solid #f59e0b;border-radius:8px;padding:12px">${h.summary}</div>`
-        : `<div class="modal-text-block" style="color:#94a3b8;font-style:italic">${currentLang==='zh'?'暂无总结 / No summary available':'No summary available'}</div>`}
-    </div>
     ${showFill ? `<div class="modal-missing">${t('missingDataBanner')}${fillBtn}</div>` : ''}
   </div>`;
 
@@ -1643,7 +1578,7 @@ function switchTab(tab) {
   }
   if (tab === 'dashboard') renderDashboard();
   if (tab === 'reports') { renderReports(); setupVisitForm(); }
-  if (tab === 'users') refreshUsers();
+  if (tab === 'profile') { loadProfileInfo(); }
 }
 
 function setCity(city) {
@@ -1846,6 +1781,7 @@ function submitSingleVisit() {
   const notes = document.getElementById('visitNotes').value.trim();
   const equipment = document.getElementById('visitEquipment').value.trim();
   const outcome = document.getElementById('visitOutcome').value.trim();
+  const summary = document.getElementById('visitSummary').value.trim();
   const potential = document.getElementById('visitPotential').value;
   const nextDate = document.getElementById('visitNextDate').value;
   const nextTarget = document.getElementById('visitNextTarget').value.trim();
@@ -1893,8 +1829,10 @@ function submitSingleVisit() {
     customerCategory: categories,
     customerPotential: potential,
     visitPurpose: notes,
+    notes: notes,  // Save discussion notes to notes field (for summary display)
     equipNeeds: equipment,
     visitProgress: outcome,
+    summary: summary,  // Save the dedicated summary field
     nextVisitDate: nextDate,
     nextVisitTarget: nextTarget,
     orders: orders,
@@ -1945,6 +1883,7 @@ function clearVisitForm() {
   document.getElementById('visitNotes').value = '';
   document.getElementById('visitEquipment').value = '';
   document.getElementById('visitOutcome').value = '';
+  document.getElementById('visitSummary').value = '';
   document.getElementById('visitPotential').value = '';
   document.getElementById('visitNextDate').value = '';
   document.getElementById('visitNextTarget').value = '';
@@ -1967,7 +1906,7 @@ function clearVisitForm() {
 }
 
 // ===================== VISIT FORM =====================
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd9xSndeU_Lvm2-Dtb-E5MVvC5aIYj5_GQ8j2AW6F8IVRIehNmKM0fQaqC7Hmoex9g/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTM_EPvzVaIwG2GpexwCz5m9KC-LTqNbX2OT9NRy1Qi8H3peCe7YY55w5-pYMQMYE/exec';
 const salesColors = {
   'Ephrata':  '#6366f1',
   'Kalkidan': '#0e9f6e',
@@ -2006,10 +1945,11 @@ function submitVisitForm(e) {
   data.submittedAt = isUpdate ? data.submittedAt : new Date().toISOString();
   data.action = isUpdate ? 'update' : 'insert';
   
-  // Add team ID for access control
-  const currentUser = getCurrentUser();
-  if (currentUser && currentUser.teamId) {
-    data.teamId = currentUser.teamId;
+  // Add teamId for sales users
+  const user = getCurrentUser();
+  if (user && user.role === 'sales' && user.teamId) {
+    data.teamId = user.teamId;
+    data.salesPerson = user.name; // Auto-fill salesperson name
   }
   
   const btn = form.querySelector('.vf-submit-btn');
@@ -2065,12 +2005,87 @@ function submitVisitForm(e) {
   });
 }
 
+let pendingSyncInProgress = false;
+
+function queuePendingSync(type, payload) {
+  try {
+    const queue = JSON.parse(localStorage.getItem('fremenatos_pendingSync') || '[]');
+    const entryId = payload && (payload.id || payload.username || `${type}-${Date.now()}`);
+    const existingIndex = queue.findIndex(item => item.id === entryId || (item.type === type && item.payload && item.payload.id && payload && payload.id && item.payload.id === payload.id));
+
+    if (existingIndex >= 0) {
+      queue[existingIndex].payload = payload;
+      queue[existingIndex].updatedAt = new Date().toISOString();
+      localStorage.setItem('fremenatos_pendingSync', JSON.stringify(queue));
+      return queue[existingIndex];
+    }
+
+    queue.push({
+      id: entryId,
+      type: type,
+      payload: payload,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      attempts: 0
+    });
+
+    localStorage.setItem('fremenatos_pendingSync', JSON.stringify(queue));
+    return queue[queue.length - 1];
+  } catch (error) {
+    console.error('queuePendingSync error', error);
+    return null;
+  }
+}
+
+function removePendingSync(entryId) {
+  try {
+    const queue = JSON.parse(localStorage.getItem('fremenatos_pendingSync') || '[]');
+    localStorage.setItem('fremenatos_pendingSync', JSON.stringify(queue.filter(item => item.id !== entryId)));
+  } catch (error) {
+    console.error('removePendingSync error', error);
+  }
+}
+
+async function syncPendingData() {
+  if (pendingSyncInProgress) return;
+  pendingSyncInProgress = true;
+
+  try {
+    const queue = JSON.parse(localStorage.getItem('fremenatos_pendingSync') || '[]');
+    if (!queue.length) return;
+
+    for (const item of [...queue]) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(item.payload)
+        });
+        const data = await response.json();
+        if (data && (data.status === 'success' || data.status === 'ok' || data.success === true)) {
+          removePendingSync(item.id);
+        }
+      } catch (error) {
+        console.warn('Pending sync failed, will retry later:', error);
+      }
+    }
+  } catch (error) {
+    console.error('syncPendingData error', error);
+  } finally {
+    pendingSyncInProgress = false;
+  }
+}
+
+window.addEventListener('online', () => syncPendingData());
+window.addEventListener('load', () => syncPendingData());
+
 function saveVisitReportLocal(data) {
   let reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
   const idx = reports.findIndex(r => r.id == data.id);
   if (idx >= 0) reports[idx] = data;
   else reports.push(data);
   localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
+  queuePendingSync('visitReport', data);
+  syncPendingData();
   // Also update potential customers list from this report
   if (data.customerPotential) {
     addPotentialFromReport(data);
@@ -2095,8 +2110,7 @@ function addPotentialFromReport(data) {
     status: data.customerPotential || 'Warm',
     notes: data.visitProgress || data.visitPurpose || data.outcome || '',
     salesRep: data.salesPerson || '',
-    fromVisit: true,
-    teamId: data.teamId || null // Inherit team ID from report
+    fromVisit: true
   };
   if (existing >= 0) potentials[existing] = entry;
   else potentials.push(entry);
@@ -2110,15 +2124,11 @@ function getLocalReports() {
 }
 
 function getReports(callback) {
-  // Fetch from Google Sheets
-  fetch(SCRIPT_URL)
+  fetch(SCRIPT_URL + '?action=getVisitReports')
     .then(r => r.json())
     .then(res => {
-      if (res.status === 'ok') {
-        callback(res.data || []);
-      } else {
-        callback([]);
-      }
+      const remoteReports = (res && (res.status === 'success' || res.status === 'ok' || res.success === true)) ? (res.data || []) : [];
+      callback(remoteReports);
     })
     .catch(err => {
       console.error('Error fetching reports:', err);
@@ -2178,106 +2188,14 @@ function checkData() {
 }
 
 // ===================== RENDER REPORTS =====================
-// Get all registered salespeople from the system (auth.js USERS object + local users)
-function getAllSalespeople() {
-  const salespeople = [];
-  
-  // Get from auth.js USERS object (if available)
-  if (typeof USERS !== 'undefined') {
-    Object.values(USERS).forEach(user => {
-      if (user.role === 'sales' && user.name) {
-        salespeople.push({ name: user.name, teamId: user.teamId });
-      }
-    });
-  }
-  
-  // Get from local storage registered users
-  const localUsers = loadLocalUsers ? loadLocalUsers() : [];
-  localUsers.forEach(user => {
-    if (user.role === 'sales' && user.name && !salespeople.some(s => s.name === user.name)) {
-      salespeople.push({ name: user.name, teamId: user.teamId || user.preferredTeam });
-    }
-  });
-  
-  return salespeople;
-}
-
-// Get salespeople by team ID
-function getSalespeopleByTeam(teamId) {
-  const allSales = getAllSalespeople();
-  if (!teamId) return allSales.map(s => s.name);
-  return allSales.filter(s => s.teamId == teamId).map(s => s.name);
-}
-
-// Initialize all salesperson dropdowns on page load
-function initializeSalespersonDropdowns() {
-  // Initialize filter dropdown
-  updateSalespersonFilter();
-  
-  // Initialize bulk import dropdown
-  const bulkSalesDropdown = document.getElementById('bulkSalesPerson');
-  if (bulkSalesDropdown) {
-    const salespeople = getAllSalespeople();
-    bulkSalesDropdown.innerHTML = '<option value="">-- 请选择 / Select --</option>';
-    salespeople.sort((a, b) => a.name.localeCompare(b.name)).forEach(person => {
-      const option = document.createElement('option');
-      option.value = person.name;
-      option.textContent = person.name;
-      bulkSalesDropdown.appendChild(option);
-    });
-  }
-}
-
-// Update salesperson filter based on team selection
-function updateSalespersonFilter() {
-  const teamFilter = document.getElementById('repFilterTeam');
-  const salesFilter = document.getElementById('repFilterSales');
-  
-  if (!salesFilter) return;
-  
-  // For sales users, use their own team; for admin, use team filter
-  let selectedTeam = '';
-  if (currentUser && currentUser.role === 'sales' && currentUser.teamId) {
-    selectedTeam = currentUser.teamId.toString();
-  } else if (teamFilter) {
-    selectedTeam = teamFilter.value;
-  }
-  
-  const salespeople = getSalespeopleByTeam(selectedTeam);
-  
-  // Remember current selection
-  const currentSelection = salesFilter.value;
-  
-  // Rebuild options
-  salesFilter.innerHTML = '<option value="">👥 All Salespeople</option>';
-  salespeople.sort().forEach(name => {
-    const option = document.createElement('option');
-    option.value = name;
-    option.textContent = name;
-    salesFilter.appendChild(option);
-  });
-  
-  // Restore selection if still valid
-  if (salespeople.includes(currentSelection)) {
-    salesFilter.value = currentSelection;
-  }
-}
-
 function renderReports() {
   const list = document.getElementById('repList');
   const count = document.getElementById('repCount');
   
-  // Show loading message
   if (list) list.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b">⏳ Loading reports... / 加载报告中...</div>';
   
-  // Update salesperson filter based on team selection
-  updateSalespersonFilter();
-  
-  // Fetch from Google Sheets
   getReports(function(reports) {
-    // Merge with local reports
     const localReports = getLocalReports();
-    // Merge: local override server for same IDs
     const merged = {};
     reports.forEach(r => merged[r.id] = r);
     localReports.forEach(r => merged[r.id] = r);
@@ -2286,6 +2204,7 @@ function renderReports() {
       const db = new Date(b.submittedAt || 0);
       return db - da;
     });
+    if (count) count.textContent = all.length;
     displayReports(all);
   });
 }
@@ -2293,18 +2212,9 @@ function renderReports() {
 function setupVisitForm() {
   const datalist = document.getElementById('hospitalDatalist');
   if (datalist) {
-    const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
     const names = new Set();
-    potentialCustomers.forEach(c => {
-      if (!deletedCustomers.includes(c.name)) {
-        names.add(c.name);
-      }
-    });
-    JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]').forEach(c => {
-      if (!deletedCustomers.includes(c.name)) {
-        names.add(c.name);
-      }
-    });
+    potentialCustomers.forEach(c => names.add(c.name));
+    JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]').forEach(c => names.add(c.name));
     datalist.innerHTML = [...names].sort().map(n => `<option value="${n}">`).join('');
   }
   const today = new Date().toISOString().split('T')[0];
@@ -2313,33 +2223,31 @@ function setupVisitForm() {
 }
 
 function displayReports(reports) {
-  const search = document.getElementById('repSearch') ? document.getElementById('repSearch').value.toLowerCase() : '';
-  const filterTeam = document.getElementById('repFilterTeam') ? document.getElementById('repFilterTeam').value : '';
-  const filterSales = document.getElementById('repFilterSales') ? document.getElementById('repFilterSales').value : '';
-  const filterCat = document.getElementById('repFilterCat') ? document.getElementById('repFilterCat').value : '';
-  const filterPotential = document.getElementById('repFilterPotential') ? document.getElementById('repFilterPotential').value : '';
+  // TEAM FILTERING: Sales users only see their team's reports
+  const user = getCurrentUser();
   
-  // Get current user for access control
-  const currentUser = getCurrentUser();
-  
-  // Get salesperson-to-team mapping
-  function getTeamIdBySalesperson(salesPersonName) {
-    const salespeople = getAllSalespeople();
-    const person = salespeople.find(s => s.name === salesPersonName);
-    return person ? person.teamId : null;
+  // First, filter visit reports by team
+  if (user && user.role === 'sales' && user.teamId) {
+    reports = reports.filter(r => r.teamId === user.teamId);
   }
+  
+  const search = document.getElementById('repSearch').value.toLowerCase();
+  const filterSales = document.getElementById('repFilterSales').value;
+  const filterCat = document.getElementById('repFilterCat').value;
+  const filterPotential = document.getElementById('repFilterPotential').value;
 
   // MERGE PDF customers with visit reports
   // Also load any new hospitals registered via visit form (from localStorage)
-  const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
   const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-  const allPotentials = potentialCustomers.filter(c => !deletedCustomers.includes(c.name));
+  const allPotentials = [...potentialCustomers];
   localPotentials.forEach(lp => {
-    if (!deletedCustomers.includes(lp.name) && !allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
+    if (!allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
       allPotentials.push(lp);
     }
   });
-  const pdfCustomers = allPotentials.map(c => ({
+  
+  // Convert PDF customers to report format
+  let pdfCustomers = allPotentials.map(c => ({
     id: 'pdf_' + c.name.toLowerCase().replace(/\s+/g, '_'),
     hospitalName: c.name,
     hospitalAddress: c.address,
@@ -2354,10 +2262,34 @@ function displayReports(reports) {
     hormoneAnalyzer: c.hormoneAnalyzer,
     notes: c.notes,
     source: c.fromVisit ? 'New' : 'PDF',
-    accre: c.accre || false
+    accre: c.accre || false,
+    teamId: null  // PDF customers don't have teamId initially
   }));
   
-  // Combine visit reports and PDF customers
+  // TEAM FILTERING for PDF customers: Filter by salesRep matching team
+  if (user && user.role === 'sales' && user.teamId) {
+    // Get all users and find team members
+    const allUsers = {...USERS};
+    const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+    localUsers.forEach(u => {
+      if (u.username && u.status === 'active') {
+        allUsers[u.username] = u;
+      }
+    });
+    
+    // Get team member names
+    const teamNames = Object.values(allUsers)
+      .filter(u => u.role === 'sales' && u.teamId === user.teamId)
+      .map(u => normalizeSalesName(u.name));
+    
+    // Only show PDF customers assigned to team members
+    pdfCustomers = pdfCustomers.filter(c => {
+      const normalizedSales = normalizeSalesName(c.salesPerson);
+      return teamNames.includes(normalizedSales);
+    });
+  }
+  
+  // Combine visit reports and PDF customers (both now filtered by team)
   const allData = [...reports.map(r => ({...r, source: 'Report'})), ...pdfCustomers];
   allData.forEach(r => r.salesPerson = normalizeSalesName(r.salesPerson));
 
@@ -2371,26 +2303,14 @@ function displayReports(reports) {
     const matchCat = !filterCat || cats.includes(filterCat);
     const matchPotential = !filterPotential || r.customerPotential === filterPotential;
     
-    // Team filtering - match by salesperson's team
-    const reportTeamId = r.teamId || getTeamIdBySalesperson(r.salesPerson);
-    const matchTeam = !filterTeam || reportTeamId == filterTeam;
-    
-    // 🔒 ACCESS CONTROL: Sales users can only see their own team's reports
-    let matchUser = true;
-    if (currentUser && currentUser.role === 'sales' && currentUser.teamId) {
-      // Sales user - only show reports from their team
-      matchUser = reportTeamId == currentUser.teamId;
-    }
-    // Admin can see all reports (matchUser stays true)
-    
-    return matchSearch && matchSales && matchCat && matchPotential && matchTeam && matchUser;
+    return matchSearch && matchSales && matchCat && matchPotential;
   });
 
-  // Count by potential (from combined data)
-  const hotCount = allData.filter(r => r.customerPotential === 'Hot').length;
-  const warmCount = allData.filter(r => r.customerPotential === 'Warm').length;
-  const coldCount = allData.filter(r => r.customerPotential === 'Cold').length;
-  const unknownCount = allData.filter(r => !r.customerPotential).length;
+  // Count by potential (from filtered team data only)
+  const hotCount = filtered.filter(r => r.customerPotential === 'Hot').length;
+  const warmCount = filtered.filter(r => r.customerPotential === 'Warm').length;
+  const coldCount = filtered.filter(r => r.customerPotential === 'Cold').length;
+  const unknownCount = filtered.filter(r => !r.customerPotential).length;
   
   // Display potential stats
   const statsHtml = `
@@ -2424,20 +2344,25 @@ function displayReports(reports) {
     return;
   }
 
-  // Show team statistics for admin
-  showTeamStatistics(allData);
-
   list.innerHTML = filtered.map(r => {
     const color = salesColors[r.salesPerson] || '#1a56db';
     const cats = Array.isArray(r.customerCategory) ? r.customerCategory : (r.customerCategory||'').split(', ').filter(Boolean);
     const types = Array.isArray(r.visitType) ? r.visitType : (r.visitType||'').split(', ').filter(Boolean);
     const date = r.fillDate || (r.submittedAt||'').slice(0,10) || '—';
     
-    const editBtns = `<div class="rep-actions">
-      ${(r.customerPotential === 'Hot' || r.customerPotential === 'Warm') ? `<button class="rep-edit-btn" onclick="event.stopPropagation();announcePurchase('${r.id}')" style="background:#10b981;color:#fff">🎉 Announce Purchase</button>` : ''}
-      <button class="rep-edit-btn" onclick="event.stopPropagation();${r.source === 'PDF' ? `editPDFCustomer('${r.id}')` : `editReport('${r.id}')`}">${t('repEdit')}</button>
-      <button class="rep-del-btn" onclick="event.stopPropagation();${r.source === 'PDF' || r.source === 'New' ? `deletePDFCustomer('${r.id}','${r.source}')` : `deleteReport('${r.id}')`}">${t('repDelete')}</button>
+    // Buttons: Edit, Delete, and Announce Purchase (for Hot/Warm customers)
+    let buttons = `<div class="rep-actions">
+      <button class="rep-edit-btn" onclick="event.stopPropagation();${r.source === 'PDF' ? `editPDFCustomer('${r.id}')` : `editReport('${r.id}')`}">${t('repEdit')}</button>`;
+    
+    // Add Announce Purchase button for Hot/Warm customers
+    if ((r.customerPotential === 'Hot' || r.customerPotential === 'Warm') && r.source !== 'PDF') {
+      buttons += `<button class="rep-edit-btn" onclick="event.stopPropagation();announcePurchase('${r.id}')" style="background:#10b981;color:#fff;border-color:#10b981">🔔 宣布购买</button>`;
+    }
+    
+    buttons += `<button class="rep-del-btn" onclick="event.stopPropagation();${r.source === 'PDF' || r.source === 'New' ? `deletePDFCustomer('${r.id}','${r.source}')` : `deleteReport('${r.id}')`}">${t('repDelete')}</button>
     </div>`;
+    
+    const editBtns = buttons;
     
     // Customer Potential Badge
     const potential = r.customerPotential || '';
@@ -2473,83 +2398,6 @@ function displayReports(reports) {
   }).join('');
 }
 
-// ===================== TEAM STATISTICS (Admin Only) =====================
-function showTeamStatistics(allReports) {
-  const user = getCurrentUser();
-  const teamStatsDiv = document.getElementById('teamStats');
-  const teamStatsGrid = document.getElementById('teamStatsGrid');
-  
-  console.log('showTeamStatistics called', { user, teamStatsDiv, teamStatsGrid, allReportsLength: allReports.length });
-  
-  if (!teamStatsDiv || !teamStatsGrid) {
-    console.log('Team stats elements not found');
-    return;
-  }
-  
-  // Only show for admin
-  if (!user || user.role !== 'admin') {
-    teamStatsDiv.style.display = 'none';
-    console.log('Not admin, hiding team stats');
-    return;
-  }
-  
-  teamStatsDiv.style.display = 'block';
-  console.log('Showing team stats for admin');
-  
-  // Count reports by team
-  const teamCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
-  allReports.forEach(r => {
-    if (r.teamId && teamCounts[r.teamId] !== undefined) {
-      teamCounts[r.teamId]++;
-    }
-  });
-  
-  console.log('Team counts:', teamCounts);
-  
-  // Get team info from auth.js
-  const teams = getAllTeams();
-  console.log('Teams:', teams);
-  
-  // Generate team cards
-  const teamCards = Object.keys(teamCounts).map(teamId => {
-    const count = teamCounts[teamId];
-    const teamInfo = teams[teamId];
-    const teamName = teamInfo ? teamInfo.name : `Team ${teamId}`;
-    const color = teamInfo ? teamInfo.color : '#667eea';
-    
-    return `
-      <div style="background:rgba(255,255,255,0.15);padding:12px;border-radius:8px;cursor:pointer;transition:all 0.2s" 
-           onclick="filterByTeam(${teamId})"
-           onmouseover="this.style.background='rgba(255,255,255,0.25)'"
-           onmouseout="this.style.background='rgba(255,255,255,0.15)'">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <div style="width:12px;height:12px;border-radius:50%;background:${color}"></div>
-          <div style="font-weight:700;font-size:0.9rem">${teamName}</div>
-        </div>
-        <div style="font-size:1.8rem;font-weight:800">${count}</div>
-        <div style="font-size:0.75rem;opacity:0.9">reports</div>
-      </div>
-    `;
-  }).join('');
-  
-  teamStatsGrid.innerHTML = teamCards;
-  console.log('Team stats rendered');
-}
-
-function filterByTeam(teamId) {
-  console.log('filterByTeam called with teamId:', teamId);
-  const filterTeam = document.getElementById('repFilterTeam');
-  console.log('filterTeam element:', filterTeam);
-  if (filterTeam) {
-    filterTeam.value = teamId;
-    console.log('Set filterTeam value to:', teamId);
-    renderReports();
-    console.log('Called renderReports');
-  } else {
-    console.log('filterTeam element not found');
-  }
-}
-
 // Global variable to store last deleted item for undo
 let _lastDeleted = null;
 let _deleteUndoTimeout = null;
@@ -2566,26 +2414,15 @@ function deleteReport(id) {
     localStorage.setItem('fremenatos_visitReports', JSON.stringify(localReports));
   }
   
-  // Try Google Sheets sync with proper error handling
+  // Also try Google Sheets (fire and forget)
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({ action: 'delete', id: id })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success' || data.status === 'ok') {
-      console.log('✅ Report deleted from Google Sheets');
-    } else {
-      console.warn('⚠️ Backend delete warning:', data.message);
-    }
-  })
-  .catch(error => {
-    console.warn('⚠️ Backend sync failed (offline mode):', error);
-  });
+  }).catch(() => {});
   
   closeModal();
   renderReports();
-  showUndoNotification('Report deleted locally. Click UNDO to restore.', 'report');
+  showUndoNotification('Report deleted. Click UNDO to restore.', 'report');
 }
 
 function showUndoNotification(message, type) {
@@ -2749,12 +2586,8 @@ function editPDFCustomer(id) {
               <input type="text" name="testTubes" value="${customer.testTubes || ''}" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:6px;font-size:0.95rem">
             </div>
             <div>
-              <label style="display:block;font-weight:700;margin-bottom:4px;color:#475569">🏥 专科 / Specialty</label>
-              <input type="text" name="specialty" value="${customer.specialty || ''}" placeholder="e.g., General Hospital, Pediatrics, Internal Medicine" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:6px;font-size:0.95rem">
-            </div>
-            <div>
-              <label style="display:block;font-weight:700;margin-bottom:4px;color:#475569">📝 摘要 / Summary Notes</label>
-              <textarea name="notes" rows="3" placeholder="Add detailed hospital summary here..." style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:6px;font-size:0.95rem">${customer.notes || ''}</textarea>
+              <label style="display:block;font-weight:700;margin-bottom:4px;color:#475569">备注 / Notes</label>
+              <textarea name="notes" rows="3" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:6px;font-size:0.95rem">${customer.notes || ''}</textarea>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
               <input type="checkbox" name="accre" id="pdfAccre" ${customer.accre ? 'checked' : ''} style="width:20px;height:20px">
@@ -2796,7 +2629,6 @@ function savePDFCustomer(event, customerIndex) {
     hormoneAnalyzer: form.hormoneAnalyzer.value,
     chemAnalyzer: form.chemAnalyzer.value,
     testTubes: form.testTubes.value,
-    specialty: form.specialty.value,
     notes: form.notes.value,
     accre: form.accre.checked
   };
@@ -2819,38 +2651,26 @@ function deletePDFCustomer(id, src) {
   if (!confirm('⚠️ 确定删除此客户？\n\nAre you sure you want to delete this customer?\n\nThis will remove them from all pages.')) return;
   
   const customerName = decodeURIComponent(id.replace('pdf_', '').replace(/_/g, ' '));
-  const idWithoutPrefix = id.replace('pdf_', '');
-  
-  // Load both sources
-  const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-  const allPotentials = [...potentialCustomers, ...localPotentials];
-  
-  // Try to find in localStorage first (for New customers)
-  let localIndex = localPotentials.findIndex(c => 
-    c.name.toLowerCase().replace(/\s+/g, '_') === idWithoutPrefix.toLowerCase() ||
-    c.name === customerName
-  );
-  
-  // Try to find in hardcoded array (for PDF customers)
-  let hardcodedIndex = potentialCustomers.findIndex(c => 
-    c.name.toLowerCase().replace(/\s+/g, '_') === idWithoutPrefix.toLowerCase()
-  );
-  
-  if (localIndex !== -1) {
-    // Delete from localStorage
-    localPotentials.splice(localIndex, 1);
-    localStorage.setItem('fremenatos_potentials', JSON.stringify(localPotentials));
-    console.log('✅ Deleted from localStorage');
-  } else if (hardcodedIndex !== -1) {
-    // Delete from hardcoded array by marking in localStorage
-    const deletedList = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
-    deletedList.push(potentialCustomers[hardcodedIndex].name);
-    localStorage.setItem('fremenatos_deleted_customers', JSON.stringify(deletedList));
-    console.log('✅ Marked as deleted in localStorage');
+  let customerIndex = -1;
+
+  if (src === 'New') {
+    // New hospitals stored in localStorage
+    customerIndex = potentialCustomers.findIndex(c => c.name === customerName);
+    if (customerIndex === -1) {
+      alert('Customer not found');
+      return;
+    }
+    potentialCustomers.splice(customerIndex, 1);
+    localStorage.setItem('fremenatos_potentials', JSON.stringify(potentialCustomers));
   } else {
-    alert('Customer not found in either source');
-    console.error('Customer not found:', customerName, id);
-    return;
+    // PDF-based customers in hardcoded array
+    customerIndex = potentialCustomers.findIndex(c => c.name.toLowerCase().replace(/\s+/g, '_') === id.replace('pdf_', ''));
+    if (customerIndex === -1) {
+      alert('Customer not found');
+      return;
+    }
+    potentialCustomers.splice(customerIndex, 1);
+    localStorage.setItem('fremenatos_potentials', JSON.stringify(potentialCustomers));
   }
   
   closeModal();
@@ -2858,24 +2678,316 @@ function deletePDFCustomer(id, src) {
   renderReports();
   updatePotentialStats();
   renderPotentialCards();
-  
-  // Refresh dashboard if it's loaded
-  if (typeof renderDashboard === 'function') {
-    renderDashboard();
-  }
-  // Refresh boss dashboard functions if available
-  if (typeof renderHotCustomers === 'function') {
-    renderHotCustomers();
-  }
-  if (typeof renderTeamPerformance === 'function') {
-    renderTeamPerformance();
-  }
 }
 
 let _editingId = null;
 function editReport(id) {
-  alert('Editing reports is no longer available. Please use Bulk Import to add new data, or delete and re-import.');
+  _editingId = id;
+  const reports = getLocalReports();
+  const report = reports.find(r => String(r.id) === String(id));
+  
+  if (!report) {
+    alert('❌ Report not found / 未找到报告');
+    return;
+  }
+  
+  // Close any open modal first
   closeModal();
+  
+  // Create edit modal
+  const modalHtml = `
+    <div class="modal-overlay open" id="editReportModal" onclick="if(event.target===this) closeEditReportModal()">
+      <div class="modal modal-wide" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-header-top">
+            <div class="modal-title">✏️ 编辑报告 / Edit Report<br><span style="font-size:0.8rem;opacity:0.9">${report.hospitalName || ''}</span></div>
+            <button class="modal-close" onclick="closeEditReportModal()">✕</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <label class="vf-label">医院名称 / Hospital Name</label>
+              <input class="vf-input" type="text" id="editHospitalName" value="${report.hospitalName || ''}">
+            </div>
+            <div>
+              <label class="vf-label">医院地址 / Hospital Address</label>
+              <input class="vf-input" type="text" id="editHospitalAddress" value="${report.hospitalAddress || ''}">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <label class="vf-label">联系人 / Contact Person</label>
+              <input class="vf-input" type="text" id="editContact" value="${report.contact || report.visitingName || ''}">
+            </div>
+            <div>
+              <label class="vf-label">电话 / Phone</label>
+              <input class="vf-input" type="text" id="editPhone" value="${report.phone || ''}">
+            </div>
+          </div>
+          <div style="margin-bottom:12px">
+            <label class="vf-label">拜访进展 / Visit Progress</label>
+            <textarea class="vf-textarea" id="editNotes" rows="3">${report.visitProgress || report.notes || ''}</textarea>
+          </div>
+          <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
+            <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
+            <textarea class="vf-textarea" id="editSummary" rows="4" placeholder="请简要总结本次拜访的关键要点、达成的共识、下一步行动计划等。" style="font-family:monospace;background:#fff">${report.summary || ''}</textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <label class="vf-label">客户潜力 / Customer Potential ⭐</label>
+              <select class="vf-select" id="editPotential">
+                <option value="">-- 选择 / Select --</option>
+                <option value="Hot" ${report.customerPotential === 'Hot' ? 'selected' : ''}>🔥 热门 / Hot</option>
+                <option value="Warm" ${report.customerPotential === 'Warm' ? 'selected' : ''}>🌤️ 温暖 / Warm</option>
+                <option value="Cold" ${report.customerPotential === 'Cold' ? 'selected' : ''}>❄️ 冷淡 / Cold</option>
+              </select>
+            </div>
+            <div>
+              <label class="vf-label">患者量 / Patient Load</label>
+              <input class="vf-input" type="text" id="editPatientLoad" value="${report.patientLoad || ''}">
+            </div>
+            <div>
+              <label class="vf-label">激素分析仪 / Hormone Analyzer</label>
+              <input class="vf-input" type="text" id="editHormoneAnalyzer" value="${report.hormoneAnalyzer || report.otherBrand1 || ''}">
+            </div>
+          </div>
+          <div style="background:#fef3c7;padding:12px;border-radius:8px;margin-bottom:12px;border:2px solid #fbbf24">
+            <p style="font-size:0.85rem;color:#92400e;margin-bottom:8px">
+              <strong>💡 提示 / Tip:</strong> 如果客户同意购买机器，请保存后点击"宣布购买"按钮 / If customer agrees to purchase, save then click "Announce Purchase" button
+            </p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button onclick="saveEditedReport()" style="flex:1;background:#10b981;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer">✅ 保存 / Save</button>
+          <button onclick="closeEditReportModal()" style="background:#6b7280;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:700;cursor:pointer">❌ 取消 / Cancel</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeEditReportModal() {
+  const modal = document.getElementById('editReportModal');
+  if (modal) modal.remove();
+  _editingId = null;
+}
+
+function saveEditedReport() {
+  if (!_editingId) return;
+  
+  const reports = getLocalReports();
+  const index = reports.findIndex(r => String(r.id) === String(_editingId));
+  
+  if (index === -1) {
+    alert('❌ Report not found / 未找到报告');
+    closeEditReportModal();
+    return;
+  }
+  
+  // Update report with new values
+  reports[index].hospitalName = document.getElementById('editHospitalName').value;
+  reports[index].hospitalAddress = document.getElementById('editHospitalAddress').value;
+  reports[index].contact = document.getElementById('editContact').value;
+  reports[index].visitingName = document.getElementById('editContact').value;
+  reports[index].phone = document.getElementById('editPhone').value;
+  reports[index].visitProgress = document.getElementById('editNotes').value;
+  reports[index].notes = document.getElementById('editNotes').value;
+  reports[index].summary = document.getElementById('editSummary').value;
+  reports[index].customerPotential = document.getElementById('editPotential').value;
+  reports[index].patientLoad = document.getElementById('editPatientLoad').value;
+  reports[index].hormoneAnalyzer = document.getElementById('editHormoneAnalyzer').value;
+  reports[index].otherBrand1 = document.getElementById('editHormoneAnalyzer').value;
+  
+  // Save to localStorage
+  localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
+  
+  // Try to update in Google Sheets
+  const updateData = {
+    action: 'updateVisitReport',
+    id: _editingId,
+    ...reports[index]
+  };
+  
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(updateData)
+  }).then(r => r.json()).catch(() => {});
+  
+  alert('✅ 报告已更新 / Report updated!');
+  closeEditReportModal();
+  renderReports();
+}
+
+// ===================== PURCHASE ANNOUNCEMENT SYSTEM =====================
+
+function announcePurchase(reportId) {
+  const reports = getLocalReports();
+  const report = reports.find(r => String(r.id) === String(reportId));
+  
+  if (!report) {
+    alert('❌ Report not found / 未找到报告');
+    return;
+  }
+  
+  // Check if customer potential is Hot or Warm
+  if (report.customerPotential !== 'Hot' && report.customerPotential !== 'Warm') {
+    alert('⚠️ 只有热门或温暖客户才能宣布购买\nOnly Hot or Warm customers can announce purchase');
+    return;
+  }
+  
+  closeModal();
+  
+  // Create announcement modal
+  const modalHtml = `
+    <div class="modal-overlay open" id="announcementModal" onclick="if(event.target===this) closeAnnouncementModal()">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header" style="background:linear-gradient(135deg,#10b981,#059669)">
+          <div class="modal-header-top">
+            <div class="modal-title">🔔 宣布购买 / Announce Purchase</div>
+            <button class="modal-close" onclick="closeAnnouncementModal()">✕</button>
+          </div>
+          <div style="margin-top:8px;font-size:0.85rem;opacity:0.9">
+            客户同意购买机器 / Customer agreed to purchase machine
+          </div>
+        </div>
+        <div class="modal-body">
+          <div style="background:#d1fae5;padding:12px;border-radius:8px;margin-bottom:16px;border:2px solid #10b981">
+            <p style="font-size:0.9rem;color:#065f46;font-weight:600;margin-bottom:4px">📋 客户信息 / Customer Info:</p>
+            <p style="font-size:0.85rem;color:#047857">🏥 ${report.hospitalName || 'N/A'}</p>
+            <p style="font-size:0.85rem;color:#047857">📍 ${report.hospitalAddress || 'N/A'}</p>
+            <p style="font-size:0.85rem;color:#047857">👤 ${report.contact || report.visitingName || 'N/A'}</p>
+            <p style="font-size:0.85rem;color:#047857">📞 ${report.phone || 'N/A'}</p>
+          </div>
+          
+          <div style="margin-bottom:12px">
+            <label class="vf-label">购买类型 / Purchase Type *</label>
+            <div style="display:flex;gap:12px;margin-top:8px">
+              <label style="flex:1;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                <input type="radio" name="purchaseType" value="new" style="margin-right:8px" checked>
+                <span style="font-weight:600">🆕 新购 / New Machine</span>
+                <p style="font-size:0.75rem;color:#64748b;margin-top:4px">首次购买机器 / First time purchase</p>
+              </label>
+              <label style="flex:1;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                <input type="radio" name="purchaseType" value="replacement" style="margin-right:8px">
+                <span style="font-weight:600">🔄 更换 / Replacement</span>
+                <p style="font-size:0.75rem;color:#64748b;margin-top:4px">替换旧机器 / Replace old machine</p>
+              </label>
+            </div>
+          </div>
+          
+          <div style="margin-bottom:12px">
+            <label class="vf-label">机器型号 / Machine Model *</label>
+            <div style="display:flex;gap:12px;margin-top:8px">
+              <label style="flex:1;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#e2e8f0'">
+                <input type="radio" name="machineModel" value="A8" style="margin-right:8px" checked>
+                <span style="font-weight:700;font-size:1.1rem;color:#3b82f6">A8</span>
+              </label>
+              <label style="flex:1;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                <input type="radio" name="machineModel" value="A90" style="margin-right:8px">
+                <span style="font-weight:700;font-size:1.1rem;color:#10b981">A90</span>
+              </label>
+            </div>
+          </div>
+          
+          <div style="margin-bottom:12px">
+            <label class="vf-label">备注 / Notes (Optional)</label>
+            <textarea class="vf-textarea" id="announcementNotes" rows="3" placeholder="例如：客户计划下周付款 / e.g., Customer plans to pay next week"></textarea>
+          </div>
+          
+          <div style="background:#fef3c7;padding:12px;border-radius:8px;border:2px solid #fbbf24">
+            <p style="font-size:0.85rem;color:#92400e">
+              <strong>ℹ️ 提示 / Note:</strong> 宣布后，管理员将审核并确认购买。确认后，该客户将添加到老客户列表中。
+              <br>After announcement, admin will review and confirm. Once confirmed, customer will be added to Old Customers list.
+            </p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button onclick="submitPurchaseAnnouncement('${reportId}')" style="flex:1;background:#10b981;color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">
+            📢 提交宣布 / Submit Announcement
+          </button>
+          <button onclick="closeAnnouncementModal()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">
+            ❌ 取消 / Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeAnnouncementModal() {
+  const modal = document.getElementById('announcementModal');
+  if (modal) modal.remove();
+}
+
+function submitPurchaseAnnouncement(reportId) {
+  const reports = getLocalReports();
+  const report = reports.find(r => String(r.id) === String(reportId));
+  
+  if (!report) {
+    alert('❌ Report not found / 未找到报告');
+    return;
+  }
+  
+  const purchaseType = document.querySelector('input[name="purchaseType"]:checked')?.value;
+  const machineModel = document.querySelector('input[name="machineModel"]:checked')?.value;
+  const notes = document.getElementById('announcementNotes').value;
+  
+  if (!purchaseType || !machineModel) {
+    alert('⚠️ 请选择购买类型和机器型号\nPlease select purchase type and machine model');
+    return;
+  }
+  
+  const user = getCurrentUser();
+  const announcement = {
+    id: Date.now(),
+    hospitalName: report.hospitalName,
+    hospitalAddress: report.hospitalAddress || report.address || '',
+    contact: report.contact || report.visitingName || '',
+    phone: report.phone || '',
+    salesPerson: user?.name || report.salesPerson,
+    teamId: user?.teamId || report.teamId,
+    purchaseType: purchaseType,
+    machineModel: machineModel,
+    status: 'pending',
+    notes: notes,
+    announcedAt: new Date().toISOString(),
+    reportId: reportId
+  };
+  
+  // Save to localStorage
+  let announcements = JSON.parse(localStorage.getItem('fremenatos_announcements') || '[]');
+  announcements.push(announcement);
+  localStorage.setItem('fremenatos_announcements', JSON.stringify(announcements));
+  
+  // Save to Google Sheets
+  const data = {
+    action: 'createAnnouncement',
+    ...announcement
+  };
+  
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (res && res.status === 'success') {
+        alert('✅ 购买宣布已提交！管理员将审核确认。\n Purchase announcement submitted! Admin will review and confirm.');
+        closeAnnouncementModal();
+      } else {
+        throw new Error('Failed to save');
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      alert('✅ 宣布已保存到本地。将在联网时同步到云端。\n Announcement saved locally. Will sync to cloud when online.');
+      closeAnnouncementModal();
+    });
 }
 
 function openReportDetailObj(r) {
@@ -3025,6 +3137,7 @@ function openReportDetailObj(r) {
     rowFull(t('rdetCategory'), cats.join(', ')) +
     rowFull('🌡️ ' + t('vfPotential'), potentialDisplay) +
     rowFull(t('rdetOutcome'), r.visitProgress) +
+    rowFull('📝 ' + (currentLang==='zh'?'拜访总结':'Visit Summary'), r.summary || '-') +
     row(t('rdetNextDate'), r.nextVisitDate) +
     row(t('rdetNextTarget'), r.nextVisitTarget)
   );
@@ -3068,10 +3181,16 @@ function openReportDetailObj(r) {
   
   rightPanel += `</div>`;
 
-  // Edit/Delete buttons - always show for all users
+  // Edit/Delete buttons + Announce Purchase button for Hot/Warm customers
   let actions = `<div class="modal-actions">
-    <button class="rep-edit-btn" onclick="${r.source === 'PDF' ? `editPDFCustomer('${r.id}')` : `editReport('${r.id}')`}" style="flex:1;padding:10px;font-size:0.9rem">${t('repEdit')}</button>
-    <button class="rep-del-btn" onclick="${r.source === 'PDF' || r.source === 'New' ? `deletePDFCustomer('${r.id}','${r.source}')` : `deleteReport('${r.id}')`}" style="flex:1;padding:10px;font-size:0.9rem">${t('repDelete')}</button>
+    <button class="rep-edit-btn" onclick="${r.source === 'PDF' ? `editPDFCustomer('${r.id}')` : `editReport('${r.id}')`}" style="flex:1;padding:10px;font-size:0.9rem">${t('repEdit')}</button>`;
+  
+  // Add Announce Purchase button for Hot/Warm customers (not PDF source)
+  if ((r.customerPotential === 'Hot' || r.customerPotential === 'Warm') && r.source !== 'PDF') {
+    actions += `<button class="rep-edit-btn" onclick="closeModal();announcePurchase('${r.id}')" style="flex:1;padding:10px;font-size:0.9rem;background:#10b981;color:#fff;border:none">🔔 宣布购买 / Announce Purchase</button>`;
+  }
+  
+  actions += `<button class="rep-del-btn" onclick="${r.source === 'PDF' || r.source === 'New' ? `deletePDFCustomer('${r.id}','${r.source}')` : `deleteReport('${r.id}')`}" style="flex:1;padding:10px;font-size:0.9rem">${t('repDelete')}</button>
   </div>`;
 
   document.getElementById('modalBody').innerHTML =
@@ -3123,7 +3242,6 @@ const LANG = {
     secContacts: 'Contacts',
     secPayment: 'Payment',
     secDoctors: 'Doctors',
-    secSummary: 'Facility Summary',
     secMachine: 'Machine',
     secStock: 'Stock',
     secOrders: 'Orders',
@@ -3339,7 +3457,6 @@ const LANG = {
     secContacts: '联系人',
     secPayment: '付款联系人',
     secDoctors: '医生人数',
-    secSummary: '医院总结',
     secMachine: '机器设备',
     secStock: '库存情况',
     secOrders: '所需订单',
@@ -3543,14 +3660,12 @@ function setLang(lang) {
   const tabDashboardEl = document.getElementById('tab-dashboard');
   const tabReportsEl = document.getElementById('tab-reports');
   const tabAllEl = document.getElementById('tab-all');
-  const tabUsersEl = document.getElementById('tab-users');
 
   if (tabMachineEl) tabMachineEl.textContent = t('tabMachine');
   if (tabExternalEl) tabExternalEl.textContent = t('tabExternal');
   if (tabDashboardEl) tabDashboardEl.textContent = t('tabDashboard');
   if (tabReportsEl) tabReportsEl.textContent = t('tabReports');
   if (tabAllEl) tabAllEl.textContent = t('tabAll') || tabAllEl.textContent;
-  if (tabUsersEl) tabUsersEl.textContent = t('tabUsers') || tabUsersEl.textContent;
 
   // Re-apply active class
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -3613,12 +3728,12 @@ function applyCustomerEditLabels() {
   if (extOpt) extOpt.textContent = t('ceModelExt');
 }
 
-async function refreshCustomerEditIfOpen() {
+function refreshCustomerEditIfOpen() {
   if (!document.getElementById('customerEditOverlay').classList.contains('open')) return;
   const type = document.getElementById('editType').value;
   const id = parseInt(document.getElementById('editId').value);
   if (!type || !id) return;
-  const c = (await getCustomerData(type)).find(x => x.id === id);
+  const c = getCustomerData(type).find(x => x.id === id);
   if (!c) return;
   document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (currentLang === 'zh' ? (c.nameZh || c.name) : (c.name || c.nameZh));
   applyCustomerEditLabels();
@@ -3729,44 +3844,17 @@ function applyCustomRange() {
   renderDashboard();
 }
 
-function accessReportsWithPassword() {
-  const password = prompt('Enter password to access reports / 输入密码访问报告:');
-  if (password === 'admin123') {
-    window.location.href = 'reports.html';
-  } else if (password !== null) {
-    alert('Incorrect password / 密码错误');
-  }
-}
-
 // Show/hide custom date range
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOMContentLoaded fired');
-  console.log('MACHINE_DEFAULTS length:', MACHINE_DEFAULTS.length);
-  console.log('EXTERNAL_DEFAULTS length:', EXTERNAL_DEFAULTS.length);
-  
-  // Update user display
   updateUserDisplay();
-  
-  // Combine all customers into one array
   machineCustomers = MACHINE_DEFAULTS.slice();
   externalCustomers = EXTERNAL_DEFAULTS.slice();
   allCustomers = [...machineCustomers, ...externalCustomers];
-  
-  console.log('allCustomers length:', allCustomers.length);
   
   // Initialize the page
   renderCityButtons();
   renderCards();
   updateStats();
-  
-  // Initialize salesperson dropdowns with registered users
-  initializeSalespersonDropdowns();
-  
-  // Initialize announcements
-  refreshAnnouncements();
-  
-  // Initialize user management (load pending/active users)
-  refreshUsers();
   
   const periodSelect = document.getElementById('reportPeriod');
   if (periodSelect) {
@@ -3777,6 +3865,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  renderReports();
+  setInterval(() => {
+    if (document.getElementById('repList')) {
+      renderReports();
+    }
+  }, 5000);
 });
 
 // ===================== WEEKLY DASHBOARD =====================
@@ -3785,11 +3880,10 @@ function renderDashboard() {
     const { startDate, endDate, label, period } = getDateRange();
     
     // MERGE PDF customers with visit reports for dashboard
-    const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
     const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-    const allPotentials = potentialCustomers.filter(c => !deletedCustomers.includes(c.name));
+    const allPotentials = [...potentialCustomers];
     localPotentials.forEach(lp => {
-      if (!deletedCustomers.includes(lp.name) && !allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
+      if (!allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
         allPotentials.push(lp);
       }
     });
@@ -5325,11 +5419,10 @@ function exportEquipmentAnalysis() {
 
 // ===================== EXPORT PDF CUSTOMERS =====================
 function exportPDFCustomers(lang) {
-  const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
   const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-  const allPotentials = potentialCustomers.filter(c => !deletedCustomers.includes(c.name));
+  const allPotentials = [...potentialCustomers];
   localPotentials.forEach(lp => {
-    if (!deletedCustomers.includes(lp.name) && !allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
+    if (!allPotentials.some(p => p.name.toLowerCase() === lp.name.toLowerCase())) {
       allPotentials.push(lp);
     }
   });
@@ -5471,24 +5564,13 @@ const potentialCustomers = [
 ];
 
 function loadMergedPotentials() {
-  // Get list of deleted customers
-  const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
-  
-  // Start with hardcoded PDF data (excluding deleted)
+  // Start with hardcoded PDF data
   const merged = {};
-  potentialCustomers.forEach(c => {
-    if (!deletedCustomers.includes(c.name)) {
-      merged[c.name.toLowerCase()] = {...c, source: 'PDF'};
-    }
-  });
+  potentialCustomers.forEach(c => merged[c.name.toLowerCase()] = {...c, source: 'PDF'});
   
   // Merge from localStorage (if any manual edits)
   const stored = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-  stored.forEach(c => {
-    if (!deletedCustomers.includes(c.name)) {
-      merged[c.name.toLowerCase()] = {...c, source: 'Stored'};
-    }
-  });
+  stored.forEach(c => merged[c.name.toLowerCase()] = {...c, source: 'Stored'});
   
   // Merge from LIVE visit reports
   if (window.liveVisitReports && window.liveVisitReports.length > 0) {
@@ -5666,40 +5748,26 @@ function updatePotentialStats() {
 
 // ===================== INIT =====================
 // Load customer data from localStorage (with defaults fallback)
-async function initializeApp() {
-  machineCustomers = await getCustomerData('machine');
-  externalCustomers = await getCustomerData('external');
-  allCustomers = [...machineCustomers, ...externalCustomers];
+machineCustomers = getCustomerData('machine');
+externalCustomers = getCustomerData('external');
+allCustomers = [...machineCustomers, ...externalCustomers];
 
-  // Save to localStorage directly
-  localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
-  localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
+// Save to localStorage directly
+localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
+localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
 
-  currentTab = 'machine';
-  updateStats();
-  populateHospitalList();
-  setLang('zh');
-  renderCityButtons();
-  renderCards();
-}
-
-// Initialize the app
-initializeApp();
+currentTab = 'machine';
+updateStats();
+populateHospitalList();
+setLang('zh');
+renderCityButtons();
+renderCards();
 
 // ===================== EXPORT CUSTOMER LIST =====================
 function exportCustomerList(type) {
-  // Use current data instead of refreshing from localStorage
   const isZh = currentLang === 'zh';
-  let data;
-  let typeName;
-  
-  if (type === 'all') {
-    data = allCustomers;
-    typeName = isZh ? '所有客户' : 'All Customers';
-  } else {
-    data = type === 'machine' ? machineCustomers : externalCustomers;
-    typeName = type === 'machine' ? (isZh ? '机器客户' : 'Machine Customers') : (isZh ? '外部客户' : 'External Customers');
-  }
+  const data = type === 'machine' ? machineCustomers : externalCustomers;
+  const typeName = type === 'machine' ? (isZh ? '机器客户' : 'Machine Customers') : (isZh ? '外部客户' : 'External Customers');
   
   if (data.length === 0) {
     alert(isZh ? '⚠️ 没有客户数据' : '⚠️ No customer data');
@@ -5717,7 +5785,7 @@ function exportCustomerList(type) {
   const sheet = workbook.addWorksheet(isZh ? '客户列表' : 'Customer List');
   
   // Title row
-  sheet.mergeCells('A1:O1');
+  sheet.mergeCells('A1:M1');
   const titleRow = sheet.getRow(1);
   titleRow.height = 40;
   const tc = titleRow.getCell(1);
@@ -5725,7 +5793,7 @@ function exportCustomerList(type) {
   tc.font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' }, name: 'Microsoft YaHei' };
   tc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: type === 'machine' ? 'FF1A56DB' : 'FF10B981' } };
   tc.alignment = { vertical: 'middle', horizontal: 'center' };
-  for (let c = 2; c <= 15; c++) {
+  for (let c = 2; c <= 13; c++) {
     const cell = titleRow.getCell(c);
     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: type === 'machine' ? 'FF1A56DB' : 'FF10B981' } };
   }
@@ -5738,8 +5806,6 @@ function exportCustomerList(type) {
     isZh ? '城市' : 'City',
     isZh ? '型号' : 'Model',
     isZh ? '安装日期' : 'Installation Date',
-    isZh ? '专科' : 'Specialty',
-    isZh ? '所有权' : 'Ownership',
     isZh ? '联系人角色' : 'Contact Role',
     isZh ? '联系人姓名' : 'Contact Name',
     isZh ? '联系电话' : 'Phone',
@@ -5770,15 +5836,13 @@ function exportCustomerList(type) {
   sheet.getColumn(4).width = 14;  // City
   sheet.getColumn(5).width = 10;  // Model
   sheet.getColumn(6).width = 14;  // Date
-  sheet.getColumn(7).width = 25;  // Specialty
-  sheet.getColumn(8).width = 15;  // Ownership
-  sheet.getColumn(9).width = 18;  // Role
-  sheet.getColumn(10).width = 18; // Name
-  sheet.getColumn(11).width = 16; // Phone
-  sheet.getColumn(12).width = 30; // Stock
-  sheet.getColumn(13).width = 30; // Orders
-  sheet.getColumn(14).width = 25; // Doctors
-  sheet.getColumn(15).width = 20; // Payment
+  sheet.getColumn(7).width = 18;  // Role
+  sheet.getColumn(8).width = 18;  // Name
+  sheet.getColumn(9).width = 16;  // Phone
+  sheet.getColumn(10).width = 30; // Stock
+  sheet.getColumn(11).width = 30; // Orders
+  sheet.getColumn(12).width = 25; // Doctors
+  sheet.getColumn(13).width = 20; // Payment
   
   // Data rows
   data.forEach((h, idx) => {
@@ -5796,8 +5860,6 @@ function exportCustomerList(type) {
       h.city,
       h.model,
       h.date || '',
-      isZh ? (h.specialtyZh || h.specialty || '') : (h.specialty || ''),
-      isZh ? (h.ownershipZh || h.ownership || '') : (h.ownership || ''),
       contactRole,
       contactName,
       contactPhone,
@@ -5856,645 +5918,85 @@ function exportCustomerList(type) {
   });
 }
 
-// ===================== USER MANAGEMENT =====================
-
-const LOCAL_USERS_KEY = 'fremenatos_users';
-
-function loadLocalUsers() {
-  try {
-    return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-  } catch (error) {
-    return [];
-  }
-}
-
-function saveLocalUsers(users) {
-  localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
-}
-
-function mergeUsers(remoteUsers = [], localUsers = []) {
-  const merged = [];
-  const seen = new Set();
-
-  [...(remoteUsers || []), ...(localUsers || [])].forEach(user => {
-    const username = user && user.username;
-    if (!username || seen.has(username)) return;
-    seen.add(username);
-    merged.push(user);
-  });
-
-  return merged;
-}
-
-async function refreshUsers() {
-  const MAX_SALESPEOPLE = 12;
+// ===================== SALES CHANGE PASSWORD =====================
+function loadProfileInfo() {
+  const user = getCurrentUser();
+  if (!user) return;
   
-  try {
-    // Use sync function to get latest data from Google Sheets
-    const users = await syncUsers();
-    saveLocalUsers(users);
-
-    const pending = users.filter(u => String(u.status || '').toLowerCase() === 'pending');
-    const active = users.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
-    
-    // Count salespeople from auth.js
-    let authSalesCount = 0;
-    if (typeof USERS !== 'undefined') {
-      authSalesCount = Object.values(USERS).filter(u => u.role === 'sales').length;
-    }
-    
-    const totalActive = active.length + authSalesCount;
-    const remaining = MAX_SALESPEOPLE - totalActive;
-    
-    document.getElementById('pendingCount').textContent = pending.length;
-    document.getElementById('activeCount').textContent = totalActive;
-    
-    renderPendingUsers(pending);
-    renderActiveUsers(active);
-  } catch (error) {
-    console.error('Error loading users:', error);
-    const localUsers = loadLocalUsers();
-    const users = mergeUsers([], localUsers);
-    const pending = users.filter(u => String(u.status || '').toLowerCase() === 'pending');
-    const active = users.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
-
-    // Count salespeople from auth.js
-    let authSalesCount = 0;
-    if (typeof USERS !== 'undefined') {
-      authSalesCount = Object.values(USERS).filter(u => u.role === 'sales').length;
-    }
-    
-    const totalActive = active.length + authSalesCount;
-    const remaining = MAX_SALESPEOPLE - totalActive;
-
-    document.getElementById('pendingCount').textContent = pending.length;
-    document.getElementById('activeCount').textContent = totalActive;
-
-    renderPendingUsers(pending);
-    renderActiveUsers(active);
-  }
-}
-
-function renderUsersFromLocalStorage() {
-  const users = loadLocalUsers();
-  console.log('All local users:', users); // Debug
-  const pending = users.filter(u => String(u.status || '').toLowerCase() === 'pending');
-  const active = users.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
-  console.log('Pending users:', pending); // Debug
-  console.log('Active users:', active); // Debug
-  document.getElementById('pendingCount').textContent = pending.length;
-  document.getElementById('activeCount').textContent = active.length;
-  renderPendingUsers(pending);
-  renderActiveUsers(active);
-}
-
-function renderPendingUsers(users) {
-  const container = document.getElementById('pendingUsersList');
+  document.getElementById('profileUsername').textContent = user.username;
+  document.getElementById('profileName').textContent = user.name;
   
-  if (users.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px;color:#94a3b8">
-        <div style="font-size:2rem;margin-bottom:8px">✅</div>
-        <p>No pending approvals</p>
-      </div>
-    `;
+  const teamInfo = getTeamInfo(user.teamId);
+  document.getElementById('profileTeam').textContent = teamInfo ? teamInfo.name : 'N/A';
+}
+
+function salesChangePassword(event) {
+  event.preventDefault();
+  
+  const currentPassword = document.getElementById('salesCurrentPassword').value;
+  const newPassword = document.getElementById('salesNewPassword').value;
+  const confirmPassword = document.getElementById('salesConfirmPassword').value;
+  
+  const user = getCurrentUser();
+  if (!user) {
+    alert(currentLang === 'zh' ? '未登录' : 'Not logged in');
     return;
   }
   
-  container.innerHTML = users.map(user => `
-    <div style="background:#fffbeb;border:2px solid #fde68a;border-radius:12px;padding:16px;margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:12px">
-        <div style="flex:1">
-          <div style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-bottom:4px">${user.name}</div>
-          <div style="font-size:0.85rem;color:#64748b;margin-bottom:8px">
-            👤 ${user.username} • 📅 ${new Date(user.registeredAt).toLocaleDateString()}
-            ${user.phone ? ` • 📱 ${user.phone}` : ''}
-            ${user.preferredTeam ? ` • Prefers Team ${user.preferredTeam}` : ''}
-          </div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button onclick="approveUser('${user.username}')" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">✅ Approve</button>
-          <button onclick="rejectUser('${user.username}')" style="background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">❌ Reject</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderActiveUsers(users) {
-  const container = document.getElementById('activeUsersList');
-  
-  if (users.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px;color:#94a3b8;grid-column:1/-1">
-        <div style="font-size:2rem;margin-bottom:8px">👥</div>
-        <p>No active sales users yet</p>
-      </div>
-    `;
+  // Validation
+  if (newPassword.length < 6) {
+    alert(currentLang === 'zh' ? '新密码必须至少6个字符' : 'New password must be at least 6 characters');
     return;
   }
   
-  const teamColors = {
-    1: '#3b82f6', 2: '#10b981', 3: '#f59e0b', 
-    4: '#8b5cf6', 5: '#ec4899', 6: '#06b6d4'
-  };
-  
-  container.innerHTML = users.map(user => `
-    <div style="background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:16px;transition:all 0.2s">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-        <div style="width:48px;height:48px;border-radius:50%;background:${teamColors[user.teamId] || '#94a3b8'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900">
-          ${user.name.charAt(0)}
-        </div>
-        <div style="flex:1">
-          <div style="font-size:1rem;font-weight:700;color:#0f172a">${user.name}</div>
-          <div style="font-size:0.8rem;color:#64748b">Team ${user.teamId} • ${user.username}</div>
-        </div>
-      </div>
-      <div style="font-size:0.75rem;color:#64748b;margin-bottom:10px">
-        ${user.phone ? `📱 ${user.phone}<br>` : ''}
-        ${user.email ? `📧 ${user.email}<br>` : ''}
-        Last login: ${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="edit-user-btn" data-username="${user.username}" style="flex:1;background:#dbeafe;color:#1e40af;border:none;padding:6px;border-radius:6px;font-size:0.8rem;font-weight:700;cursor:pointer">✏️ Edit</button>
-        <button class="delete-user-btn" data-username="${user.username}" style="background:#fee2e2;color:#dc2626;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:700;cursor:pointer">🗑️</button>
-      </div>
-    </div>
-  `).join('');
-
-  container.querySelectorAll('.delete-user-btn').forEach(btn => {
-    btn.addEventListener('click', () => deleteUser(btn.getAttribute('data-username')));
-  });
-
-  container.querySelectorAll('.edit-user-btn').forEach(btn => {
-    btn.addEventListener('click', () => editUser(btn.getAttribute('data-username')));
-  });
-}
-
-async function approveUser(username, preferredTeam = null) {
-  // Check if we've reached the maximum number of salespeople (12 total)
-  const MAX_SALESPEOPLE = 12;
-  const existingUsers = loadLocalUsers();
-  
-  // Count active sales users (excluding admin)
-  const activeSalesCount = existingUsers.filter(u => 
-    u.role === 'sales' && 
-    String(u.status || '').toLowerCase() === 'active'
-  ).length;
-  
-  // Also count salespeople from auth.js USERS object
-  let authSalesCount = 0;
-  if (typeof USERS !== 'undefined') {
-    authSalesCount = Object.values(USERS).filter(u => u.role === 'sales').length;
-  }
-  
-  const totalSalesCount = activeSalesCount + authSalesCount;
-  
-  // Check if adding this user would exceed the limit
-  const selectedUser = existingUsers.find(user => user.username === username);
-  const isAlreadyActive = selectedUser && String(selectedUser.status || '').toLowerCase() === 'active';
-  
-  if (!isAlreadyActive && totalSalesCount >= MAX_SALESPEOPLE) {
-    alert(`❌ Cannot approve user!\n\nMaximum limit reached: ${MAX_SALESPEOPLE} salespeople.\n\nCurrent active salespeople: ${totalSalesCount}\n\nPlease delete an existing user before approving new ones.`);
+  if (newPassword !== confirmPassword) {
+    alert(currentLang === 'zh' ? '新密码不匹配' : 'New passwords do not match');
     return;
   }
   
-  // Prompt for team assignment if not already assigned
-  let teamId = preferredTeam || selectedUser.preferredTeam || selectedUser.teamId;
-  if (!teamId) {
-    const teamInput = prompt(`Assign team for ${selectedUser.name}:\n\nEnter team number (1-6):\n1 - Team 1 (Blue)\n2 - Team 2 (Green)\n3 - Team 3 (Yellow)\n4 - Team 4 (Purple)\n5 - Team 5 (Pink)\n6 - Team 6 (Cyan)`);
-    teamId = Number(teamInput);
-  }
+  // Check current password
+  const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+  const userRecord = localUsers.find(u => u.username === user.username) || USERS[user.username];
   
-  const normalizedTeamId = Number.isFinite(teamId) && teamId >= 1 && teamId <= 6 ? teamId : 1;
-  
-  if (!confirm(`Approve ${username} and assign to Team ${normalizedTeamId}?`)) return;
-
-  const approvedUser = {
-    ...selectedUser,
-    username,
-    role: 'sales',
-    teamId: normalizedTeamId,
-    status: 'active'
-  };
-
-  const updatedUsers = existingUsers.some(user => user.username === username)
-    ? existingUsers.map(user => user.username === username ? approvedUser : user)
-    : [...existingUsers, approvedUser];
-
-  saveLocalUsers(updatedUsers);
-  refreshUsers();
-  
-  // Update salesperson dropdowns after approval
-  setTimeout(() => {
-    initializeSalespersonDropdowns();
-  }, 500);
-  
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'approveUser',
-        username: username,
-        teamId: normalizedTeamId,
-        status: 'active'
-      })
-    });
-    
-    const data = await response.json();
-    const isSuccess = data && (data.status === 'success' || data.status === 'ok' || data.success === true || /approved/i.test(String(data.message || '')));
-    
-    if (isSuccess) {
-      alert('✅ User approved!');
-      refreshUsers();
-    } else {
-      alert('⚠️ Approved locally. Backend returned: ' + (data.message || 'unknown error'));
-    }
-  } catch (error) {
-    console.error(error);
-    alert('⚠️ Approved locally. Network issue while syncing to the backend.');
-  }
-}
-
-async function rejectUser(username) {
-  if (!confirm(`Reject and delete registration from ${username}?`)) return;
-
-  const localUsers = loadLocalUsers().filter(user => user.username !== username);
-  saveLocalUsers(localUsers);
-  refreshUsers();
-  
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'deleteUser',
-        username: username
-      })
-    });
-    
-    const data = await response.json();
-    const isSuccess = data && (data.status === 'success' || data.status === 'ok' || data.success === true || /removed|deleted|rejected/i.test(String(data.message || '')));
-    
-    if (isSuccess) {
-      alert('❌ User rejected and removed');
-      refreshUsers();
-    } else {
-      alert('⚠️ Removed locally. Backend returned: ' + (data.message || 'unknown error'));
-    }
-  } catch (error) {
-    console.error(error);
-    alert('⚠️ Removed locally. Network issue while syncing to the backend.');
-  }
-}
-
-async function editUser(username) {
-  const newName = prompt('Enter new name:');
-  if (!newName) return;
-  
-  const newTeam = prompt('Enter new team (1-6):');
-  if (!newTeam || newTeam < 1 || newTeam > 6) {
-    alert('Invalid team!');
+  if (!userRecord || userRecord.password !== currentPassword) {
+    alert(currentLang === 'zh' ? '当前密码错误' : 'Current password is incorrect');
     return;
   }
   
-  const changePassword = confirm('Do you want to change this user\'s password?');
-  let newPassword = '';
-  
-  if (changePassword) {
-    newPassword = prompt('Enter new password (min 6 characters):');
-    if (!newPassword || newPassword.length < 6) {
-      alert('Password must be at least 6 characters');
-      return;
-    }
-  }
-  
-  try {
-    const updateData = {
-      action: 'updateUser',
-      username: username,
-      name: newName,
-      nameZh: newName,
-      teamId: parseInt(newTeam)
-    };
-    
-    if (newPassword) {
-      updateData.password = newPassword;
-    }
-    
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(updateData)
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      alert('✅ User updated!' + (newPassword ? ' Password changed.' : ''));
-      refreshUsers();
-    } else {
-      alert('Error: ' + data.message);
-    }
-  } catch (error) {
-    alert('Network error');
-    console.error(error);
-  }
-}
-
-async function deleteUser(username) {
-  if (!confirm(`⚠️ Delete user ${username}? This cannot be undone!`)) return;
-
-  // Remove from localStorage first
-  const localUsers = loadLocalUsers().filter(user => user.username !== username);
-  saveLocalUsers(localUsers);
-  renderUsersFromLocalStorage();
-
-  // Update salesperson dropdowns after deletion
-  setTimeout(() => {
-    initializeSalespersonDropdowns();
-  }, 500);
-
-  // Try to sync with backend
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'deleteUser',
-        username: username
-      })
-    });
-
-    const data = await response.json();
-    const isSuccess = data.status === 'success' || data.status === 'ok' || data.message === 'User deleted';
-
-    if (isSuccess) {
-      console.log('✅ User deleted from Google Sheets');
-      alert('✅ User deleted successfully - A new salesperson can now be registered');
-      refreshUsers();
-    } else {
-      console.warn('⚠️ Backend delete warning:', data.message);
-      alert('⚠️ User deleted locally. Backend returned: ' + (data.message || 'unknown error'));
-      refreshUsers();
-    }
-  } catch (error) {
-    console.warn('⚠️ Backend sync failed (offline mode):', error);
-    alert('✅ User deleted locally (offline mode - will sync when online)');
-    refreshUsers();
-  }
-}
-
-// ===================== PURCHASE ANNOUNCEMENTS SYSTEM =====================
-
-const ANNOUNCEMENTS_KEY = 'fremenatos_announcements';
-
-function loadAnnouncements() {
-  try {
-    return JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY) || '[]');
-  } catch (error) {
-    return [];
-  }
-}
-
-function saveAnnouncements(announcements) {
-  localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
-}
-
-// Create announcement when customer agrees to purchase
-function createPurchaseAnnouncement(hospitalData, salesPerson, purchaseType) {
-  const announcements = loadAnnouncements();
-  
-  const announcement = {
-    id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-    hospitalName: hospitalData.hospitalName || hospitalData.name,
-    hospitalAddress: hospitalData.hospitalAddress || hospitalData.address || '',
-    phone: hospitalData.phone || '',
-    contact: hospitalData.contact || '',
-    salesPerson: salesPerson,
-    purchaseType: purchaseType, // 'new' or 'replacement'
-    machineModel: '', // Will be filled when confirming
-    status: 'pending', // 'pending' or 'confirmed'
-    announcedAt: new Date().toISOString(),
-    confirmedAt: null,
-    notes: hospitalData.notes || ''
-  };
-  
-  announcements.push(announcement);
-  saveAnnouncements(announcements);
-  
-  return announcement;
-}
-
-function refreshAnnouncements() {
-  const announcements = loadAnnouncements();
-  
-  const pending = announcements.filter(a => a.status === 'pending');
-  const confirmed = announcements.filter(a => a.status === 'confirmed').slice(0, 10); // Show last 10
-  
-  document.getElementById('pendingAnnouncementsCount').textContent = pending.length;
-  document.getElementById('confirmedAnnouncementsCount').textContent = confirmed.length;
-  
-  renderPendingAnnouncements(pending);
-  renderConfirmedAnnouncements(confirmed);
-}
-
-function renderPendingAnnouncements(announcements) {
-  const container = document.getElementById('pendingAnnouncementsList');
-  
-  if (announcements.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px;color:#64748b">
-        <div style="font-size:2rem;margin-bottom:8px">📭</div>
-        <p>No pending purchase announcements</p>
-      </div>
-    `;
+  if (newPassword === currentPassword) {
+    alert(currentLang === 'zh' ? '新密码不能与当前密码相同' : 'New password must be different from current password');
     return;
   }
   
-  container.innerHTML = announcements.map(announcement => `
-    <div style="background:#fff;border:2px solid #10b981;border-radius:12px;padding:16px;margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:12px">
-        <div style="flex:1">
-          <div style="font-size:1.2rem;font-weight:700;color:#0f172a;margin-bottom:4px">🏥 ${announcement.hospitalName}</div>
-          <div style="font-size:0.85rem;color:#64748b;margin-bottom:8px">
-            ${announcement.hospitalAddress ? `📍 ${announcement.hospitalAddress}<br>` : ''}
-            ${announcement.phone ? `📱 ${announcement.phone}<br>` : ''}
-            ${announcement.contact ? `👤 ${announcement.contact}<br>` : ''}
-            👨‍💼 Salesperson: <strong>${announcement.salesPerson}</strong><br>
-            🛒 Purchase Type: <strong>${announcement.purchaseType === 'new' ? 'New Purchase' : 'Replacement'}</strong><br>
-            📅 Announced: ${new Date(announcement.announcedAt).toLocaleString()}
-          </div>
-          ${announcement.notes ? `<div style="padding:8px;background:#f0fdf4;border-radius:6px;font-size:0.8rem;color:#065f46;margin-top:8px">📝 ${announcement.notes}</div>` : ''}
-        </div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="showConfirmPurchaseModal('${announcement.id}')" style="flex:1;background:#10b981;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">✅ Confirm Purchase</button>
-        <button onclick="rejectAnnouncement('${announcement.id}')" style="background:#ef4444;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">❌ Reject</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderConfirmedAnnouncements(announcements) {
-  const container = document.getElementById('confirmedAnnouncementsList');
-  
-  if (announcements.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px;color:#64748b">
-        <div style="font-size:2rem;margin-bottom:8px">📋</div>
-        <p>No confirmed purchases yet</p>
-      </div>
-    `;
-    return;
-  }
-  
-  container.innerHTML = announcements.map(announcement => `
-    <div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:start">
-        <div style="flex:1">
-          <div style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:4px">✅ ${announcement.hospitalName}</div>
-          <div style="font-size:0.8rem;color:#64748b">
-            👨‍💼 ${announcement.salesPerson} • 
-            🖥️ ${announcement.machineModel || 'N/A'} • 
-            📅 Confirmed: ${new Date(announcement.confirmedAt).toLocaleString()}
-          </div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function showConfirmPurchaseModal(announcementId) {
-  const announcements = loadAnnouncements();
-  const announcement = announcements.find(a => a.id === announcementId);
-  
-  if (!announcement) {
-    alert('Announcement not found');
-    return;
-  }
-  
-  // Prompt for machine model
-  const model = prompt(`Confirm purchase for ${announcement.hospitalName}\n\nEnter machine model (A8 or A90):`);
-  
-  if (!model) return;
-  
-  if (model !== 'A8' && model !== 'A90') {
-    alert('❌ Invalid model! Please enter A8 or A90');
-    return;
-  }
-  
-  await confirmPurchaseAnnouncement(announcementId, model);
-}
-
-async function confirmPurchaseAnnouncement(announcementId, machineModel) {
-  const announcements = loadAnnouncements();
-  const announcement = announcements.find(a => a.id === announcementId);
-  
-  if (!announcement) return;
-  
-  // Update announcement status
-  announcement.status = 'confirmed';
-  announcement.confirmedAt = new Date().toISOString();
-  announcement.machineModel = machineModel;
-  saveAnnouncements(announcements);
-  
-  // Add to customers list
-  await addCustomerFromAnnouncement(announcement);
-  
-  alert(`✅ Purchase confirmed!\n\n${announcement.hospitalName} has been added to the customers list with ${machineModel} machine.`);
-  
-  refreshAnnouncements();
-}
-
-async function addCustomerFromAnnouncement(announcement) {
-  // Determine city from address or default
-  const city = announcement.hospitalAddress || 'A.A';
-  
-  const newCustomer = {
-    id: Date.now(),
-    name: announcement.hospitalName,
-    nameZh: announcement.hospitalName,
-    city: city,
-    model: announcement.machineModel,
-    date: new Date().toLocaleDateString(),
-    contacts: announcement.contact ? [{
-      role: 'Contact',
-      name: announcement.contact,
-      phone: announcement.phone || ''
-    }] : [],
-    payment: [],
-    stock: '',
-    stockZh: '',
-    order: '',
-    orderZh: '',
-    doctors: '',
-    doctorsZh: ''
-  };
-  
-  // Add to appropriate customer list
-  if (announcement.machineModel === 'A8' || announcement.machineModel === 'A90') {
-    machineCustomers.push(newCustomer);
-    await saveCustomerData('machine', machineCustomers);
+  // Update password in localStorage
+  const userIndex = localUsers.findIndex(u => u.username === user.username);
+  if (userIndex >= 0) {
+    localUsers[userIndex].password = newPassword;
   } else {
-    externalCustomers.push(newCustomer);
-    await saveCustomerData('external', externalCustomers);
+    // Add to localStorage if only in USERS object
+    localUsers.push({
+      ...userRecord,
+      password: newPassword
+    });
   }
   
-  // Refresh customer display
-  allCustomers = [...machineCustomers, ...externalCustomers];
-  renderCards();
-  updateStats();
-}
-
-function rejectAnnouncement(announcementId) {
-  if (!confirm('❌ Reject this purchase announcement?')) return;
+  localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(localUsers));
   
-  const announcements = loadAnnouncements();
-  const filtered = announcements.filter(a => a.id !== announcementId);
-  saveAnnouncements(filtered);
+  // Show success message
+  alert(currentLang === 'zh' 
+    ? '✅ 密码已成功修改！\n请使用新密码重新登录。' 
+    : '✅ Password changed successfully!\nPlease login again with your new password.');
   
-  refreshAnnouncements();
-  alert('❌ Announcement rejected');
-}
-
-// Called from Visit Reports page
-function announcePurchase(reportId) {
-  // Find the report/customer data
-  const allData = [...getLocalReports()];
+  // Clear form
+  document.getElementById('salesChangePasswordForm').reset();
   
-  // Also check PDF customers
-  const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
-  const localPotentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-  const allPotentials = potentialCustomers.filter(c => !deletedCustomers.includes(c.name)).concat(
-    localPotentials.filter(c => !deletedCustomers.includes(c.name))
-  );
-  const pdfCustomers = allPotentials.map(c => ({
-    id: 'pdf_' + c.name.toLowerCase().replace(/\s+/g, '_'),
-    hospitalName: c.name,
-    hospitalAddress: c.address,
-    salesPerson: c.salesRep,
-    customerPotential: c.status,
-    phone: c.phone,
-    contact: c.contact,
-    notes: c.notes
-  }));
-  
-  const combined = [...allData, ...pdfCustomers];
-  const report = combined.find(r => r.id === reportId || r.id == reportId);
-  
-  if (!report) {
-    alert('❌ Report not found');
-    return;
-  }
-  
-  // Confirm purchase type
-  const purchaseType = confirm(`${report.hospitalName}\n\nClick OK for NEW PURCHASE\nClick CANCEL for REPLACEMENT`) ? 'new' : 'replacement';
-  
-  createPurchaseAnnouncement(report, report.salesPerson, purchaseType);
-  
-  alert(`✅ Purchase announcement created!\n\n${report.hospitalName} will appear in the Updates page for admin to confirm.`);
+  // Logout and redirect to login
+  setTimeout(() => {
+    logout();
+  }, 1000);
 }
 
 </script>
-<script src="admin-boss-dashboard.js"></script>
 </body>
 </html>
 

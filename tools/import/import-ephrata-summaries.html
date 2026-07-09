@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Ephrata Summaries</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f0f4f8;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a56db;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #1a56db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1e40af;
+        }
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+        }
+        .success {
+            color: #065f46;
+            background: #dcfce7;
+            border-color: #86efac;
+        }
+        .error {
+            color: #991b1b;
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+        .info {
+            color: #1e40af;
+            background: #dbeafe;
+            border-color: #93c5fd;
+        }
+        .log-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+        }
+        .log-success { border-left: 4px solid #10b981; }
+        .log-warning { border-left: 4px solid #f59e0b; }
+        .log-error { border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Import Ephrata's Hospital Summaries</h1>
+        <p class="subtitle">Import 42 hospital summaries for Ephrata's territory</p>
+        
+        <div style="margin: 20px 0;">
+            <p><strong>📊 Total Summaries:</strong> 42 hospitals</p>
+            <p><strong>👤 Sales Person:</strong> Ephrata</p>
+        </div>
+
+        <div style="margin: 30px 0;">
+            <button onclick="importSummaries()" id="importBtn">🚀 Start Import</button>
+            <button onclick="window.location.href='../../app/admin.html'">← Back to Admin</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const CSV_DATA = `hospitalName,summary
+Alliance General Hospital,Currently reorganizing the laboratory. May purchase a backup hormone analyzer after the new setup is completed.
+Elite ENT Center,Interested in upgrading from Fincare to CLIA technology. Proposal is under review by management; further discussion with owners is needed.
+Chechela Internal Medicine & Specialty Clinic,Interested in ACCRE. Laboratory head is evaluating the machine's quality and reagent availability before making a decision.
+Vision Specialty Clinic,Laboratory head showed strong interest and is discussing the ACCRE machine with the owners.
+Grace MCH & Surgical Center,Initially interested because of concerns about Fincare accuracy, but later signed an agreement with another supplier.
+Aynalem Primary Hospital,Planning to become a general hospital within 1-2 months and is considering replacing Fincare with ACCRE.
+Bama MCH Center,No need for another hormone analyzer but interested in a fully automated chemistry analyzer.
+Semah MCH Center,Already has an ACCRE machine at another branch. Interested only in a chemistry analyzer.
+Sintayehu Medium Clinic,No hormone analyzer requirement, but interested in the BC-200 fully automated chemistry analyzer.
+Migbaresenay General Hospital,Representative interested in ACCRE. Waiting for the medical director to return for further discussion.
+Medlot Medium Clinic,Planning a laboratory upgrade in about 3 months and will consider ACCRE.
+Lancet Beherawi Internal Medicine & Surgical Center,Satisfied with current equipment but may refer another customer interested in a hormone analyzer.
+International Clinical Laboratory,Hormone testing is done at another branch. Contact information for the main branch was provided.
+Wuddasse Diagnostic Center,Interested in ACCRE's dry-method technology but currently has enough analyzers.
+Dr. Amero Internal Medicine Specialty Clinic,Patient flow is low. Will contact us if testing volume increases and another analyzer is needed.
+St. Gabriel General Hospital,No interest in purchasing ACCRE after follow-up.
+Afran General Hospital,Satisfied with the current Snibe analyzer and has no interest in another hormone analyzer.
+Betseda American Medical Plaza,Uses Mindray equipment throughout the laboratory and prefers to continue with the same brand.
+Healventure Internal Medicine & Surgical Center,Uses Snibe and Mindray. Requested a meeting with the lab head initially, but later confirmed no interest in another hormone analyzer.
+Toz Specialty Clinic,No current interest in purchasing ACCRE.
+Lucy Multi Specialty Center,Already owns an ACCRE machine but prefers Snibe and wants to sell the ACCRE analyzer.
+Tezena General Hospital,Satisfied with Darway and Fincare hormone analyzers; no plans to replace them.
+Alpha Cardiac & Medical Center,Satisfied with Fincare and has no interest in another hormone analyzer.
+Dr. Teshome Pediatric Clinic,Already has Fincare and Zybio analyzers; no need for another hormone analyzer.
+Zak Internal Medicine Specialty Clinic,Owner confirmed no interest in purchasing an additional hormone analyzer.
+Adera Internal Medicine & Specialty Clinic,Currently uses iFlash and Fincare. No current need but will contact us if a future need arises.
+Mekrez Hospital,Recently purchased a Zybio hormone analyzer.
+Ayertena Primary Hospital,Fully equipped with laboratory equipment; will contact us if future needs arise.
+Mercy Care Health Center,No interest in a hormone analyzer but needs to replace its chemistry analyzer.
+Medstar Specialty Clinic,Uses Fincare and Snibe. Interested in discussing ACCRE further with the lab head and owners.
+BMY Diagnostic Center,Initial visit postponed because the lab head was unavailable. Revisit completed with key decision-makers.
+Ethiopian Care MCH Center,Revisited and discussed products with decision-makers for further evaluation.
+Cure Children Orthopedic Center,Revisited to discuss products with the responsible personnel.
+Bemmet Medium Clinic,Revisited and discussed products with key decision-makers.
+Addis MCH Center,Has concerns about ACCRE reagent pricing compared with Fincare but will consider it for future purchase.
+Life Addis Clinic,Planning to relocate in about two months and will reconsider purchasing after relocation.
+Addis Hiwot General Hospital,Uses Maglumi and has sufficient hormone analyzer capacity; no interest in ACCRE.
+St. Lukas Specialty Clinic,Uses Fincare with low hormone test volume. Will consider ACCRE in the future if demand increases.
+St. Rufael Medium Clinic,Doctor will discuss the ACCRE proposal with the owners before making a decision.
+Yohoo Internal & MCH Center,Recently purchased another hormone analyzer and has no interest in ACCRE.
+Zack Internal Specialty Clinic,Uses Fincare with 10-20 hormone tests per day. Owner will discuss ACCRE after returning from abroad, but later indicated no current interest in an additional analyzer.
+Wudase Laboratory,High-volume laboratory. Potential customer requiring a high-throughput hormone analyzer and consistent reagent supply.`;
+
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',');
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i];
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim());
+                
+                if (values.length === headers.length) {
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header.trim()] = values[index];
+                    });
+                    data.push(obj);
+                }
+            }
+            
+            return data;
+        }
+
+        async function importSummaries() {
+            const btn = document.getElementById('importBtn');
+            const results = document.getElementById('results');
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Importing...';
+            results.className = 'info';
+            results.innerHTML = '<p><strong>Starting import...</strong></p>';
+            
+            const summaries = parseCSV(CSV_DATA);
+            console.log('Parsed summaries:', summaries);
+            
+            // Load ALL possible data sources from localStorage
+            let potentialCustomers = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+            let visitReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+            let machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+            let externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+            
+            console.log('Data sources:', {
+                potentials: potentialCustomers.length,
+                reports: visitReports.length,
+                machine: machineCustomers.length,
+                external: externalCustomers.length
+            });
+            
+            let updated = 0;
+            let notFound = 0;
+            let logs = [];
+            
+            summaries.forEach(item => {
+                const hospitalName = item.hospitalName.trim();
+                const hospitalNameLower = hospitalName.toLowerCase();
+                const summary = item.summary;
+                let found = false;
+                
+                // Search in potential customers
+                const potIndex = potentialCustomers.findIndex(c => 
+                    (c.name && c.name.toLowerCase() === hospitalNameLower) ||
+                    (c.hospitalName && c.hospitalName.toLowerCase() === hospitalNameLower)
+                );
+                if (potIndex !== -1) {
+                    potentialCustomers[potIndex].notes = summary;
+                    found = true;
+                    updated++;
+                    logs.push(`<div class="log-item log-success">✅ Updated in Potentials: ${hospitalName}</div>`);
+                }
+                
+                // Search in visit reports
+                const reportIndex = visitReports.findIndex(c => 
+                    (c.name && c.name.toLowerCase() === hospitalNameLower) ||
+                    (c.hospitalName && c.hospitalName.toLowerCase() === hospitalNameLower)
+                );
+                if (reportIndex !== -1) {
+                    visitReports[reportIndex].notes = summary;
+                    if (!found) {
+                        found = true;
+                        updated++;
+                    }
+                    logs.push(`<div class="log-item log-success">✅ Updated in Visit Reports: ${hospitalName}</div>`);
+                }
+                
+                // Search in machine customers
+                const machineIndex = machineCustomers.findIndex(c => 
+                    (c.name && c.name.toLowerCase() === hospitalNameLower) ||
+                    (c.hospitalName && c.hospitalName.toLowerCase() === hospitalNameLower)
+                );
+                if (machineIndex !== -1) {
+                    machineCustomers[machineIndex].notes = summary;
+                    if (!found) {
+                        found = true;
+                        updated++;
+                    }
+                    logs.push(`<div class="log-item log-success">✅ Updated in Machine Customers: ${hospitalName}</div>`);
+                }
+                
+                // Search in external customers
+                const extIndex = externalCustomers.findIndex(c => 
+                    (c.name && c.name.toLowerCase() === hospitalNameLower) ||
+                    (c.hospitalName && c.hospitalName.toLowerCase() === hospitalNameLower)
+                );
+                if (extIndex !== -1) {
+                    externalCustomers[extIndex].notes = summary;
+                    if (!found) {
+                        found = true;
+                        updated++;
+                    }
+                    logs.push(`<div class="log-item log-success">✅ Updated in External Customers: ${hospitalName}</div>`);
+                }
+                
+                // Also add to facility summaries storage for display
+                const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+                facilitySummaries[hospitalName] = summary;
+                localStorage.setItem('fremenatos_facility_summaries', JSON.stringify(facilitySummaries));
+                
+                if (!found) {
+                    notFound++;
+                    logs.push(`<div class="log-item log-warning">⚠️ Not found in any storage: ${hospitalName}</div>`);
+                }
+            });
+            
+            // Save all updated data back to localStorage
+            localStorage.setItem('fremenatos_potentials', JSON.stringify(potentialCustomers));
+            localStorage.setItem('fremenatos_visitReports', JSON.stringify(visitReports));
+            localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
+            localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
+            
+            // Show results
+            results.className = updated > 0 ? 'success' : 'error';
+            results.innerHTML = `
+                <h3>Import Complete!</h3>
+                <p><strong>✅ Updated:</strong> ${updated} hospitals (summaries added to matching records)</p>
+                <p><strong>✅ Facility Summaries:</strong> ${summaries.length} summaries saved for display</p>
+                <p><strong>⚠️ Not Found:</strong> ${notFound} hospitals (summaries still saved for display)</p>
+                <hr style="margin: 15px 0;">
+                <div style="max-height: 400px; overflow-y: auto;">
+                    ${logs.join('')}
+                </div>
+            `;
+            
+            btn.textContent = '✅ Import Complete';
+            
+            if (notFound > 0) {
+                results.innerHTML += `
+                    <div style="margin-top: 15px; padding: 10px; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 6px;">
+                        <strong>ℹ️ Note:</strong> Even if hospitals weren't found in existing records, all ${summaries.length} summaries were saved to "fremenatos_facility_summaries" storage and will display when viewing hospital reports in admin/sales pages.
+                        <br><br>
+                        ${notFound} hospitals were not found in existing customer/visit records, but their summaries are still available for display.
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

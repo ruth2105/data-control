@@ -1,0 +1,241 @@
+════════════════════════════════════════════════════════════════════
+  📊 DATA PREVIEW - READY TO IMPORT
+════════════════════════════════════════════════════════════════════
+
+You said: "i want to add the full note the sales give me for summery 
+...and add the spacialty that i gave u"
+
+Here's what I have ready for you! ✅
+
+════════════════════════════════════════════════════════════════════
+  📋 PART 1: HOSPITAL SPECIALTIES (55+ hospitals)
+════════════════════════════════════════════════════════════════════
+
+FILE: HOSPITAL_SPECIALTIES_IMPORT.csv
+TOOL: import-specialties.html
+
+┌─────────────────────────────────────────────────────────────────┐
+│ HOSPITAL NAME                      → SPECIALTY                  │
+├─────────────────────────────────────────────────────────────────┤
+│ Biruhkids Pediatrics center        → Pediatrics (Child Health)  │
+│ Dr. Shemse MCH Center              → Maternal & Child Health    │
+│ Legehar General Hospital           → General Hospital           │
+│ Senay Higher Clinic                → Higher Clinic              │
+│ Addis Cardiac Hospital             → Cardiology                 │
+│ Alfewz Health Care                 → Primary Health Care Center │
+│ Dr. Meliha Gyn/Obs                 → Gynecology and Obstetrics  │
+│ Arada Giorgis Specialized Medical  → Specialized Medical Center │
+│ Caring Specialty Clinic            → Specialty Clinic           │
+│ Fikir abrak Internal and MCH       → Internal Medicine and MCH  │
+│ Urosphere Medical Service          → Diagnostic Medical Service │
+│ Qelebet Specialized Clinic         → Specialized Medical Clinic │
+│ Universe Specialty Clinic          → Specialty Clinic           │
+│ Semah MCH                          → MCH Center                 │
+│ Lobe Medium Clinic                 → General Medical Clinic     │
+│ Summit Health Center               → General Health Center      │
+│ Lubu Internal and MCH Clinic       → Internal Medicine and MCH  │
+│ Lucy Specialty Health Center       → Specialty Health Center    │
+│ Lebu St. Mikael Internal Medicine  → Internal Medicine          │
+│ Nuri Enat MCH                      → Maternal and Child Health  │
+│ Bati Hospital                      → General Hospital           │
+│ Rift Valley Hospital               → General Hospital           │
+│ Jimma Awetu Primary Hospital       → Primary Hospital           │
+│ Abajifar Medium Clinic             → Medium Clinic              │
+│ Dr. Ermias Medium Clinic           → Medium Clinic              │
+│ Dr. Belete Medium Clinic           → Medium Clinic              │
+│ My Medium Clinic                   → Medium Clinic              │
+│ Shenen Gibe General Hospital       → General Hospital           │
+│ Geda Medical Laboratory            → Medical Laboratory         │
+│ Hiwot Fana Hospital                → General Hospital           │
+│ Hamdi Specialized Clinic           → Specialized Clinic         │
+│ Dilla University Referral Hospital → Referral Hospital          │
+│ Guro Basic Diagnostic Laboratory   → Diagnostic Laboratory      │
+│ Kibru Primary Hospital             → Primary Hospital           │
+│ Unicare Medical Service            → General Medical Service    │
+│ New York Health Care               → General Health Care Center │
+│ Makira Hakime Medium Clinic        → Medium Clinic              │
+│ Cardinal Speciality Medical Center → Specialty Medical Center   │
+│ Odo Dola Medium Clinic             → Medium Clinic              │
+│ Grace Hospital                     → General Hospital           │
+│ Area Minch General Hospital        → General Hospital           │
+│ Axon Neurology Center              → Neurology                  │
+│ Hasset MCH Center                  → Maternal and Child Health  │
+│ Hope Oncology Center               → Oncology (Cancer Care)     │
+│ Birhan Ethiopia Internal Medicine  → Internal Medicine          │
+│ Alemtena Internal Medicine         → Internal Medicine          │
+│ Alemgena Medical Service           → General Medical Service    │
+│ Medan Pediatric Specialty Clinic   → Pediatrics                 │
+└─────────────────────────────────────────────────────────────────┘
+
+Total: 55+ hospitals ✅
+
+
+════════════════════════════════════════════════════════════════════
+  📝 PART 2: HOSPITAL SUMMARIES (68 hospitals)
+════════════════════════════════════════════════════════════════════
+
+FILE: HOSPITAL_SUMMARIES_IMPORT.csv
+TOOL: import-summaries.html
+
+┌─────────────────────────────────────────────────────────────────┐
+│ HOSPITAL NAME              → FULL SALES NOTES                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Lotus MCH                  → Hot priority facility in Garment.  │
+│                              Uses Finecare (hormone), Mindray   │
+│                              (chemistry), B&E (electrolyte).    │
+│                              10-20 tests/day. Interested in     │
+│                              reagent placement; requested       │
+│                              comparative analysis. Follow-up    │
+│                              with Head Lab Technician, Medical  │
+│                              Director.                          │
+│                                                                 │
+│ Novamed Clinic             → Hot priority facility in Goro.     │
+│                              Uses Finecare (hormone), no        │
+│                              chemistry analyzer, interested in  │
+│                              B&E electrolyte. 10-15 tests/day.  │
+│                              Interested in electrolyte analyzer.│
+│                              Follow-up with Zeaman (Laboratory  │
+│                              Head).                             │
+│                                                                 │
+│ Ajora MCH                  → Hot priority facility in Summit.   │
+│                              Uses Finecare (hormone), Siemens   │
+│                              semiautomatic (chemistry), B&E     │
+│                              (electrolyte). 10-20 tests/day.    │
+│                              Interested in ACCRE placement.     │
+│                              Follow-up with Tina (Laboratory    │
+│                              Head).                             │
+│                                                                 │
+│ Yadon Clinic               → Hot priority facility in Ayat.     │
+│                              Uses Finecare (hormone), no        │
+│                              chemistry analyzer, semi-automated │
+│                              unspecified (electrolyte). >10     │
+│                              tests/day. Proposal under          │
+│                              stakeholder review. Follow-up with │
+│                              Owner, Head Lab Technician.        │
+│                                                                 │
+│ Hewan Gynecology           → Hot priority facility in Jemo. No  │
+│ Specialized Clinic           hormone analyzer, semi-automated   │
+│                              Dirui (chemistry), no electrolyte  │
+│                              analyzer. 10-15 tests/day. Planning│
+│                              to purchase hormone analyzer.      │
+│                              Follow-up with Medical             │
+│                              Director/Owner.                    │
+│                                                                 │
+│ Yerer General Hospital     → Hot priority facility in Yerer.    │
+│                              Uses Finecare, Zybio, Maglumi      │
+│                              (hormone), Mindray (chemistry),    │
+│                              fully automated unspecified        │
+│                              (electrolyte). >20 tests/day.      │
+│                              Considering ACCRE as additional    │
+│                              analyzer. Follow-up with Head Lab  │
+│                              Technician.                        │
+│                                                                 │
+│ St. Mary Medium Clinic     → Hot priority facility in Goro. No  │
+│                              hormone analyzer, semi-automated   │
+│                              (chemistry), CBS 401 B&E           │
+│                              (electrolyte). 10-15 tests/day.    │
+│                              Evaluating installation of hormone │
+│                              analyzer. Follow-up with Medical   │
+│                              Director.                          │
+│                                                                 │
+│ Tersis Clinics             → Hot priority facility in Lamberet. │
+│                              Uses Vidas (hormone), semi-        │
+│                              automated (chemistry), semi-       │
+│                              automated unspecified (electrolyte)│
+│                              5 tests/day. Strong interest and   │
+│                              expansion potential. Follow-up with│
+│                              Liyu/Besa Tersis Clinic Lab.       │
+│                                                                 │
+│ ...and 60 more hospitals with full sales notes!                │
+└─────────────────────────────────────────────────────────────────┘
+
+Total: 68 hospitals ✅
+
+
+════════════════════════════════════════════════════════════════════
+  🎯 WHAT GETS IMPORTED WHERE
+════════════════════════════════════════════════════════════════════
+
+SPECIALTIES:
+┌──────────────────────────────────────┐
+│ Imports to: Hospital Master Data    │
+│ Storage:    localStorage             │
+│ Field:      specialty                │
+│ Shows in:   Hospital cards (index)   │
+│ Example:    "Specialty: Cardiology"  │
+└──────────────────────────────────────┘
+
+SUMMARIES:
+┌──────────────────────────────────────┐
+│ Imports to: Visit Reports            │
+│ Storage:    localStorage             │
+│ Field:      notes                    │
+│ Shows in:   Report details (admin)   │
+│ Section:    📝 Hospital Summary      │
+└──────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════════════════
+  ⚡ QUICK IMPORT GUIDE
+════════════════════════════════════════════════════════════════════
+
+STEP 1: IMPORT SPECIALTIES
+──────────────────────────
+1. Open:   import-specialties.html
+2. Upload: HOSPITAL_SPECIALTIES_IMPORT.csv
+3. Click:  "Import Specialties"
+4. Result: 55+ hospitals get specialty field
+5. Time:   2 minutes
+
+
+STEP 2: IMPORT SUMMARIES
+────────────────────────
+1. Open:   import-summaries.html
+2. Upload: HOSPITAL_SUMMARIES_IMPORT.csv
+3. Click:  "Import Summaries"
+4. Result: 68 visit reports get full notes
+5. Time:   2 minutes
+
+
+STEP 3: VIEW RESULTS
+────────────────────
+Specialties: index.html → Hospital cards
+Summaries:   admin.html → Visit Reports → Click card
+Time:        Instant!
+
+
+════════════════════════════════════════════════════════════════════
+  ✅ WHAT YOU ASKED FOR
+════════════════════════════════════════════════════════════════════
+
+You said:
+"i want to add the full note the sales give me for summery 
+...and add the spacialty that i gave u"
+
+What I have ready:
+✅ Full sales notes (68 hospitals) → Ready in CSV
+✅ Specialties you gave (55+ hospitals) → Ready in CSV
+✅ Import tools → Ready to use
+✅ Instructions → Complete
+
+What you need to do:
+1. Run import-specialties.html (2 min)
+2. Run import-summaries.html (2 min)
+3. Done! ✅
+
+Total time: 4 minutes ⚡
+
+
+════════════════════════════════════════════════════════════════════
+  🎉 SUMMARY
+════════════════════════════════════════════════════════════════════
+
+Ready to import:
+• 55+ hospital specialties
+• 68 hospital summaries (full sales notes)
+• 2 easy-to-use import tools
+• Complete instructions
+
+Everything is READY! Just open the HTML files and click import! 🚀
+
+════════════════════════════════════════════════════════════════════

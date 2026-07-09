@@ -1,0 +1,77 @@
+﻿🏥 All Customers (74) | Fremenatos Trading PLC | 2026-07-08,,,,,,,,,,,,,,
+ID,Hospital Name (EN),Hospital Name (ZH),City,Model,Installation Date,Specialty,Ownership,Contact Role,Contact Name,Phone,Stock,Orders,Doctors,Payment Contact
+1,Lucy Health Care PLC,露西医疗保健有限公司,A.A,A8,29/08/2024,Specialty Health Center (General / Multi-specialty Services),Private,Laboratory Head,Foziya,0911563600,,,,
+2,AL-FEWZ Health care,阿尔菲伍兹医疗保健,A.A,A8,08/12/2024,General Health Care / Primary Health Care Center,Private,G/Manager,Helen,0911940148,,,,
+3,Dr.Meliha Gyn/Obs,梅利哈医生妇产科诊所,A.A,A8,20/03/2025,Gynecology and Obstetrics (GYN/OBS),Private,G/Manager,Nejat,0910701635,,,,
+4,Lubu Internal and MCH Clinic,卢布内科及妇幼诊所,A.A,A8,29/03/2025,Internal Medicine and Maternal & Child Health (MCH) Clinic,Private,Owner,Dr.Shemles,0911267007,,,,
+5,Semah MCH,塞马妇幼诊所,A.A,A8,02/04/2025,Maternal and Child Health (MCH) Center,Private,Owner,Dr.Solomon,0930294147,"No reagents - hospital expanding to new location, needs UPS for machine operation. Other machines: Finecare.",,2 Gynaecologist + 2 Pediatric,
+6,UNECA,联合国非洲经济委员会,A.A,A90,28/10/2024,,Private,Lab Head,Yohannes,0929908429,,,,
+7,Care Medium clinic,关爱中型诊所,D.B,A8,14/08/2025,Medium Clinic (General Medical Services),Private,Owner,Dr.Abebe,0978789879 / 0905703752,,,,
+8,Nuri Enat MCH,努里埃纳特妇幼诊所,Adama,A90,26/05/2025,Maternal and Child Health (MCH),Private,G/Manager,Ezedin,0919626181,,,,
+9,Bati Hospital,巴蒂医院,Adama,A90,25/06/2025,General Hospital,Private,Owner,Milan,0911920953,,,,Finance Head: Kaleb
+10,RiftVally Hospital,裂谷医院,Adama,A90,21/05/2025,General Hospital,Private,Lab Head,Yohannes,0972151400,,,,Finance Head: Mulugeta
+11,Tirat Rad PLC,蒂拉特拉德有限公司,Adama,A90,10/07/2025,Medical Laboratory / Diagnostic Laboratory,Private,Lab Head,Dagmawit,0969391026,,,,
+12,Geda Medical Laboratory,格达医学检验所,Jimma,A90,31/10/2024,Medical Laboratory / Diagnostic Laboratory,Private,Lab Head,Awel,0919611436,"No company reagent stock. Machines: Finecare, Accre 90, Zybio (fully auto chemistry), Dymind (CBC), K-Lite 8 (electrolyte).",,,
+13,Dr. Ermias Medium clinic,埃尔米亚医生中型诊所,Jimma,A90,08/02/2025,Medium Clinic (General Medical Services),Private,Owner,Dr.Ermias,0911441098,"Vitamin D 2p, TSH 1p, FT4 1p, VB12 1p, PCT 1p. Machines: Human (chemistry), Diatron (CBC), Accre 90.",,,
+14,Jimma Awetu primary Hospital,吉玛阿韦图初级医院,Jimma,A90,08/06/2025,Primary Hospital (General Healthcare Services),Private,Lab Head,Abdo,0913438154,"FT3 3p, FT4 2p, Testosterone 2p, FSH 3p+18pcs, Vitamin D 8p, CEA 2p+6pcs, Progesterone 2p, AMH 1p+6pcs, CA19-9 1p+24pcs, LH 2p, PCT 1p+18pcs, TSH 6p+12pcs, CA125 3p, TT4 4p, TT3 2p, HsTnl 1p. Machines: Human (chem), Afias 6 & Accre 90 (hormonal), Mindray (CBC), K-Lite 8G & Human (electrolyte).",,,
+15,Abajifar Medium Clinic (A90),阿巴吉法中型诊所,Jimma,A90,08/04/2025,Medium Clinic (General Outpatient Services),Private,Owner,Dr.Fedlu,0913082564,"TSH 3p+1pc, Vitamin D 4p, FSH 3p, Testosterone 1p. Machines: Accre 90 & Finecare (hormonal), Mindray (chem), Mindray (CBC). Interested in Electrolyte analyzer.",Electrolyte analyzer,,
+16,Abajifar Medium Clinic (A8),阿巴吉法中型诊所,Jimma,A8,31/10/2024,Medium Clinic (General Outpatient Services),Private,Owner,Dr.Fedlu,0913082564,Complaint: Prolactin results fluctuate.,,,
+17,Dr.Belete Medium Clinic,贝莱特医生中型诊所,Jimma,A8,11/01/2024,Medium Clinic (General Medical Services),Private,Lab Head,Mesay,0912363131,"FT3 1p, FT4 1p, VB12 8pcs, Ferritin 22pcs, HsTnl 16pcs, TT4 5pcs, Folate 6pcs. Machines: Maglumi & Accre 8 (hormonal), URIT fully auto (chem), BH 70P (CBC). Interested in Electrolyte.",Electrolyte analyzer,,
+18,Shenen Gibe general hospital,谢嫩吉贝综合医院,Jimma,A90,30/08/2025,General Hospital,Government,Lab Head,Chala,0917444004,"Vitamin D 3p, CA125 3pcs, B-HCG 2pcs, Progesterone 1p, TT4 1p, TT3 1p, TSH 2p. Machines: Finecare & Accre 90 (hormonal), Sysmex (CBC), Human (electrolyte). Interested in Chemistry & Electrolyte analyzer.","Chemistry analyzer, Electrolyte analyzer",,
+19,My Medium Clinic,我的中型诊所,Jimma,A90,29/08/2025,Medium Clinic (General Medical Services),Private,Owner,Dr.Mohammed,0917803022,"Vitamin D 1p+17pcs, VB12 2pcs, TSH 31pcs, TT3 32pcs, Ferritin 17pcs. Machines: Mindray fully auto & Iubio semi-auto (chem), Finecare & Accre (hormonal), Dymind (CBC).",,,
+20,Dr. Tesfa (Kidus Medium Clinic),特斯法医生（基杜斯中型诊所）,Asella,A8,25/08/2025,Medium Clinic (General Medical Services),Private,Owner,Dr.Tesfa,0911840622,,,,Owner: Dr.Tesfa
+21,Vital Internal Medicine,维塔内科诊所,A.A,A8,21/03/2025,,Private,,,,,,,
+22,Arada Georgis Specialized Medical Center,阿拉达乔治斯专科医疗中心,A.A,A90,30/10/2024,Specialized Medical Center,Private,Lab Head,Dereje,0977081035,"TSH, TT3, TT4, PRL, LH, FT4 (31 tests), Folate, Vitamin B12 – Stock Mar 10",Vitamin D,1 full time + 4 part time internal medicine,Finance Head: Betty
+23,Biruhkids Pediatrics center,比尔鲁克儿科中心,A.A,A90,04/04/2025,Pediatrics (Child Health),Private,Lab Head,Alemtsehay,0913623054,,,,Finance Head: Mezegbe
+24,Dr.Shemse MCH Center,谢姆塞医生妇幼中心,A.A,A8,26/03/2025,Maternal and Child Health (MCH),Private,Purchaser/Store,Kewser,0912309023,,,,
+25,Fikir Abrak Internal and MCH Center,菲基尔阿布拉克内科及妇幼中心,A.A,A8,22/03/2025,Internal Medicine and Maternal & Child Health (MCH),Private,Medical Director,Dr.Eden,0919155293,,,,
+26,Lobe Medium Clinic,洛贝中型诊所,A.A,A90,21/05/2025,General Medical Clinic (Medium Clinic),Private,Lab Head,Dinsefa,0912713461,"TT3=13 tests, TT4=18 tests (Mar 10)
+TT4=18, TSH=35, FT3=29, D-Dimer, TPSA=11, HscTnl=1 (Mar 13)",Vitamin D,1 full time,Finance Head: Abiy
+27,Legehar General Hospital,莱格哈尔综合医院,A.A,A90,20/03/2025,General Hospital,Private,Laboratorist,Dr.Abebe,0919744038,"Vitamin D 8pcs, Progesterone 2pcs, FSH 8pcs, LH 8pcs, HsTnl 2pcs, Testosterone 2pcs, FT3 2pcs, FT4 1p, TSH 2p+5pcs, CA19-9 7pcs, CA125 9pcs, AMH 3pcs, CEA 2pcs. Machines: Afias 6 & Afias 8 (hormonal), Dymind (chem), Dymind (CBC), K-Lite 8 (electrolyte).",,,Finance Head: Mizer
+28,Senay Higher Clinic,塞奈高级诊所,A.A,A90,29/05/2025,Higher Clinic (General Outpatient Services),Private,Owner/Purchaser,Dr.Elsa,0922226434,No stock available,"Internal, Sugar, Nerve tests",1 full time,Owner/Purchaser: Dr.Elsa
+29,Fikir Abrak Internal and MCH Center,菲基尔阿布拉克内科及妇幼中心,A.A,A90,06/08/2025,Internal Medicine and Maternal & Child Health (MCH),Private,Medical Director,Dr.Eden,0919155293,,,,
+30,Qelebet Specialised Clinic,凯莱贝特专科诊所,A.A,A8,06/08/2025,Specialized Medical Clinic,Private,Medical Director,Dr.Eden,0919155293,"No reagent stock, no tests done. Machines: Dr.Chem 200 (chem), Finecare (hormone), BK-280 (CBC).",,,
+31,Uropshare Medical Service,乌罗普谢尔医疗服务,A.A,A8,29/11/2024,General Medical Service / Diagnostic Medical Service,Private,Lab Head,Aberash,0911104817,"TSH, LH, FSH (one pack), Prolactin","Fertility: Prolactin, Progesterone, Testosterone, Estradiol",,Lab Head: Aberash
+32,Summit Health Center,顶峰健康中心,A.A,A90,18/12/2024,General Health Center,Government,Lab Head,Dr.Biruk,0928355571,"No reagent stock, not using our tests. Machines: Finecare (hormonal), ERBA (Chem), Switer (Electrolyte), Dymind (CBC).",,,
+33,Universe Internal Medicine Speciality Clinic,宇宙内科专科诊所,A.A,A90,09/10/2025,Specialty Clinic (General / Multi-Specialty Outpatient Services),Private,Purchaser,Nato,0903196219,"Vitamin D 5pcs, Vitamin B12, Ferritin. Using Finecare (another company).",Vitamin D,,
+34,Hiwot Fana Hospital,希沃特法纳医院,Harrar,A90,19/12/2024,General Hospital,Government,Lab Head,Biniam,0905808619,,,,Finance Head: Fato
+35,Hamdi Specialized Clinic,哈姆迪专科诊所,Harrar,A90,20/12/2024,Specialized Clinic,Private,Finance Head & Purchaser,Worknesh,0919133446,,,,Finance Head & Purchaser: Worknesh
+36,Robsen Clinic,罗布森诊所,D.D,A8,25/12/2024,,,Lab Head,Addis,,,,,
+37,Odo dola Midium Clinic,奥多多拉中型诊所,Shakiso,A8,28/07/2025,Medium Clinic (General Medical Services),Private,Owner,Tamerat,0949187474,,,,Owner: Tamerat
+38,Dilla University referral Hospital,迪拉大学转诊医院,Dilla,A90,23/07/2025,Referral Hospital (Teaching & Specialized Healthcare Services),Government,Lab Head,Jemberu,0916189770 / 0777496646,,,,Lab Head: Jemberu
+39,Kibru primary hospital,基布鲁初级医院,Hawassa,A90,20/08/2025,Primary Hospital (General Healthcare Services),Private,Owner,Dr.Tizazu,0977729696,,,,Owner: Dr.Tizazu
+40,Unicare Medical Service,优尼凯尔医疗服务,Hawassa,A90,22/08/2025,General Medical Service Provider,Private,Lab Head,Endrias,0913187083,,,,
+41,Newyork Health Care,纽约医疗保健,Hawassa,A90,22/08/2025,General Health Care Center,Private,Owner,Dr.Mubarek,0925636085,,,,
+42,Cardinal Speciality Medical & Surgical Center,红雀专科医疗外科中心,Shashemene,A90,—,Specialty Medical Center (Multi-specialty Services),Private,Lab Head,Hawi,0926365326,,,,Finance Head: Geremew
+43,Grace Hospital,恩典医院,Wolayta,A90,08/09/2025,General Hospital,Private,Laboratory,Zewude,0912024540,,,,
+44,Guro Basic Diagnostic Laboratory,古罗基础诊断实验室,Yirgalem,A90,30/09/2025,Diagnostic Laboratory,Private,G/Manager,Mukerim,0920542672,,,,
+45,Arba Minch General Hospital,阿尔巴明奇综合医院,Arba Minch,A90,25/09/2025,General Hospital,Private,Lab Head,Desta,0964520267,,,,
+46,Hayat Hospital,哈亚特医院,A.A,A90,05/12/2025,General Hospital,Private,Lab Head,Biniam,0913817632,"Vitamin D, Vitamin B12, Ferritin (1 pack)","Fertility, cancer markers, thyroid","Above 30 with speciality: internal medicine, sub-speciality, oncology, eye speciality",Lab Head: Biniam
+47,Amin General Hospital,阿明综合医院,A.A,A90,28/10/2025,General Hospital,Private,Laboratorist,Habtamu,0910722375,"No reagent stock. Machines: Finecare (hormonal), Dirui (chemistry), K-Lite 8G (electrolyte), Dymind (CBC).",,,
+48,Caring Internal Medicine Speciality Clinic,关爱内科专科诊所,A.A,A8,07/11/2025,Specialty Clinic (General / Multi-Specialty Outpatient Services),Private,Purchaser,Kalkidan,0943514228,"Vitamin B12, T3, T4, Ferritin (all 1 pack except ferritin; all started test)",Vitamin D,1 full time + 3 part time internal medicine,
+49,Addis Cardiac Hospital,亚的斯亚贝巴心脏病医院,A.A,A90,09/12/2025,Cardiology,Private,Lab Head,Zelalem,0911609067,,,,
+50,Makira Hakime Pediatric and Surgical Center,马基拉哈基姆儿科外科中心,Hawassa,A8,02/01/2026,Medium Clinic (General Medical Services),Private,Lab Head,Eyob,0928983333,,,,
+51,Guro Basic Diagnostic Laboratory (No 02),古罗基础诊断实验室（二号）,Dilla,A8,03/01/2026,Diagnostic Laboratory,Private,G/Manager,Mukerim,0920542672,,,,
+52,Yehulshet Internal Medicine,叶胡尔谢特内科,A.A,A8,,Internal Medicine,Private,purchaser,derb,0936286410,,,,
+53,Abrak Medical Service PLC,阿布拉克医疗服务有限公司,A.A,A90,,Internal Medicine and Maternal & Child Health (MCH),Private,Medical Director,Dr.Eden,0919155293,,,,
+54,Lebu St Michael Internal,勒布圣迈克尔内科,A.A,A90,,Internal Medicine,Private,Lab Head,Natnaeal,0912650834,Important customer with 30 tests (2.3% of total consumption). Note: Check if this is same as Lubu Internal and MCH Clinic (ID:4) - possible typo.,,,
+55,Mander Trading PLC,曼德尔贸易有限公司,A.A,A8,,,,,,,,,,
+56,Medan Pediatric Clinic,美丹儿科诊所,A.A,A8,,Pediatrics (Child Health Specialty Clinic),Private,Owner,Dr.mahlet,0921029676,,,,
+57,Alta Medium Clinic,阿尔塔中型诊所,A.A,A8,,Internal Medicine,,,,,Note: Different from Alta Medium Clinic in Adama (External customer ID:4),,,
+58,Jedunave Pharmaceutical PLC,杰杜纳韦制药有限公司,A.A,A90,,importer,Private,Owner,mazuza,0912990226,,,,
+59,Gibe Medium Hospital,吉贝中型医院,Jimma,A8,,medium hospital,private,,,,,,,
+60,Axon Neurology Center,阿克森神经病学中心,A.A,A90,,Neurology (Brain & Nervous System Care),Private,Lab Head,Tlksew,0911564765,6-month consumption: 21 tests (1.6% of total),,,
+61,Hasset Medium Clinic,哈塞特中型诊所,A.A,A8,,Maternal and Child Health (MCH),Private,Lab Head,dese,0913867939,6-month consumption: 14 tests (1.1% of total),,,
+62,Hope Oncology Center,希望肿瘤中心,A.A,A8,,Oncology (Cancer Care Center),Private,Lab Head,luel,0919888446,6-month consumption: 7 tests (0.5% of total). Specializes in cancer care.,,,
+63,American Medical Center,美国医疗中心,A.A,A6,,General Medical Service,Private,Lab Head,Mekdes,0922820286,,,,
+64,Alatyon General Hospital,阿拉顿综合医院,Hawassa,A90,,General Hospital,Private,Purchaser,tezzera,0917053726,,,,
+65,Feya General Hospital,费亚综合医院,Shashemene,A8,,General Hospital,Private,Owner,Dr kelemu,0911714904,,,,
+66,Alem Primary Hospital,阿勒姆初级医院,Butajira,A6,,Primary Hospital (General Healthcare Services),,G/Manager,yilkal,0920271225,,,,
+67,Rohobot General Hospital,罗博特综合医院,Asella,A90,,General Hospital,,owner,Dr kedir,0927713200,,,,
+68,Mohammed Akle General Hospital,穆罕默德·阿克勒综合医院,Awash,A6,,General Hospital,,Lab Head,Ahemed,0920546849,,,,
+69,Birhan Ethiopia International Medicine,伯尔汉埃塞俄比亚国际医学,A.A,A8,,Internal Medicine Specialty Clinic,Private,Medical Director,DR Zewudu,0911668642,"HscTnl, Vitamin B12 (1 pack), Folate","Vitamin B12, Folate, HscTnl. Next import: Insulin and C-peptide",1 full time,
+70,Alem Tena Internal Medicine Speciality Center,阿勒姆泰纳内科专科中心,A.A,A90,,Internal Medicine,Private,Lab Head,Ashenafi,0955660646,,"Note: store manager not available, sent reagent list for order",,
+71,ACE Engineering PLC,ACE工程有限公司,A.A,A6,,Internal Medicine,Private,Lab Head,Betty,0939762618,,,,
+72,Alta Medium Clinic,阿尔塔中型诊所,Adama,A6,,Internal Medicine,Private,Lab Head,Sintayehu,0923465690,,,,Finance Head: Asfaw
+73,Medhen Beza Primary Hospital,梅德亨贝扎初级医院,Adama,A6,,Internal Medicine,Private,Owner/Purchaser,Sister .Mekdes,0993935767,,,,
+74,Alem Gena Medical Services,阿勒姆格纳医疗服务,A.A,A8,,General Medical Service,Private,Lab Head,Amsal,0935401135,,,,

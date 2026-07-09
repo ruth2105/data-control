@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Check Hospital Summaries</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f0f4f8;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+}
+h1 {
+  color: #1a56db;
+}
+.summary-item {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+}
+.hospital-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a56db;
+  margin-bottom: 10px;
+}
+.summary-text {
+  background: #f3f4f6;
+  border: 2px solid #9ca3af;
+  border-radius: 8px;
+  padding: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+.character-count {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 10px;
+  font-weight: 600;
+}
+.stats {
+  background: #dbeafe;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+.btn {
+  padding: 10px 20px;
+  background: #1a56db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+.warning {
+  background: #fef3c7;
+  border: 2px solid #fde68a;
+  padding: 15px;
+  border-radius: 8px;
+  color: #92400e;
+  margin: 20px 0;
+}
+.full-text {
+  background: #dcfce7;
+  border: 2px solid #86efac;
+  padding: 10px;
+  border-radius: 6px;
+  color: #065f46;
+  display: inline-block;
+  font-weight: 700;
+}
+.truncated {
+  background: #fee2e2;
+  border: 2px solid #fca5a5;
+  padding: 10px;
+  border-radius: 6px;
+  color: #991b1b;
+  display: inline-block;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📝 Check Hospital Summaries in localStorage</h1>
+  
+  <div class="stats" id="stats"></div>
+  
+  <div style="margin: 20px 0;">
+    <button class="btn" onclick="checkSummaries()">🔍 Check All Summaries</button>
+    <button class="btn" onclick="showEphrata()">Ephrata (42)</button>
+    <button class="btn" onclick="showKalkidan()">Kalkidan (27)</button>
+    <button class="btn" onclick="reimportSummaries()">🔄 Re-import from Tools</button>
+  </div>
+
+  <div id="summariesList"></div>
+</div>
+
+<script>
+function checkSummaries() {
+  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  const allHospitals = Object.keys(facilitySummaries);
+  
+  const statsDiv = document.getElementById('stats');
+  const listDiv = document.getElementById('summariesList');
+  
+  if (allHospitals.length === 0) {
+    statsDiv.innerHTML = `
+      <h3 style="color: #dc2626;">⚠️ No Summaries Found!</h3>
+      <p>No hospital summaries in localStorage.</p>
+      <p><strong>Solution:</strong> Import summaries using the import tools:</p>
+      <ul>
+        <li>tools/import/import-ephrata-summaries.html (42 hospitals)</li>
+        <li>tools/import/import-kalkidan-summaries.html (27 hospitals)</li>
+      </ul>
+    `;
+    listDiv.innerHTML = '';
+    return;
+  }
+  
+  // Analyze summaries
+  let fullTextCount = 0;
+  let shortCount = 0;
+  let totalChars = 0;
+  
+  const items = allHospitals.map(name => {
+    const summary = facilitySummaries[name];
+    const charCount = summary.length;
+    totalChars += charCount;
+    
+    // Consider "full text" if more than 100 characters
+    if (charCount > 100) {
+      fullTextCount++;
+    } else {
+      shortCount++;
+    }
+    
+    const status = charCount > 100 ? 'full-text' : 'truncated';
+    const statusText = charCount > 100 ? '✅ FULL TEXT' : '⚠️ SHORT TEXT';
+    
+    return `
+      <div class="summary-item">
+        <div class="hospital-name">${name}</div>
+        <div class="${status}">${statusText} (${charCount} characters)</div>
+        <div class="summary-text">${summary}</div>
+        <div class="character-count">Length: ${charCount} characters | Words: ${summary.split(/\s+/).length}</div>
+      </div>
+    `;
+  }).join('');
+  
+  const avgLength = Math.round(totalChars / allHospitals.length);
+  
+  statsDiv.innerHTML = `
+    <h3>📊 Summary Statistics:</h3>
+    <p><strong>Total Summaries:</strong> ${allHospitals.length}</p>
+    <p><strong>✅ Full Text (>100 chars):</strong> ${fullTextCount}</p>
+    <p><strong>⚠️ Short Text (<100 chars):</strong> ${shortCount}</p>
+    <p><strong>Average Length:</strong> ${avgLength} characters</p>
+    ${shortCount > 0 ? '<div class="warning">⚠️ Some summaries appear to be truncated or very short!</div>' : '<div class="full-text">✅ All summaries have full text!</div>'}
+  `;
+  
+  listDiv.innerHTML = `<h2>All Summaries (${allHospitals.length}):</h2>` + items;
+}
+
+function showEphrata() {
+  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  const ephrataHospitals = [
+    'Alliance General Hospital',
+    'Elite ENT Center',
+    'Chechela Internal Medicine & Specialty Clinic',
+    'Vision Specialty Clinic',
+    'Grace MCH & Surgical Center'
+  ];
+  
+  const listDiv = document.getElementById('summariesList');
+  const items = ephrataHospitals.map(name => {
+    const summary = facilitySummaries[name] || 'NOT FOUND IN STORAGE';
+    const charCount = summary.length;
+    const status = charCount > 100 ? 'full-text' : charCount > 0 ? 'truncated' : 'missing';
+    const statusText = charCount > 100 ? '✅ FULL TEXT' : charCount > 0 ? '⚠️ SHORT TEXT' : '❌ MISSING';
+    
+    return `
+      <div class="summary-item">
+        <div class="hospital-name">${name}</div>
+        <div class="${status}">${statusText} (${charCount} characters)</div>
+        <div class="summary-text">${summary}</div>
+        <div class="character-count">Length: ${charCount} characters</div>
+      </div>
+    `;
+  }).join('');
+  
+  listDiv.innerHTML = `<h2>Sample Ephrata Summaries (First 5):</h2>` + items;
+}
+
+function showKalkidan() {
+  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  const kalkidanHospitals = [
+    'lotus mch',
+    'novamed clinic',
+    'ajora mch',
+    'yadon clinic',
+    'yerer general hospital'
+  ];
+  
+  const listDiv = document.getElementById('summariesList');
+  const items = kalkidanHospitals.map(name => {
+    const summary = facilitySummaries[name] || facilitySummaries[name.charAt(0).toUpperCase() + name.slice(1)] || 'NOT FOUND IN STORAGE';
+    const charCount = summary.length;
+    const status = charCount > 200 ? 'full-text' : charCount > 0 ? 'truncated' : 'missing';
+    const statusText = charCount > 200 ? '✅ FULL TEXT' : charCount > 0 ? '⚠️ SHORT TEXT' : '❌ MISSING';
+    
+    return `
+      <div class="summary-item">
+        <div class="hospital-name">${name}</div>
+        <div class="${status}">${statusText} (${charCount} characters)</div>
+        <div class="summary-text">${summary}</div>
+        <div class="character-count">Length: ${charCount} characters</div>
+      </div>
+    `;
+  }).join('');
+  
+  listDiv.innerHTML = `<h2>Sample Kalkidan Summaries (First 5):</h2>` + items;
+}
+
+function reimportSummaries() {
+  if (confirm('This will open the import tools. You need to run them manually to re-import summaries. Continue?')) {
+    window.open('tools/import/import-ephrata-summaries.html', '_blank');
+    window.open('tools/import/import-kalkidan-summaries.html', '_blank');
+  }
+}
+
+// Auto-check on load
+window.addEventListener('DOMContentLoaded', checkSummaries);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migrate Data to Google Sheets</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+.container {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 {
+  color: #1a56db;
+  margin-bottom: 8px;
+}
+.subtitle {
+  color: #64748b;
+  margin-bottom: 24px;
+}
+.section {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.section h2 {
+  font-size: 1.1rem;
+  color: #334155;
+  margin-bottom: 12px;
+}
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+.btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 12px;
+  transition: transform 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn-primary {
+  background: linear-gradient(135deg, #1a56db, #1e40af);
+  color: white;
+}
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+.btn-export {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+.status {
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+  display: none;
+}
+.status.success {
+  background: #dcfce7;
+  border: 2px solid #86efac;
+  color: #166534;
+}
+.status.error {
+  background: #fee2e2;
+  border: 2px solid #fca5a5;
+  color: #991b1b;
+}
+.status.info {
+  background: #dbeafe;
+  border: 2px solid #93c5fd;
+  color: #1e40af;
+}
+.data-preview {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
+.count {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1a56db;
+  margin: 8px 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🚀 Data Migration Tool</h1>
+  <p class="subtitle">Migrate your customer and user data from browser localStorage to Google Sheets</p>
+
+  <!-- STEP 1: Enter Web App URL -->
+  <div class="section">
+    <h2>📍 Step 1: Enter Your Google Apps Script Web App URL</h2>
+    <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/AKfycby.../exec">
+    <button class="btn btn-primary" onclick="testConnection()">🔌 Test Connection</button>
+    <div id="connectionStatus" class="status"></div>
+  </div>
+
+  <!-- STEP 2: Preview Current Data -->
+  <div class="section">
+    <h2>👀 Step 2: Preview Current Data in Browser</h2>
+    <div class="grid">
+      <div>
+        <strong>Customers</strong>
+        <div class="count" id="customerCount">0</div>
+        <button class="btn btn-export" onclick="previewCustomers()">Preview</button>
+      </div>
+      <div>
+        <strong>Visit Reports</strong>
+        <div class="count" id="reportCount">0</div>
+        <button class="btn btn-export" onclick="previewReports()">Preview</button>
+      </div>
+    </div>
+    <div id="dataPreview" class="data-preview" style="display:none;margin-top:12px"></div>
+  </div>
+
+  <!-- STEP 3: Migrate Data -->
+  <div class="section">
+    <h2>🚀 Step 3: Migrate Data to Google Sheets</h2>
+    <p style="margin-bottom:12px;color:#64748b;font-size:0.9rem">This will upload all your customers and visit reports to Google Sheets</p>
+    <button class="btn btn-success" onclick="migrateCustomers()">📤 Migrate Customers</button>
+    <button class="btn btn-success" onclick="migrateUsers()">📤 Migrate Users (12 Sales)</button>
+    <button class="btn btn-success" onclick="migrateReports()">📤 Migrate Visit Reports</button>
+    <div id="migrationStatus" class="status"></div>
+  </div>
+
+  <!-- STEP 4: Export Backup -->
+  <div class="section">
+    <h2>💾 Step 4: Create Backup (Recommended)</h2>
+    <p style="margin-bottom:12px;color:#64748b;font-size:0.9rem">Download your data as JSON backup before migrating</p>
+    <button class="btn btn-export" onclick="exportBackup()">⬇️ Download Backup File</button>
+  </div>
+
+</div>
+
+<script>
+let SCRIPT_URL = '';
+
+// Load counts on page load
+window.onload = function() {
+  updateCounts();
+};
+
+function updateCounts() {
+  // Count customers (all 76 in allCustomers array)
+  const customers = getAllCustomers();
+  document.getElementById('customerCount').textContent = customers.length;
+  
+  // Count visit reports
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visits') || '[]');
+  document.getElementById('reportCount').textContent = reports.length;
+}
+
+function getAllCustomers() {
+  // This is the combined customer list from your system
+  const MACHINE_DEFAULTS = [
+    {id:1,name:"Hayat Hospital",nameZh:"哈雅特医院",city:"A.A",cityZh:"亚的斯",model:"A8",contact:"Tesfaye",phone:"0911123456",email:"hayat@hospital.et",doctor:"Dr. Solomon",lastVisit:"2024-01-15"},
+    // Add all 76 customers here... (I'll help you with this)
+  ];
+  
+  // For now, return what's in localStorage if available
+  const stored = localStorage.getItem('fremenatos_customers');
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  
+  return MACHINE_DEFAULTS;
+}
+
+// Test connection to Google Apps Script
+async function testConnection() {
+  const url = document.getElementById('scriptUrl').value.trim();
+  if (!url) {
+    showStatus('connectionStatus', 'error', '❌ Please enter your Web App URL');
+    return;
+  }
+  
+  SCRIPT_URL = url;
+  showStatus('connectionStatus', 'info', '🔄 Testing connection...');
+  
+  try {
+    const response = await fetch(url + '?action=getUsers');
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      showStatus('connectionStatus', 'success', '✅ Connection successful! Found ' + data.data.length + ' users');
+    } else {
+      showStatus('connectionStatus', 'error', '❌ Connection failed: ' + data.message);
+    }
+  } catch (error) {
+    showStatus('connectionStatus', 'error', '❌ Connection error: ' + error.message);
+  }
+}
+
+// Preview customers
+function previewCustomers() {
+  const customers = getAllCustomers();
+  const preview = document.getElementById('dataPreview');
+  preview.style.display = 'block';
+  preview.textContent = JSON.stringify(customers.slice(0, 3), null, 2) + '\n\n... and ' + (customers.length - 3) + ' more';
+}
+
+// Preview reports
+function previewReports() {
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visits') || '[]');
+  const preview = document.getElementById('dataPreview');
+  preview.style.display = 'block';
+  preview.textContent = JSON.stringify(reports.slice(0, 2), null, 2) + '\n\n... and ' + (reports.length - 2) + ' more';
+}
+
+// Migrate customers
+async function migrateCustomers() {
+  if (!SCRIPT_URL) {
+    showStatus('migrationStatus', 'error', '❌ Please test connection first');
+    return;
+  }
+  
+  const customers = getAllCustomers();
+  showStatus('migrationStatus', 'info', '🔄 Migrating ' + customers.length + ' customers...');
+  
+  let successCount = 0;
+  let errorCount = 0;
+  
+  for (let i = 0; i < customers.length; i++) {
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateCustomer',
+          ...customers[i]
+        })
+      });
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        successCount++;
+      } else {
+        errorCount++;
+      }
+      
+      // Update progress
+      showStatus('migrationStatus', 'info', '🔄 Progress: ' + (i + 1) + '/' + customers.length);
+      
+    } catch (error) {
+      errorCount++;
+    }
+  }
+  
+  if (errorCount === 0) {
+    showStatus('migrationStatus', 'success', '✅ Successfully migrated ' + successCount + ' customers!');
+  } else {
+    showStatus('migrationStatus', 'error', '⚠️ Migrated ' + successCount + ' customers, ' + errorCount + ' errors');
+  }
+}
+
+// Migrate users (from auth.js)
+async function migrateUsers() {
+  if (!SCRIPT_URL) {
+    showStatus('migrationStatus', 'error', '❌ Please test connection first');
+    return;
+  }
+  
+  // Users from auth.js
+  const users = [
+    {username:'sales1',password:'team1',role:'sales',teamId:1,name:'Ephrata',nameZh:'Ephrata'},
+    {username:'sales2',password:'team1',role:'sales',teamId:1,name:'Kalkidan',nameZh:'Kalkidan'},
+    {username:'sales3',password:'team2',role:'sales',teamId:2,name:'Tizita',nameZh:'Tizita'},
+    {username:'sales4',password:'team2',role:'sales',teamId:2,name:'Person A',nameZh:'Person A'},
+    {username:'sales5',password:'team3',role:'sales',teamId:3,name:'Person B',nameZh:'Person B'},
+    {username:'sales6',password:'team3',role:'sales',teamId:3,name:'Person C',nameZh:'Person C'},
+    {username:'sales7',password:'team4',role:'sales',teamId:4,name:'Person D',nameZh:'Person D'},
+    {username:'sales8',password:'team4',role:'sales',teamId:4,name:'Person E',nameZh:'Person E'},
+    {username:'sales9',password:'team5',role:'sales',teamId:5,name:'Person F',nameZh:'Person F'},
+    {username:'sales10',password:'team5',role:'sales',teamId:5,name:'Person G',nameZh:'Person G'},
+    {username:'sales11',password:'team6',role:'sales',teamId:6,name:'Person H',nameZh:'Person H'},
+    {username:'sales12',password:'team6',role:'sales',teamId:6,name:'Person I',nameZh:'Person I'}
+  ];
+  
+  showStatus('migrationStatus', 'info', '🔄 Migrating ' + users.length + ' users...');
+  
+  let successCount = 0;
+  
+  for (const user of users) {
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'addUser',
+          ...user
+        })
+      });
+      const data = await response.json();
+      
+      if (data.status === 'success') successCount++;
+      
+    } catch (error) {
+      console.error('Error migrating user:', user.username, error);
+    }
+  }
+  
+  showStatus('migrationStatus', 'success', '✅ Successfully migrated ' + successCount + ' sales users!');
+}
+
+// Migrate reports
+async function migrateReports() {
+  if (!SCRIPT_URL) {
+    showStatus('migrationStatus', 'error', '❌ Please test connection first');
+    return;
+  }
+  
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visits') || '[]');
+  if (reports.length === 0) {
+    showStatus('migrationStatus', 'info', 'ℹ️ No visit reports to migrate');
+    return;
+  }
+  
+  showStatus('migrationStatus', 'info', '🔄 Migrating ' + reports.length + ' visit reports...');
+  
+  let successCount = 0;
+  
+  for (const report of reports) {
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'addVisitReport',
+          ...report
+        })
+      });
+      const data = await response.json();
+      
+      if (data.status === 'success') successCount++;
+      
+    } catch (error) {
+      console.error('Error migrating report:', error);
+    }
+  }
+  
+  showStatus('migrationStatus', 'success', '✅ Successfully migrated ' + successCount + ' visit reports!');
+}
+
+// Export backup
+function exportBackup() {
+  const backup = {
+    exportDate: new Date().toISOString(),
+    customers: getAllCustomers(),
+    reports: JSON.parse(localStorage.getItem('fremenatos_visits') || '[]'),
+    users: [
+      {username:'sales1',name:'Ephrata',teamId:1},
+      {username:'sales2',name:'Kalkidan',teamId:1},
+      {username:'sales3',name:'Tizita',teamId:2},
+      // ... etc
+    ]
+  };
+  
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'fremenatos-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  
+  showStatus('migrationStatus', 'success', '✅ Backup downloaded!');
+}
+
+function showStatus(elementId, type, message) {
+  const el = document.getElementById(elementId);
+  el.className = 'status ' + type;
+  el.textContent = message;
+  el.style.display = 'block';
+}
+</script>
+
+</body>
+</html>

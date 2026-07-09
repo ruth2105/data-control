@@ -1,0 +1,1 @@
+id	hospitalName	hospitalAddress	phone	contact	salesPerson	purchaseType	status	announcedAt	confirmedAt	machineModel

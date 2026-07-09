@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Upload localStorage to Google Sheets</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f0f4f8;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+}
+h1 {
+  color: #1a56db;
+}
+.section {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+.btn {
+  padding: 14px 28px;
+  background: #1a56db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 10px 5px;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+.btn-success {
+  background: #10b981;
+}
+.btn-danger {
+  background: #dc2626;
+}
+#status {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+}
+.success {
+  background: #dcfce7;
+  border: 2px solid #10b981;
+  color: #065f46;
+}
+.error {
+  background: #fee2e2;
+  border: 2px solid #dc2626;
+  color: #991b1b;
+}
+.warning {
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  color: #92400e;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📤 Upload localStorage Data to Google Sheets</h1>
+  
+  <div class="section">
+    <h2>🎯 Purpose:</h2>
+    <p>This tool uploads your LOCAL data (currently only on this device) to <strong>Google Sheets</strong> so OTHER DEVICES can see it.</p>
+    <p><strong>After upload:</strong> All devices accessing your Netlify URL will see the same data!</p>
+  </div>
+
+  <div class="section">
+    <h2>📊 Current localStorage Data:</h2>
+    <p><strong>Potential Customers:</strong> <span id="countPotentials">0</span></p>
+    <p><strong>Visit Reports:</strong> <span id="countReports">0</span></p>
+    <p><strong>Machine Customers:</strong> <span id="countMachine">0</span></p>
+    <p><strong>External Customers:</strong> <span id="countExternal">0</span></p>
+    <p><strong>Hospital Summaries:</strong> <span id="countSummaries">0</span></p>
+  </div>
+
+  <div class="section">
+    <h2>⚙️ Actions:</h2>
+    <button class="btn" onclick="checkData()">🔍 Check Current Data</button>
+    <button class="btn btn-success" onclick="uploadToSheets()">📤 Upload to Google Sheets</button>
+    <button class="btn btn-danger" onclick="clearLocal()">🗑️ Clear Local Data (After Upload)</button>
+  </div>
+
+  <div id="status"></div>
+
+  <div class="section" style="background: #dbeafe; border-color: #3b82f6;">
+    <h3 style="color: #1e40af;">📝 Important Notes:</h3>
+    <ul style="line-height: 1.8;">
+      <li><strong>Hospital summaries</strong> will be uploaded as hospital records with summary field</li>
+      <li><strong>After upload:</strong> Other devices need to refresh to see the data</li>
+      <li><strong>Google Sheets URL:</strong> Already configured in your system</li>
+      <li><strong>This is a ONE-TIME migration</strong> - after this, all new data automatically syncs</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTM_EPvzVaIwG2GpexwCz5m9KC-LTqNbX2OT9NRy1Qi8H3peCe7YY55w5-pYMQMYE/exec';
+
+function checkData() {
+  const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+  const machine = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+  const external = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+  const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  
+  document.getElementById('countPotentials').textContent = potentials.length;
+  document.getElementById('countReports').textContent = reports.length;
+  document.getElementById('countMachine').textContent = machine.length;
+  document.getElementById('countExternal').textContent = external.length;
+  document.getElementById('countSummaries').textContent = Object.keys(summaries).length;
+  
+  const status = document.getElementById('status');
+  const total = potentials.length + reports.length + machine.length + external.length + Object.keys(summaries).length;
+  
+  if (total === 0) {
+    status.className = 'warning';
+    status.innerHTML = `
+      <h3>⚠️ No Data Found!</h3>
+      <p>Your localStorage is empty. Make sure you:</p>
+      <ol>
+        <li>Imported hospital data</li>
+        <li>Imported summaries</li>
+        <li>Added some visit reports</li>
+      </ol>
+      <p><strong>Try opening this on the device where you have the data!</strong></p>
+    `;
+  } else {
+    status.className = 'success';
+    status.innerHTML = `
+      <h3>✅ Data Found!</h3>
+      <p><strong>Total items:</strong> ${total}</p>
+      <p>Ready to upload to Google Sheets!</p>
+    `;
+  }
+}
+
+async function uploadToSheets() {
+  if (!confirm('Upload ALL localStorage data to Google Sheets? This will make it available on all devices.')) {
+    return;
+  }
+  
+  const status = document.getElementById('status');
+  status.className = '';
+  status.innerHTML = '<h3>⏳ Uploading...</h3><p>Please wait...</p>';
+  
+  try {
+    const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+    const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+    const machine = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+    const external = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+    const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+    
+    let successCount = 0;
+    let errorCount = 0;
+    const logs = [];
+    
+    // Upload visit reports
+    for (const report of reports) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'saveVisitReport',
+            ...report
+          })
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+          successCount++;
+          logs.push(`✅ Uploaded report: ${report.hospitalName}`);
+        } else {
+          errorCount++;
+          logs.push(`❌ Failed report: ${report.hospitalName}`);
+        }
+      } catch (e) {
+        errorCount++;
+        logs.push(`❌ Error uploading report: ${e.message}`);
+      }
+    }
+    
+    // Upload hospitals with summaries
+    for (const [name, summary] of Object.entries(summaries)) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'saveCustomer',
+            name: name,
+            hospitalName: name,
+            notes: summary,
+            summary: summary
+          })
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+          successCount++;
+          logs.push(`✅ Uploaded hospital: ${name}`);
+        } else {
+          errorCount++;
+        }
+      } catch (e) {
+        errorCount++;
+      }
+    }
+    
+    status.className = 'success';
+    status.innerHTML = `
+      <h3>✅ Upload Complete!</h3>
+      <p><strong>Success:</strong> ${successCount} items</p>
+      <p><strong>Errors:</strong> ${errorCount} items</p>
+      <hr>
+      <div style="max-height: 300px; overflow-y: auto;">
+        ${logs.slice(0, 20).join('<br>')}
+        ${logs.length > 20 ? `<br><em>...and ${logs.length - 20} more</em>` : ''}
+      </div>
+      <hr>
+      <p><strong>✅ Data is now in Google Sheets!</strong></p>
+      <p>Other devices can now access it by opening your Netlify URL.</p>
+    `;
+    
+  } catch (error) {
+    status.className = 'error';
+    status.innerHTML = `
+      <h3>❌ Upload Failed!</h3>
+      <p><strong>Error:</strong> ${error.message}</p>
+      <p>Check:</p>
+      <ul>
+        <li>Internet connection</li>
+        <li>Google Apps Script URL is correct</li>
+        <li>Apps Script has permissions</li>
+      </ul>
+    `;
+  }
+}
+
+function clearLocal() {
+  if (!confirm('⚠️ Clear ALL localStorage data? Only do this AFTER confirming data is in Google Sheets!')) {
+    return;
+  }
+  
+  if (!confirm('Are you SURE? This cannot be undone!')) {
+    return;
+  }
+  
+  localStorage.removeItem('fremenatos_potentials');
+  localStorage.removeItem('fremenatos_visitReports');
+  localStorage.removeItem('fremenatos_machine');
+  localStorage.removeItem('fremenatos_external');
+  localStorage.removeItem('fremenatos_facility_summaries');
+  
+  const status = document.getElementById('status');
+  status.className = 'success';
+  status.innerHTML = `
+    <h3>✅ Local Data Cleared!</h3>
+    <p>Your localStorage has been cleared.</p>
+    <p>Now the system will load data from Google Sheets only.</p>
+  `;
+  
+  checkData();
+}
+
+// Auto-check on load
+window.addEventListener('DOMContentLoaded', checkData);
+</script>
+
+</body>
+</html>
