@@ -2275,6 +2275,58 @@ function renderReports() {
   });
 }
 
+function getTeamSalesMembers() {
+  const user = getCurrentUser();
+  if (!user || user.role !== 'sales' || !user.teamId) return [];
+
+  const allUsers = { ...USERS };
+  const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+  localUsers.forEach(u => {
+    if (u && u.username) {
+      allUsers[u.username] = u;
+    }
+  });
+
+  const names = Object.values(allUsers)
+    .filter(u => u.role === 'sales' && u.teamId === user.teamId)
+    .map(u => normalizeSalesName(u.name))
+    .filter((name, index, self) => name && self.indexOf(name) === index)
+    .sort();
+
+  return names;
+}
+
+function populateSalesFilter() {
+  const select = document.getElementById('repFilterSales');
+  if (!select) return;
+
+  const user = getCurrentUser();
+  const allUsers = { ...USERS };
+  const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+  localUsers.forEach(u => {
+    if (u && u.username) allUsers[u.username] = u;
+  });
+
+  const salesUsers = Object.values(allUsers)
+    .filter(u => u.role === 'sales')
+    .map(u => normalizeSalesName(u.name))
+    .filter((name, index, self) => name && self.indexOf(name) === index)
+    .sort();
+
+  let optionsHtml = `<option value="">${t('repAllSales')}</option>`;
+
+  if (user && user.role === 'sales' && user.teamId) {
+    const teamNames = getTeamSalesMembers();
+    optionsHtml += teamNames.map(name => `<option value="${name}">${name}</option>`).join('');
+    select.disabled = false;
+  } else {
+    optionsHtml += salesUsers.map(name => `<option value="${name}">${name}</option>`).join('');
+    select.disabled = false;
+  }
+
+  select.innerHTML = optionsHtml;
+}
+
 function setupVisitForm() {
   const datalist = document.getElementById('hospitalDatalist');
   if (datalist) {
@@ -2334,21 +2386,7 @@ function displayReports(reports) {
   
   // TEAM FILTERING for PDF customers: Filter by salesRep matching team
   if (user && user.role === 'sales' && user.teamId) {
-    // Get all users and find team members
-    const allUsers = {...USERS};
-    const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-    localUsers.forEach(u => {
-      if (u.username && u.status === 'active') {
-        allUsers[u.username] = u;
-      }
-    });
-    
-    // Get team member names
-    const teamNames = Object.values(allUsers)
-      .filter(u => u.role === 'sales' && u.teamId === user.teamId)
-      .map(u => normalizeSalesName(u.name));
-    
-    // Only show PDF customers assigned to team members
+    const teamNames = getTeamSalesMembers();
     pdfCustomers = pdfCustomers.filter(c => {
       const normalizedSales = normalizeSalesName(c.salesPerson);
       return teamNames.includes(normalizedSales);
@@ -3921,16 +3959,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCityButtons();
   renderCards();
   updateStats();
-  
-  const periodSelect = document.getElementById('reportPeriod');
-  if (periodSelect) {
-    periodSelect.addEventListener('change', (e) => {
-      const customDiv = document.getElementById('customDateRange');
-      if (customDiv) {
-        customDiv.style.display = e.target.value === 'custom' ? 'block' : 'none';
-      }
-    });
-  }
+  populateSalesFilter();
+  loadProfileInfo();
 
   renderReports();
   setInterval(() => {
