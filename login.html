@@ -310,8 +310,9 @@ async function handleLogin(event) {
   if (authResult.success) {
     createSession(authResult.user, rememberMe);
     showSuccess('Login successful! Redirecting...');
+    const redirectUrl = authResult.user.role === 'sales' ? 'app/sales.html' : 'index.html';
     setTimeout(() => {
-      window.location.href = 'index.html';
+      window.location.href = redirectUrl;
     }, 1000);
     return;
   }
@@ -320,8 +321,10 @@ async function handleLogin(event) {
   const result = login(username, password, rememberMe);
   if (result.success) {
     showSuccess('Login successful! Redirecting...');
+    const user = USERS[username.toLowerCase()];
+    const redirectUrl = user && user.role === 'sales' ? 'app/sales.html' : 'index.html';
     setTimeout(() => {
-      window.location.href = 'index.html';
+      window.location.href = redirectUrl;
     }, 1000);
   } else {
     const message = authResult.message && authResult.message !== 'Unable to reach backend'

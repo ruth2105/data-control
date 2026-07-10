@@ -31,9 +31,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 /* MAIN CONTENT */
 .main{max-width:1280px;margin:0 auto;padding:24px}
 /* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.08);position:relative}
 .tab-btn{flex:1;padding:10px 16px;border:none;background:transparent;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;color:#64748b;transition:all .2s}
 .tab-btn.active{background:#1a56db;color:#fff;box-shadow:0 2px 8px rgba(26,86,219,.35)}
+/* HAMBURGER MENU */
+.tab-menu-toggle{display:none;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#64748b;padding:8px 12px;border-radius:8px;transition:all .2s}
+.tab-menu-toggle:hover{background:#f1f5f9;color:#1a56db}
+.tab-menu-toggle.active{background:#1a56db;color:#fff}
+.tabs-container{display:flex;gap:4px}
+.tabs-dropdown{display:none;position:absolute;top:100%;right:0;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:100;min-width:160px;margin-top:4px;border:1px solid #e2e8f0}
+.tabs-dropdown.open{display:flex;flex-direction:column;gap:0}
+.tabs-dropdown .tab-btn{flex:none;width:100%;text-align:left;border-radius:0;padding:12px 16px;color:#64748b}
+.tabs-dropdown .tab-btn:first-child{border-radius:8px 8px 0 0}
+.tabs-dropdown .tab-btn:last-child{border-radius:0 0 8px 8px}
+.tabs-dropdown .tab-btn:hover:not(.active){background:#f1f5f9}
+.tabs-dropdown .tab-btn.active{background:#1a56db;color:#fff;box-shadow:none}
 /* FILTERS */
 .filters{background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .search-wrap{flex:1;min-width:200px;position:relative}
@@ -203,6 +215,18 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   .vf-full{grid-column:1}
   .rdet-grid{grid-template-columns:1fr}
   .rdet-full{grid-column:1}
+  .vf-submit-btn{padding:12px;font-size:0.95rem}
+  .order-row{grid-template-columns:1fr !important}
+  .order-row button{width:100%;margin-top:8px !important}
+  .vf-card{padding:16px;margin-bottom:16px}
+  .vf-title{font-size:1rem;margin-bottom:12px}
+  .vf-label{font-size:0.7rem}
+  .vf-input,.vf-select,.vf-textarea{font-size:0.85rem;padding:8px 10px}
+  .vf-checkbox-label{font-size:0.8rem;padding:4px 8px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;padding:4px;justify-content:space-between}
+  .tabs-container{display:none}
+  .tab-menu-toggle{display:block}
+  .tab-btn{padding:8px 12px;font-size:0.8rem;min-width:80px;white-space:nowrap;flex:1}
 }
 /* LANG TOGGLE */
 .lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
@@ -211,13 +235,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .lang-btn:hover:not(.active){background:rgba(255,255,255,.1)}
 /* RESPONSIVE */
 @media(max-width:640px){
-  .header-inner{padding:14px 16px}
-  .header-text h1{font-size:1.2rem}
-  .main{padding:16px}
+  .header-inner{padding:12px 12px;gap:8px;flex-wrap:wrap}
+  .header-text h1{font-size:1rem}
+  .header-text p{font-size:0.7rem}
+  .main{padding:12px}
   .cards-grid{grid-template-columns:1fr}
   .modal-info-grid{grid-template-columns:1fr}
   .modal-split{grid-template-columns:1fr;gap:0}
   .modal-panel-left{border-right:none;border-bottom:2px solid #10b981;box-shadow:none;order:1}
+  .edit-fields-grid{grid-template-columns:1fr}
+  .filters{padding:12px;flex-direction:column}
+  .filter-group{width:100%}
+  .search-wrap{min-width:100%}
+  .stats-inner{gap:8px;padding:8px 12px}
+  .stat-item{font-size:0.7rem}
+  .stat-item strong{font-size:0.9rem}
+}
   .modal-panel-right{order:2}
   .edit-fields-grid{grid-template-columns:1fr}
   .filters{padding:12px}
@@ -239,7 +272,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <button class="lang-btn active" onclick="setLang('zh')" id="btn-zh">中文</button>
     </div>
     <div style="display:flex;align-items:center;gap:16px">
-      <div style="text-align:right">
+      <div style="text-align:right;cursor:pointer;padding:8px 12px;border-radius:6px;transition:background 0.2s;hover:background:rgba(255,255,255,0.1)" onclick="openPasswordChangeModal()" title="Click to change password">
         <div style="font-size:0.9rem;font-weight:600" id="userName">Administrator</div>
         <div style="font-size:0.75rem;opacity:0.8" id="userRole">Admin</div>
       </div>
@@ -259,11 +292,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 
 <div class="main">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 Customers</button>
-    <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Statistics</button>
-    <button class="tab-btn" onclick="switchTab('form')" id="tab-form">📝 Visit Form</button>
-    <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 My Team Reports</button>
-    <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">👤 Profile</button>
+    <div class="tabs-container">
+      <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 Customers</button>
+      <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Statistics</button>
+      <button class="tab-btn" onclick="switchTab('form')" id="tab-form">📝 Visit Form</button>
+      <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 My Team Reports</button>
+      <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">👤 Profile</button>
+    </div>
+    <button class="tab-menu-toggle" onclick="toggleTabMenu()" id="tab-menu-btn">⋮</button>
+    <div class="tabs-dropdown" id="tabs-dropdown">
+      <button class="tab-btn active" onclick="switchTab('all');closeTabMenu()" id="tab-all-mobile">🏥 Customers</button>
+      <button class="tab-btn" onclick="switchTab('dashboard');closeTabMenu()" id="tab-dashboard-mobile">📊 Statistics</button>
+      <button class="tab-btn" onclick="switchTab('form');closeTabMenu()" id="tab-form-mobile">📝 Visit Form</button>
+      <button class="tab-btn" onclick="switchTab('reports');closeTabMenu()" id="tab-reports-mobile">📋 My Team Reports</button>
+      <button class="tab-btn" onclick="switchTab('profile');closeTabMenu()" id="tab-profile-mobile">👤 Profile</button>
+    </div>
   </div>
 
   <!-- ALL CUSTOMERS PAGE -->
@@ -1615,6 +1658,9 @@ function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
+  if (document.getElementById('tab-' + tab + '-mobile')) {
+    document.getElementById('tab-' + tab + '-mobile').classList.add('active');
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
 
@@ -1638,6 +1684,20 @@ function switchTab(tab) {
   if (tab === 'reports') { renderReports(); }
   if (tab === 'form') { setupVisitForm(); }
   if (tab === 'profile') { loadProfileInfo(); }
+}
+
+function toggleTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  dropdown.classList.toggle('open');
+  toggle.classList.toggle('active');
+}
+
+function closeTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  dropdown.classList.remove('open');
+  toggle.classList.remove('active');
 }
 
 function setCity(city) {
@@ -2488,7 +2548,7 @@ function displayReports(reports) {
     
     // Add Announce Purchase button for Hot/Warm customers
     if ((r.customerPotential === 'Hot' || r.customerPotential === 'Warm') && r.source !== 'PDF') {
-      buttons += `<button class="rep-edit-btn" onclick="event.stopPropagation();announcePurchase('${r.id}')" style="background:#10b981;color:#fff;border-color:#10b981">🔔 宣布购买</button>`;
+      buttons += `<button class="rep-edit-btn" onclick="event.stopPropagation();announcePurchase('${r.id}')" style="background:#10b981;color:#fff;border-color:#10b981">${t('repAnnouncePurchase')}</button>`;
     }
     
     buttons += `<button class="rep-del-btn" onclick="event.stopPropagation();${r.source === 'PDF' || r.source === 'New' ? `deletePDFCustomer('${r.id}','${r.source}')` : `deleteReport('${r.id}')`}">${t('repDelete')}</button>
@@ -2496,13 +2556,14 @@ function displayReports(reports) {
     
     const editBtns = buttons;
     
-    // Customer Potential Badge
+    // Customer Potential Badge (with bilingual support)
     const potential = r.customerPotential || '';
-    const potentialBadge = potential ? `<span class="rep-type-badge" style="background:${potential==='Hot'?'#fee2e2':potential==='Warm'?'#fef3c7':'#e0f2fe'};color:${potential==='Hot'?'#991b1b':potential==='Warm'?'#92400e':'#075985'};font-weight:800;border:2px solid ${potential==='Hot'?'#dc2626':potential==='Warm'?'#f59e0b':'#0ea5e9'}">${potential==='Hot'?'🔥 热门':potential==='Warm'?'🌤️ 温暖':'❄️ 冷淡'}</span>` : '';
+    const potentialBadgeText = potential === 'Hot' ? t('repPotentialHotBadge') : potential === 'Warm' ? t('repPotentialWarmBadge') : potential === 'Cold' ? t('repPotentialColdBadge') : '';
+    const potentialBadge = potential ? `<span class="rep-type-badge" style="background:${potential==='Hot'?'#fee2e2':potential==='Warm'?'#fef3c7':'#e0f2fe'};color:${potential==='Hot'?'#991b1b':potential==='Warm'?'#92400e':'#075985'};font-weight:800;border:2px solid ${potential==='Hot'?'#dc2626':potential==='Warm'?'#f59e0b':'#0ea5e9'}">${potentialBadgeText}</span>` : '';
     
-    // Source badge (PDF vs Report)
-    const sourceBadge = r.source === 'PDF' ? `<span class="rep-type-badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">📄 PDF</span>` : '';
-    const accreBadge = r.accre ? `<span class="rep-type-badge" style="background:#dcfce7;color:#166534;font-weight:700">⭐ ACCRE</span>` : '';
+    // Source badge (PDF vs Report) - with bilingual support
+    const sourceBadge = r.source === 'PDF' ? `<span class="rep-type-badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">${t('repSourcePDF')}</span>` : r.source === 'New' ? `<span class="rep-type-badge" style="background:#fef3c7;color:#92400e;font-weight:700">${t('repSourceNew')}</span>` : '';
+    const accreBadge = r.accre ? `<span class="rep-type-badge" style="background:#dcfce7;color:#166534;font-weight:700">${t('repTagACCRE')}</span>` : '';
     
     // Salesperson name with color
     const salesPersonName = r.salesPerson || '—';
@@ -2511,7 +2572,7 @@ function displayReports(reports) {
     return `<div class="rep-card" onclick='openReportDetailObj(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
       <div class="rep-avatar" style="background:${color}">${salesInitials(salesPersonName)}</div>
       <div class="rep-info">
-        <div class="rep-hospital">${r.hospitalNameZh || r.hospitalName || 'Unknown Hospital'}</div>
+        <div class="rep-hospital">${r.hospitalNameZh || r.hospitalName || t('repUnknownHospital')}</div>
         <div class="rep-meta">
           <span>👤 ${salesBadge}</span>
           ${date ? `<span>📅 ${date}</span>` : ''}
@@ -3549,6 +3610,26 @@ const LANG = {
     rdetOutcome: 'Progress & Outcome',
     rdetNextDate: 'Next Visit Date',
     rdetNextTarget: 'Next Visit Target',
+    // Report display / potential levels
+    potentialHot: 'Hot',
+    potentialWarm: 'Warm',
+    potentialCold: 'Cold',
+    potentialUnknown: 'Unknown',
+    repPotentialHotBadge: '🔥 Hot',
+    repPotentialWarmBadge: '🌤️ Warm',
+    repPotentialColdBadge: '❄️ Cold',
+    repSourcePDF: '📄 PDF',
+    repSourceNew: '🆕 New',
+    repTagACCRE: '⭐ ACCRE',
+    repAnnouncePurchase: '🎉 Announce Purchase',
+    repUnknownHospital: 'Unknown Hospital',
+    reportFieldEmail: 'Email',
+    reportFieldPhone: 'Phone',
+    reportFieldAddress: 'Address',
+    reportFieldContact: 'Contact',
+    reportFieldPatientLoad: 'Patient Load',
+    reportFieldHormoneAnalyzer: 'Hormone Analyzer',
+    reportFieldNotes: 'Notes',
   },
   zh: {
     subtitle: '医院和实验室客户管理系统',
@@ -3764,6 +3845,26 @@ const LANG = {
     rdetOutcome: '拜访进展及结果',
     rdetNextDate: '下次拜访时间',
     rdetNextTarget: '下次拜访目标',
+    // Report display / potential levels
+    potentialHot: '热门',
+    potentialWarm: '温暖',
+    potentialCold: '冷淡',
+    potentialUnknown: '未设置',
+    repPotentialHotBadge: '🔥 热门',
+    repPotentialWarmBadge: '🌤️ 温暖',
+    repPotentialColdBadge: '❄️ 冷淡',
+    repSourcePDF: '📄 PDF',
+    repSourceNew: '🆕 新建',
+    repTagACCRE: '⭐ 认证',
+    repAnnouncePurchase: '🎉 宣布采购',
+    repUnknownHospital: '未知医院',
+    reportFieldEmail: '电子邮件',
+    reportFieldPhone: '电话',
+    reportFieldAddress: '地址',
+    reportFieldContact: '联系人',
+    reportFieldPatientLoad: '患者数量',
+    reportFieldHormoneAnalyzer: '激素分析仪',
+    reportFieldNotes: '备注',
   }
 };
 
@@ -6054,6 +6155,129 @@ function loadProfileInfo() {
   document.getElementById('profileTeam').textContent = teamInfo ? teamInfo.name : 'N/A';
 }
 
+// ===================== OPEN PASSWORD CHANGE MODAL =====================
+function openPasswordChangeModal() {
+  // Create a modal for password change
+  const modalHTML = `
+    <div class="modal-overlay" id="passwordChangeOverlay" onclick="if(event.target===this)closePasswordChangeModal()" style="display:flex;z-index:2000">
+      <div class="modal" style="max-width:500px;animation:slideUp 0.25s ease">
+        <div class="modal-header">
+          <div class="modal-header-top">
+            <div class="modal-title">🔐 Change Password</div>
+            <button class="modal-close" onclick="closePasswordChangeModal()">✕</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form id="modalPasswordForm" onsubmit="submitPasswordChange(event)">
+            <div class="vf-group" style="margin-bottom:16px">
+              <label class="vf-label">Current Password</label>
+              <input type="password" class="vf-input" id="modalCurrentPassword" required minlength="1" placeholder="Enter current password">
+            </div>
+            <div class="vf-group" style="margin-bottom:16px">
+              <label class="vf-label">New Password</label>
+              <input type="password" class="vf-input" id="modalNewPassword" required minlength="6" placeholder="Enter new password (min 6 characters)">
+            </div>
+            <div class="vf-group" style="margin-bottom:20px">
+              <label class="vf-label">Confirm New Password</label>
+              <input type="password" class="vf-input" id="modalConfirmPassword" required minlength="6" placeholder="Re-enter new password">
+            </div>
+            <div id="passwordChangeStatus" style="margin-bottom:16px;padding:10px;border-radius:8px;display:none;font-size:0.9rem"></div>
+            <button type="submit" class="vf-submit-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);margin:0">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Remove any existing modal
+  const existing = document.getElementById('passwordChangeOverlay');
+  if (existing) existing.remove();
+  
+  // Add new modal
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closePasswordChangeModal() {
+  const modal = document.getElementById('passwordChangeOverlay');
+  if (modal) modal.remove();
+}
+
+function submitPasswordChange(event) {
+  event.preventDefault();
+  
+  const currentPassword = document.getElementById('modalCurrentPassword').value;
+  const newPassword = document.getElementById('modalNewPassword').value;
+  const confirmPassword = document.getElementById('modalConfirmPassword').value;
+  const statusDiv = document.getElementById('passwordChangeStatus');
+  
+  const user = getCurrentUser();
+  if (!user) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fee2e2';
+    statusDiv.style.color = '#991b1b';
+    statusDiv.textContent = '❌ Not logged in';
+    return;
+  }
+  
+  // Validation
+  if (newPassword.length < 6) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fef3c7';
+    statusDiv.style.color = '#92400e';
+    statusDiv.textContent = '⚠️ New password must be at least 6 characters';
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fef3c7';
+    statusDiv.style.color = '#92400e';
+    statusDiv.textContent = '⚠️ New passwords do not match';
+    return;
+  }
+  
+  // Check current password
+  const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+  const userRecord = localUsers.find(u => u.username === user.username) || USERS[user.username];
+  
+  if (!userRecord || userRecord.password !== currentPassword) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fee2e2';
+    statusDiv.style.color = '#991b1b';
+    statusDiv.textContent = '❌ Current password is incorrect';
+    return;
+  }
+  
+  if (newPassword === currentPassword) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fef3c7';
+    statusDiv.style.color = '#92400e';
+    statusDiv.textContent = '⚠️ New password must be different from current password';
+    return;
+  }
+  
+  // Update password
+  const userIndex = localUsers.findIndex(u => u.username === user.username);
+  if (userIndex >= 0) {
+    localUsers[userIndex].password = newPassword;
+  } else {
+    localUsers.push({ ...userRecord, password: newPassword });
+  }
+  
+  localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(localUsers));
+  
+  // Show success
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#dcfce7';
+  statusDiv.style.color = '#166534';
+  statusDiv.textContent = '✅ Password changed successfully! Logging out...';
+  
+  setTimeout(() => {
+    closePasswordChangeModal();
+    logout();
+  }, 2000);
+}
+
 function salesChangePassword(event) {
   event.preventDefault();
   
@@ -6120,6 +6344,98 @@ function salesChangePassword(event) {
   }, 1000);
 }
 
+// Mobile Tab Menu Functions
+window.toggleTabMenu = function() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.toggle('open');
+    toggle.classList.toggle('active');
+  }
+};
+
+window.closeTabMenu = function() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.remove('open');
+    toggle.classList.remove('active');
+  }
+};
+
+</script>
+<script>
+// Ensure mobile tab menu functions are defined
+function toggleTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.toggle('open');
+    toggle.classList.toggle('active');
+  }
+}
+
+function closeTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.remove('open');
+    toggle.classList.remove('active');
+  }
+}
+</script>
+<script>
+// Global tab and filter functions for onclick handlers
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (document.getElementById('tab-' + tab + '-mobile')) {
+    document.getElementById('tab-' + tab + '-mobile').classList.add('active');
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+
+  if (tab === 'all') {
+    currentCity = 'All';
+    currentModel = 'All';
+    searchTerm = '';
+    const si = document.getElementById('searchInput');
+    if (si) si.value = '';
+    document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
+    const ma = document.getElementById('model-All');
+    if (ma) ma.classList.add('active');
+    renderCityButtons();
+    renderCards();
+  }
+  if (tab === 'potential') {
+    fetchAndMergeReports();
+    filterPotential('all');
+  }
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'reports') { renderReports(); }
+  if (tab === 'form') { setupVisitForm(); }
+  if (tab === 'profile') { loadProfileInfo(); }
+  closeTabMenu();
+}
+
+function setCity(city) {
+  currentCity = city;
+  renderCityButtons();
+  renderCards();
+}
+
+function setModel(model) {
+  currentModel = model;
+  document.querySelectorAll('.filter-btn[id^="model-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('model-' + model).classList.add('active');
+  renderCards();
+}
+
+function applyFilters() {
+  searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+  renderCards();
+}
 </script>
 </body>
 </html>

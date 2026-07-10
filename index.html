@@ -52,9 +52,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 /* MAIN CONTENT */
 .main{max-width:1280px;margin:0 auto;padding:24px}
 /* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.08);position:relative}
 .tab-btn{flex:1;padding:10px 16px;border:none;background:transparent;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;color:#64748b;transition:all .2s}
 .tab-btn.active{background:#1a56db;color:#fff;box-shadow:0 2px 8px rgba(26,86,219,.35)}
+/* HAMBURGER MENU */
+.tab-menu-toggle{display:none;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#64748b;padding:8px 12px;border-radius:8px;transition:all .2s}
+.tab-menu-toggle:hover{background:#f1f5f9;color:#1a56db}
+.tab-menu-toggle.active{background:#1a56db;color:#fff}
+.tabs-container{display:flex;gap:4px}
+.tabs-dropdown{display:none;position:absolute;top:100%;right:0;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:100;min-width:160px;margin-top:4px;border:1px solid #e2e8f0}
+.tabs-dropdown.open{display:flex;flex-direction:column;gap:0}
+.tabs-dropdown .tab-btn{flex:none;width:100%;text-align:left;border-radius:0;padding:12px 16px;color:#64748b}
+.tabs-dropdown .tab-btn:first-child{border-radius:8px 8px 0 0}
+.tabs-dropdown .tab-btn:last-child{border-radius:0 0 8px 8px}
+.tabs-dropdown .tab-btn:hover:not(.active){background:#f1f5f9}
+.tabs-dropdown .tab-btn.active{background:#1a56db;color:#fff;box-shadow:none}
 /* FILTERS */
 .filters{background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .search-wrap{flex:1;min-width:200px;position:relative}
@@ -224,6 +236,18 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   .vf-full{grid-column:1}
   .rdet-grid{grid-template-columns:1fr}
   .rdet-full{grid-column:1}
+  .vf-submit-btn{padding:12px;font-size:0.95rem}
+  .order-row{grid-template-columns:1fr !important}
+  .order-row button{width:100%;margin-top:8px !important}
+  .vf-card{padding:16px;margin-bottom:16px}
+  .vf-title{font-size:1rem;margin-bottom:12px}
+  .vf-label{font-size:0.7rem}
+  .vf-input,.vf-select,.vf-textarea{font-size:0.85rem;padding:8px 10px}
+  .vf-checkbox-label{font-size:0.8rem;padding:4px 8px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;padding:4px;justify-content:space-between}
+  .tabs-container{display:none}
+  .tab-menu-toggle{display:block}
+  .tab-btn{padding:8px 12px;font-size:0.8rem;min-width:80px;white-space:nowrap;flex:1}
 }
 /* LANG TOGGLE */
 .lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
@@ -232,17 +256,27 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .lang-btn:hover:not(.active){background:rgba(255,255,255,.1)}
 /* RESPONSIVE */
 @media(max-width:640px){
-  .header-inner{padding:14px 16px}
-  .header-text h1{font-size:1.2rem}
-  .main{padding:16px}
+  .header-inner{padding:12px 12px;gap:8px;flex-wrap:wrap}
+  .header-text h1{font-size:1rem}
+  .header-text p{font-size:0.7rem}
+  .main{padding:12px}
   .cards-grid{grid-template-columns:1fr}
   .modal-info-grid{grid-template-columns:1fr}
   .modal-split{grid-template-columns:1fr;gap:0}
   .modal-panel-left{border-right:none;border-bottom:2px solid #10b981;box-shadow:none;order:1}
   .modal-panel-right{order:2}
   .edit-fields-grid{grid-template-columns:1fr}
-  .filters{padding:12px}
-  .stats-inner{gap:12px}
+  .filters{padding:12px;flex-direction:column}
+  .filter-group{width:100%}
+  .search-wrap{min-width:100%}
+  .stats-inner{gap:8px;padding:8px 12px}
+  .stat-item{font-size:0.7rem}
+  .stat-item strong{font-size:0.9rem}
+}
+/* Real-time sync pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 </style>
 </head>
@@ -260,7 +294,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <button class="lang-btn active" onclick="setLang('zh')" id="btn-zh">中文</button>
     </div>
     <div style="display:flex;align-items:center;gap:16px">
-      <div style="text-align:right">
+      <div style="text-align:right;cursor:pointer;padding:8px 12px;border-radius:6px;transition:background 0.2s" onclick="openPasswordChangeModal()" title="Click to change password">
         <div style="font-size:0.9rem;font-weight:600" id="userName">Administrator</div>
         <div style="font-size:0.75rem;opacity:0.8" id="userRole">Admin</div>
       </div>
@@ -274,17 +308,30 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <div class="stat-item"><div class="stat-dot" style="background:#fde68a"></div><strong id="statMachine">0</strong> <span data-en="Machine (A8/A90)" data-zh="机器客户">机器客户</span></div>
       <div class="stat-item"><div class="stat-dot" style="background:#6ee7b7"></div><strong id="statExternal">0</strong> <span data-en="External" data-zh="外部客户">外部客户</span></div>
       <div class="stat-item"><div class="stat-dot" style="background:#a78bfa"></div><span data-en="All Cities" data-zh="所有城市">所有城市</span></div>
+      <div class="stat-item" id="realtimeIndicator" style="margin-left:auto;display:none"><div class="stat-dot" style="background:#10b981;animation:pulse 2s infinite"></div><span data-en="🔄 Real-time Sync Active" data-zh="🔄 实时同步已启用">🔄 Real-time Sync Active</span></div>
     </div>
   </div>
 </div>
 
 <div class="main">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 Customers</button>
-    <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Statistics</button>
-    <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 Visit Reports</button>
-    <button class="tab-btn" onclick="switchTab('updates')" id="tab-updates">🔄 Updates</button>
-    <button class="tab-btn" onclick="switchTab('users')" id="tab-users" style="display:none">👥 Users</button>
+    <div class="tabs-container">
+      <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 Customers</button>
+      <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Statistics</button>
+      <button class="tab-btn" onclick="switchTab('form')" id="tab-form">📝 Visit Form</button>
+      <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 Visit Reports</button>
+      <button class="tab-btn" onclick="switchTab('updates')" id="tab-updates">🔄 Updates</button>
+      <button class="tab-btn" onclick="switchTab('users')" id="tab-users" style="display:none">👥 Users</button>
+    </div>
+    <button class="tab-menu-toggle" onclick="toggleTabMenu()" id="tab-menu-btn">⋮</button>
+    <div class="tabs-dropdown" id="tabs-dropdown">
+      <button class="tab-btn active" onclick="switchTab('all');closeTabMenu()" id="tab-all-mobile">🏥 Customers</button>
+      <button class="tab-btn" onclick="switchTab('dashboard');closeTabMenu()" id="tab-dashboard-mobile">📊 Statistics</button>
+      <button class="tab-btn" onclick="switchTab('form');closeTabMenu()" id="tab-form-mobile">📝 Visit Form</button>
+      <button class="tab-btn" onclick="switchTab('reports');closeTabMenu()" id="tab-reports-mobile">📋 Visit Reports</button>
+      <button class="tab-btn" onclick="switchTab('updates');closeTabMenu()" id="tab-updates-mobile">🔄 Updates</button>
+      <button class="tab-btn" onclick="switchTab('users');closeTabMenu()" id="tab-users-mobile" style="display:none">👥 Users</button>
+    </div>
   </div>
 
   <!-- ALL CUSTOMERS PAGE -->
@@ -497,6 +544,163 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   </div>
   <div class="results-info" id="resultsInfoExt"></div>
   <div class="cards-grid" id="cardsGridExt"></div>
+  </div>
+
+  <!-- VISIT FORM PAGE -->
+  <div id="page-form" class="page">
+    <div class="vf-card" style="border:2px solid #3b82f6;margin-bottom:16px">
+      <div class="vf-title" style="color:#3b82f6">📝 登记拜访 / Register Visit</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">业务员 / Salesperson</label>
+          <select class="vf-select" id="visitSalesPerson">
+            <option value="">-- 请选择 --</option>
+            <option>sales1</option>
+            <option>sales2</option>
+            <option>sales3</option>
+          </select>
+        </div>
+        <div>
+          <label class="vf-label">日期 / Date</label>
+          <input class="vf-input" type="date" id="visitDate">
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">医院名称 / Hospital Name</label>
+        <input class="vf-input" type="text" id="visitHospital" list="hospitalDatalist" placeholder="输入医院名称…">
+        <datalist id="hospitalDatalist"></datalist>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">医院名称（中文）/ Hospital Name (中文)</label>
+        <input class="vf-input" type="text" id="visitHospitalZh" placeholder="输入医院中文名称…">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">被访人 / Contact Person</label>
+          <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
+        </div>
+        <div>
+          <label class="vf-label">被访人（中文）/ Contact Person (中文)</label>
+          <input class="vf-input" type="text" id="visitContactZh" placeholder="中文姓名">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">职位 / Position</label>
+          <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
+        </div>
+        <div>
+          <label class="vf-label">职位（中文）/ Position (中文)</label>
+          <input class="vf-input" type="text" id="visitPositionZh" placeholder="中文职位">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">电话 / Phone</label>
+          <input class="vf-input" type="text" id="visitPhone" placeholder="手机号码">
+        </div>
+        <div>
+          <label class="vf-label">医院地址 / Address</label>
+          <input class="vf-input" type="text" id="visitAddress" placeholder="如: Bole, Ayat">
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">拜访类型 / Visit Type</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtFirst" value="First contact"> 初次接触 / First Contact</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtPromo" value="Product promotion"> 产品推广 / Product Promotion</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtRelation" value="Customer relationship maintenance"> 客情维护 / Relationship</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtIssue" value="Issue follow-up"> 问题跟进 / Issue Follow-up</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtOther" value="Other"> 其他 / Other</label>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">讨论内容 / Discussion Notes</label>
+        <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">讨论内容（中文）/ Discussion Notes (中文)</label>
+        <textarea class="vf-textarea" id="visitNotesZh" rows="3" placeholder="中文讨论内容" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">现有设备 / Current Equipment in Use</label>
+        <textarea class="vf-textarea" id="visitEquipment" rows="2" placeholder="如: 激素: Finecare • 生化: Semi-Automatic • 血球: Mindray" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">拜访结果 / Outcome</label>
+        <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">拜访结果（中文）/ Outcome (中文)</label>
+        <textarea class="vf-textarea" id="visitOutcomeZh" rows="3" placeholder="中文拜访结果" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
+        <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
+        <textarea class="vf-textarea" id="visitSummary" rows="4" placeholder="请简要总结本次拜访的关键要点、达成的共识、下一步行动计划等。此总结将显示在报告中。" style="font-family:monospace;background:#fff"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px;padding:16px;background:#f0fdf4;border:2px solid #86efac;border-radius:10px">
+        <label class="vf-label" style="color:#166534;font-size:1rem">📦 产品订单 / Product Orders</label>
+        <div id="orderItems" style="margin-bottom:8px">
+          <div class="order-row" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center">
+            <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
+            <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
+            <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
+            <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
+          </div>
+        </div>
+        <button type="button" onclick="addOrderRow()" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">+ 添加产品 / Add Product</button>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">客户分类 / Customer Category</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catActive" value="Active Customer"> 有效客户 / Active</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catNeeds" value="Customer with Needs"> 有需求客户 / With Needs</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catKey" value="Key Customer"> 重点客户 / Key</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catClosed" value="Closed Deal"> 已成交客户 / Closed Deal</label>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">客户潜力 / Potential</label>
+          <select class="vf-select" id="visitPotential">
+            <option value="">-- 请选择 --</option>
+            <option value="Hot">🔥 热门 / Hot</option>
+            <option value="Warm">🌤️ 温暖 / Warm</option>
+            <option value="Cold">❄️ 冷淡 / Cold</option>
+          </select>
+        </div>
+        <div>
+          <label class="vf-label">下次拜访日期 / Next Visit</label>
+          <input class="vf-input" type="date" id="visitNextDate">
+        </div>
+        <div>
+          <label class="vf-label">下次目标 / Next Target</label>
+          <input class="vf-input" type="text" id="visitNextTarget" placeholder="如: 跟进报价">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px">
+        <button type="button" onclick="submitMainVisitForm()" style="flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 提交 / Submit</button>
+        <button type="button" onclick="clearVisitFormMain()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">↺ 重置 / Reset</button>
+      </div>
+      <div id="mainVisitStatus" style="margin-top:12px;padding:10px;border-radius:8px;display:none"></div>
+    </div>
   </div>
 
   <!-- USER MANAGEMENT PAGE -->
@@ -842,6 +1046,16 @@ if (currentUser && currentUser.role === 'admin') {
   const usersTab = document.getElementById('tab-users');
   if (usersTab) {
     usersTab.style.display = 'block';
+  }
+  
+  // Hide Visit Form tab for admin (only sales team needs to create reports)
+  const formTab = document.getElementById('tab-form');
+  if (formTab) {
+    formTab.style.display = 'none';
+  }
+  const formTabMobile = document.getElementById('tab-form-mobile');
+  if (formTabMobile) {
+    formTabMobile.style.display = 'none';
   }
 }
 
@@ -1689,6 +1903,9 @@ function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
+  if (document.getElementById('tab-' + tab + '-mobile')) {
+    document.getElementById('tab-' + tab + '-mobile').classList.add('active');
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
 
@@ -1709,8 +1926,23 @@ function switchTab(tab) {
     filterPotential('all'); // Show all by default
   }
   if (tab === 'dashboard') renderDashboard();
+  if (tab === 'form') { document.getElementById('visitDate').value = new Date().toISOString().split('T')[0]; }
   if (tab === 'reports') { renderReports(); setupVisitForm(); }
   if (tab === 'users') refreshUsers();
+}
+
+function toggleTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  dropdown.classList.toggle('open');
+  toggle.classList.toggle('active');
+}
+
+function closeTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  dropdown.classList.remove('open');
+  toggle.classList.remove('active');
 }
 
 function setCity(city) {
@@ -1729,6 +1961,165 @@ function setModel(model) {
 function applyFilters() {
   searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
   renderCards();
+}
+
+// Submit visit form from main page
+async function submitMainVisitForm() {
+  const salesPerson = document.getElementById('visitSalesPerson').value;
+  const date = document.getElementById('visitDate').value;
+  const hospitalName = document.getElementById('visitHospital').value.trim();
+  const hospitalNameZh = document.getElementById('visitHospitalZh').value.trim();
+  const contact = document.getElementById('visitContact').value.trim();
+  const contactZh = document.getElementById('visitContactZh').value.trim();
+  const position = document.getElementById('visitPosition').value.trim();
+  const positionZh = document.getElementById('visitPositionZh').value.trim();
+  const phone = document.getElementById('visitPhone').value.trim();
+  const address = document.getElementById('visitAddress').value.trim();
+  const notes = document.getElementById('visitNotes').value.trim();
+  const notesZh = document.getElementById('visitNotesZh').value.trim();
+  const equipment = document.getElementById('visitEquipment').value.trim();
+  const outcome = document.getElementById('visitOutcome').value.trim();
+  const outcomeZh = document.getElementById('visitOutcomeZh').value.trim();
+  const summary = document.getElementById('visitSummary').value.trim();
+  const potential = document.getElementById('visitPotential').value;
+  const nextDate = document.getElementById('visitNextDate').value;
+  const nextTarget = document.getElementById('visitNextTarget').value.trim();
+  const statusDiv = document.getElementById('mainVisitStatus');
+
+  // Collect visit types
+  const visitTypes = [];
+  ['vtFirst','vtPromo','vtRelation','vtIssue','vtOther'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) visitTypes.push(cb.value);
+  });
+
+  // Collect categories
+  const categories = [];
+  ['catActive','catNeeds','catKey','catClosed'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) categories.push(cb.value);
+  });
+
+  // Collect orders
+  const orders = [];
+  document.querySelectorAll('#orderItems .order-row').forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const product = inputs[0]?.value.trim();
+    const qty = inputs[1]?.value.trim();
+    const unit = inputs[2]?.value.trim();
+    const price = inputs[3]?.value.trim();
+    if (product) orders.push({ product, qty: qty || '1', unit: unit || 'pcs', price: price || '0' });
+  });
+
+  // Validation
+  if (!salesPerson) { alert('请选择业务员 / Please select salesperson'); return; }
+  if (!date) { alert('请选择日期 / Please select date'); return; }
+  if (!hospitalName) { alert('请输入医院名称 / Please enter hospital name'); return; }
+  if (!potential) { alert('请选择客户潜力 / Please select potential'); return; }
+
+  const reportData = {
+    id: Date.now(),
+    submittedAt: new Date().toISOString(),
+    fillDate: date,
+    salesPerson: salesPerson,
+    hospitalName: hospitalName,
+    hospitalNameZh: hospitalNameZh,
+    hospitalAddress: address,
+    visitingName: contact,
+    visitingNameZh: contactZh,
+    position: position,
+    positionZh: positionZh,
+    phone: phone,
+    visitType: visitTypes,
+    customerCategory: categories,
+    customerPotential: potential,
+    visitPurpose: notes,
+    visitPurposeZh: notesZh,
+    notes: notes,
+    notesZh: notesZh,
+    equipNeeds: equipment,
+    visitProgress: outcome,
+    visitProgressZh: outcomeZh,
+    summary: summary,
+    nextVisitDate: nextDate,
+    nextVisitTarget: nextTarget,
+    orders: orders,
+    action: 'insert'
+  };
+
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#eff6ff';
+  statusDiv.style.color = '#1e40af';
+  statusDiv.innerHTML = '⏳ 提交中 / Submitting...';
+
+  try {
+    await saveVisitReportLocal(reportData);
+    statusDiv.style.background = '#f0fdf4';
+    statusDiv.style.color = '#166534';
+    statusDiv.innerHTML = `✅ 提交成功 / Submitted!<br>${hospitalName} — ${potential}`;
+  } catch (error) {
+    console.warn('Submit failed, saving locally:', error);
+    statusDiv.style.background = '#fef2f2';
+    statusDiv.style.color = '#991b1b';
+    statusDiv.innerHTML = `⚠️ 保存到本地 / Saved locally<br>${hospitalName} — ${potential}`;
+  }
+
+  clearVisitFormMain();
+  setTimeout(() => { statusDiv.style.display = 'none'; }, 2000);
+}
+
+function clearVisitFormMain() {
+  document.getElementById('visitHospital').value = '';
+  document.getElementById('visitHospitalZh').value = '';
+  document.getElementById('visitContact').value = '';
+  document.getElementById('visitContactZh').value = '';
+  document.getElementById('visitPosition').value = '';
+  document.getElementById('visitPositionZh').value = '';
+  document.getElementById('visitPhone').value = '';
+  document.getElementById('visitAddress').value = '';
+  document.getElementById('visitNotes').value = '';
+  document.getElementById('visitNotesZh').value = '';
+  document.getElementById('visitEquipment').value = '';
+  document.getElementById('visitOutcome').value = '';
+  document.getElementById('visitOutcomeZh').value = '';
+  document.getElementById('visitSummary').value = '';
+  document.getElementById('visitPotential').value = '';
+  document.getElementById('visitNextDate').value = '';
+  document.getElementById('visitNextTarget').value = '';
+  document.getElementById('visitSalesPerson').value = '';
+  document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
+  
+  // Clear checkboxes
+  ['vtFirst','vtPromo','vtRelation','vtIssue','vtOther','catActive','catNeeds','catKey','catClosed'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb) cb.checked = false;
+  });
+
+  // Clear order rows except first
+  const orderContainer = document.getElementById('orderItems');
+  const rows = orderContainer.querySelectorAll('.order-row');
+  for (let i = rows.length - 1; i > 0; i--) {
+    rows[i].remove();
+  }
+  if (rows.length > 0) {
+    rows[0].querySelectorAll('input').forEach(inp => inp.value = '');
+    rows[0].querySelector('input[value="pcs"]')?.setAttribute('value', 'pcs');
+  }
+}
+
+function addOrderRow() {
+  const container = document.getElementById('orderItems');
+  const row = document.createElement('div');
+  row.className = 'order-row';
+  row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center';
+  row.innerHTML = `
+    <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
+    <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
+    <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
+    <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
+    <button type="button" onclick="this.parentElement.remove()" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;width:32px;height:32px;cursor:pointer;font-weight:700;font-size:1rem">✕</button>
+  `;
+  container.appendChild(row);
 }
 
 // keyboard close modal
@@ -2568,18 +2959,19 @@ function displayReports(reports) {
     const date = r.fillDate || (r.submittedAt||'').slice(0,10) || '—';
     
     const editBtns = `<div class="rep-actions">
-      ${(r.customerPotential === 'Hot' || r.customerPotential === 'Warm') ? `<button class="rep-edit-btn" onclick="event.stopPropagation();announcePurchase('${r.id}')" style="background:#10b981;color:#fff">🎉 Announce Purchase</button>` : ''}
+      ${(r.customerPotential === 'Hot' || r.customerPotential === 'Warm') ? `<button class="rep-edit-btn" onclick="event.stopPropagation();announcePurchase('${r.id}')" style="background:#10b981;color:#fff">${t('repAnnouncePurchase')}</button>` : ''}
       <button class="rep-edit-btn" onclick="event.stopPropagation();${r.source === 'PDF' ? `editPDFCustomer('${r.id}')` : `editReport('${r.id}')`}">${t('repEdit')}</button>
       <button class="rep-del-btn" onclick="event.stopPropagation();${r.source === 'PDF' || r.source === 'New' ? `deletePDFCustomer('${r.id}','${r.source}')` : `deleteReport('${r.id}')`}">${t('repDelete')}</button>
     </div>`;
     
-    // Customer Potential Badge
+    // Customer Potential Badge (with bilingual support)
     const potential = r.customerPotential || '';
-    const potentialBadge = potential ? `<span class="rep-type-badge" style="background:${potential==='Hot'?'#fee2e2':potential==='Warm'?'#fef3c7':'#e0f2fe'};color:${potential==='Hot'?'#991b1b':potential==='Warm'?'#92400e':'#075985'};font-weight:800;border:2px solid ${potential==='Hot'?'#dc2626':potential==='Warm'?'#f59e0b':'#0ea5e9'}">${potential==='Hot'?'🔥 热门':potential==='Warm'?'🌤️ 温暖':'❄️ 冷淡'}</span>` : '';
+    const potentialBadgeText = potential === 'Hot' ? t('repPotentialHotBadge') : potential === 'Warm' ? t('repPotentialWarmBadge') : potential === 'Cold' ? t('repPotentialColdBadge') : '';
+    const potentialBadge = potential ? `<span class="rep-type-badge" style="background:${potential==='Hot'?'#fee2e2':potential==='Warm'?'#fef3c7':'#e0f2fe'};color:${potential==='Hot'?'#991b1b':potential==='Warm'?'#92400e':'#075985'};font-weight:800;border:2px solid ${potential==='Hot'?'#dc2626':potential==='Warm'?'#f59e0b':'#0ea5e9'}">${potentialBadgeText}</span>` : '';
     
-    // Source badge (PDF vs Report)
-    const sourceBadge = r.source === 'PDF' ? `<span class="rep-type-badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">📄 PDF</span>` : '';
-    const accreBadge = r.accre ? `<span class="rep-type-badge" style="background:#dcfce7;color:#166534;font-weight:700">⭐ ACCRE</span>` : '';
+    // Source badge (PDF vs Report) - with bilingual support
+    const sourceBadge = r.source === 'PDF' ? `<span class="rep-type-badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">${t('repSourcePDF')}</span>` : r.source === 'New' ? `<span class="rep-type-badge" style="background:#fef3c7;color:#92400e;font-weight:700">${t('repSourceNew')}</span>` : '';
+    const accreBadge = r.accre ? `<span class="rep-type-badge" style="background:#dcfce7;color:#166534;font-weight:700">${t('repTagACCRE')}</span>` : '';
     
     // Salesperson name with color
     const salesPersonName = r.salesPerson || '—';
@@ -2588,7 +2980,7 @@ function displayReports(reports) {
     return `<div class="rep-card" onclick='openReportDetailObj(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
       <div class="rep-avatar" style="background:${color}">${salesInitials(salesPersonName)}</div>
       <div class="rep-info">
-        <div class="rep-hospital">${r.hospitalName || 'Unknown Hospital'}</div>
+        <div class="rep-hospital">${r.hospitalName || t('repUnknownHospital')}</div>
         <div class="rep-meta">
           <span>👤 ${salesBadge}</span>
           ${date ? `<span>📅 ${date}</span>` : ''}
@@ -3423,6 +3815,26 @@ const LANG = {
     rdetOutcome: 'Progress & Outcome',
     rdetNextDate: 'Next Visit Date',
     rdetNextTarget: 'Next Visit Target',
+    // Report display / potential levels
+    potentialHot: 'Hot',
+    potentialWarm: 'Warm',
+    potentialCold: 'Cold',
+    potentialUnknown: 'Unknown',
+    repPotentialHotBadge: '🔥 Hot',
+    repPotentialWarmBadge: '🌤️ Warm',
+    repPotentialColdBadge: '❄️ Cold',
+    repSourcePDF: '📄 PDF',
+    repSourceNew: '🆕 New',
+    repTagACCRE: '⭐ ACCRE',
+    repAnnouncePurchase: '🎉 Announce Purchase',
+    repUnknownHospital: 'Unknown Hospital',
+    reportFieldEmail: 'Email',
+    reportFieldPhone: 'Phone',
+    reportFieldAddress: 'Address',
+    reportFieldContact: 'Contact',
+    reportFieldPatientLoad: 'Patient Load',
+    reportFieldHormoneAnalyzer: 'Hormone Analyzer',
+    reportFieldNotes: 'Notes',
   },
   zh: {
     subtitle: '医院和实验室客户管理系统',
@@ -3639,6 +4051,26 @@ const LANG = {
     rdetOutcome: '拜访进展及结果',
     rdetNextDate: '下次拜访时间',
     rdetNextTarget: '下次拜访目标',
+    // Report display / potential levels
+    potentialHot: '热门',
+    potentialWarm: '温暖',
+    potentialCold: '冷淡',
+    potentialUnknown: '未设置',
+    repPotentialHotBadge: '🔥 热门',
+    repPotentialWarmBadge: '🌤️ 温暖',
+    repPotentialColdBadge: '❄️ 冷淡',
+    repSourcePDF: '📄 PDF',
+    repSourceNew: '🆕 新建',
+    repTagACCRE: '⭐ 认证',
+    repAnnouncePurchase: '🎉 宣布采购',
+    repUnknownHospital: '未知医院',
+    reportFieldEmail: '电子邮件',
+    reportFieldPhone: '电话',
+    reportFieldAddress: '地址',
+    reportFieldContact: '联系人',
+    reportFieldPatientLoad: '患者数量',
+    reportFieldHormoneAnalyzer: '激素分析仪',
+    reportFieldNotes: '备注',
   }
 };
 
@@ -3924,6 +4356,22 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDashboard();
     }).catch(err => console.warn('Firestore reports load failed:', err));
     syncUsersFromFirestore().catch(err => console.warn('Firestore user sync failed:', err));
+    
+    // Setup admin real-time listeners if user is admin
+    const currentUser = getCurrentUser();
+    if (currentUser && currentUser.role === 'admin') {
+      // Show real-time sync indicator
+      const realtimeIndicator = document.getElementById('realtimeIndicator');
+      if (realtimeIndicator) {
+        realtimeIndicator.style.display = 'flex';
+        console.log('✅ Admin detected - Real-time sync indicator activated');
+      }
+      
+      // Setup admin real-time listeners
+      if (typeof window.setupAdminRealtimeListeners === 'function') {
+        window.setupAdminRealtimeListeners();
+      }
+    }
   }
 });
 
@@ -6688,8 +7136,175 @@ function announcePurchase(reportId) {
   alert(`✅ Purchase announcement created!\n\n${report.hospitalName} will appear in the Updates page for admin to confirm.`);
 }
 
+// ===================== PASSWORD CHANGE MODAL =====================
+function openPasswordChangeModal() {
+  // Create a modal for password change
+  const modalHTML = `
+    <div class="modal-overlay" id="passwordChangeOverlay" onclick="if(event.target===this)closePasswordChangeModal()" style="display:flex;z-index:2000;position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);align-items:center;justify-content:center">
+      <div class="modal" style="max-width:500px;background:#fff;border-radius:16px;animation:slideUp 0.25s ease;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+        <div style="background:linear-gradient(135deg,#1a56db,#1e40af);color:#fff;padding:20px 24px;border-radius:16px 16px 0 0;position:sticky;top:0;z-index:10">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="font-size:1.1rem;font-weight:800;line-height:1.3">🔐 Change Password</div>
+            <button onclick="closePasswordChangeModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s">✕</button>
+          </div>
+        </div>
+        <div style="padding:20px 24px">
+          <form id="modalPasswordForm" onsubmit="submitPasswordChange(event)">
+            <div style="margin-bottom:16px">
+              <label style="font-size:.75rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px">Current Password</label>
+              <input type="password" id="modalCurrentPassword" required minlength="1" placeholder="Enter current password" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none">
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="font-size:.75rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px">New Password</label>
+              <input type="password" id="modalNewPassword" required minlength="6" placeholder="Enter new password (min 6 characters)" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none">
+            </div>
+            <div style="margin-bottom:20px">
+              <label style="font-size:.75rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px">Confirm New Password</label>
+              <input type="password" id="modalConfirmPassword" required minlength="6" placeholder="Re-enter new password" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none">
+            </div>
+            <div id="passwordChangeStatus" style="margin-bottom:16px;padding:10px;border-radius:8px;display:none;font-size:0.9rem"></div>
+            <button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,#1a56db,#1e40af);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .2s">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Remove any existing modal
+  const existing = document.getElementById('passwordChangeOverlay');
+  if (existing) existing.remove();
+  
+  // Add new modal
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closePasswordChangeModal() {
+  const modal = document.getElementById('passwordChangeOverlay');
+  if (modal) modal.remove();
+}
+
+function submitPasswordChange(event) {
+  event.preventDefault();
+  
+  const currentPassword = document.getElementById('modalCurrentPassword').value;
+  const newPassword = document.getElementById('modalNewPassword').value;
+  const confirmPassword = document.getElementById('modalConfirmPassword').value;
+  const statusDiv = document.getElementById('passwordChangeStatus');
+  
+  // Get current user from session
+  let session = JSON.parse(localStorage.getItem('userSession') || sessionStorage.getItem('userSession') || '{}');
+  if (!session || !session.username) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fee2e2';
+    statusDiv.style.color = '#991b1b';
+    statusDiv.textContent = '❌ Not logged in';
+    return;
+  }
+  
+  // Validation
+  if (newPassword.length < 6) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fef3c7';
+    statusDiv.style.color = '#92400e';
+    statusDiv.textContent = '⚠️ New password must be at least 6 characters';
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fef3c7';
+    statusDiv.style.color = '#92400e';
+    statusDiv.textContent = '⚠️ New passwords do not match';
+    return;
+  }
+  
+  // Get user data
+  let users = JSON.parse(localStorage.getItem('fremenatos_users') || '[]');
+  const userRecord = users.find(u => u.username === session.username);
+  
+  if (!userRecord || userRecord.password !== currentPassword) {
+    // Try from USERS object in auth.js
+    if (typeof USERS !== 'undefined' && USERS[session.username] && USERS[session.username].password === currentPassword) {
+      // Valid, continue
+    } else {
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = '#fee2e2';
+      statusDiv.style.color = '#991b1b';
+      statusDiv.textContent = '❌ Current password is incorrect';
+      return;
+    }
+  }
+  
+  if (newPassword === currentPassword) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = '#fef3c7';
+    statusDiv.style.color = '#92400e';
+    statusDiv.textContent = '⚠️ New password must be different from current password';
+    return;
+  }
+  
+  // Update password
+  if (userRecord) {
+    userRecord.password = newPassword;
+    localStorage.setItem('fremenatos_users', JSON.stringify(users));
+  }
+  
+  // Show success
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#dcfce7';
+  statusDiv.style.color = '#166534';
+  statusDiv.textContent = '✅ Password changed successfully! Logging out...';
+  
+  setTimeout(() => {
+    closePasswordChangeModal();
+    // Logout
+    localStorage.removeItem('userSession');
+    sessionStorage.removeItem('userSession');
+    window.location.replace('login.html');
+  }, 2000);
+}
+
+// Mobile Tab Menu Functions
+window.toggleTabMenu = function() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.toggle('open');
+    toggle.classList.toggle('active');
+  }
+};
+
+window.closeTabMenu = function() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.remove('open');
+    toggle.classList.remove('active');
+  }
+};
+
 </script>
 <script src="admin-boss-dashboard.js"></script>
+<script>
+// Ensure mobile tab menu functions are defined
+function toggleTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.toggle('open');
+    toggle.classList.toggle('active');
+  }
+}
+
+function closeTabMenu() {
+  const dropdown = document.getElementById('tabs-dropdown');
+  const toggle = document.getElementById('tab-menu-btn');
+  if (dropdown && toggle) {
+    dropdown.classList.remove('open');
+    toggle.classList.remove('active');
+  }
+}
+</script>
 </body>
 </html>
 
