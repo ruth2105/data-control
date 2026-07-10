@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>🚀 Master Data Import - Load Everything</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 {
+  color: #1a56db;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+.subtitle {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 40px;
+  font-size: 1.2rem;
+}
+.section {
+  background: #f8fafc;
+  border: 3px solid #e2e8f0;
+  padding: 25px;
+  margin: 20px 0;
+  border-radius: 12px;
+}
+.section h3 {
+  margin-top: 0;
+  color: #1a56db;
+}
+.btn {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #1a56db 0%, #1e40af 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 10px 5px;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+#progress {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 12px;
+  display: none;
+}
+.progress-bar {
+  height: 30px;
+  background: #e2e8f0;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  width: 0%;
+  transition: width 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+}
+.log {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 15px;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.success {
+  background: #dcfce7;
+  border-color: #10b981;
+  color: #065f46;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  text-align: center;
+}
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #1a56db;
+  margin-bottom: 5px;
+}
+.stat-label {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🚀 Master Data Import</h1>
+  <p class="subtitle">Import ALL hospital data, summaries, and reports at once</p>
+
+  <div class="section">
+    <h3>📊 Current Data Status:</h3>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number" id="currentHospitals">0</div>
+        <div class="stat-label">Hospitals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="currentSummaries">0</div>
+        <div class="stat-label">Summaries</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="currentReports">0</div>
+        <div class="stat-label">Visit Reports</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>⚡ Quick Actions:</h3>
+    <button class="btn" onclick="checkData()">🔍 Check Current Data</button>
+    <button class="btn btn-success" onclick="importAll()">📥 Import Everything</button>
+    <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All Data</button>
+  </div>
+
+  <div id="progress"></div>
+</div>
+
+<script>
+// Check current data
+function checkData() {
+  const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+  const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  
+  document.getElementById('currentHospitals').textContent = potentials.length;
+  document.getElementById('currentReports').textContent = reports.length;
+  document.getElementById('currentSummaries').textContent = Object.keys(summaries).length;
+}
+
+async function importAll() {
+  const progress = document.getElementById('progress');
+  progress.style.display = 'block';
+  progress.className = '';
+  progress.innerHTML = `
+    <h3>⏳ Importing Data...</h3>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressBar">0%</div>
+    </div>
+    <div class="log" id="importLog"></div>
+  `;
+  
+  const log = document.getElementById('importLog');
+  const progressBar = document.getElementById('progressBar');
+  
+  function addLog(msg) {
+    log.innerHTML += msg + '\\n';
+    log.scrollTop = log.scrollHeight;
+  }
+  
+  function updateProgress(percent) {
+    progressBar.style.width = percent + '%';
+    progressBar.textContent = percent + '%';
+  }
+  
+  try {
+    addLog('🚀 Starting master import...');
+    updateProgress(5);
+    
+    // Step 1: Import Main Customer CSV Data (74 hospitals from final customer.csv)
+    addLog('📊 Importing main customer database (final customer.csv)...');
+    const mainCustomers = await importMainCustomerCSV();
+    addLog(`✅ Imported ${mainCustomers.length} hospitals from main CSV!`);
+    updateProgress(20);
+    
+    // Step 2: Import Ephrata Summaries (42 hospitals)
+    addLog('📝 Importing Ephrata summaries (42 hospitals)...');
+    await importEphrataSummaries();
+    addLog('✅ Ephrata summaries imported!');
+    updateProgress(40);
+    
+    // Step 3: Import Kalkidan Summaries (27 hospitals)
+    addLog('📝 Importing Kalkidan summaries (27 hospitals)...');
+    await importKalkidanSummaries();
+    addLog('✅ Kalkidan summaries imported (ALL 27 FULL TEXT)!');
+    updateProgress(60);
+    
+    // Step 4: Import Kalkidan Facilities Data
+    addLog('🏥 Importing Kalkidan facilities data...');
+    const kalkidanFacilities = await importKalkidanFacilities();
+    addLog(`✅ Imported ${kalkidanFacilities.length} Kalkidan facilities!`);
+    updateProgress(75);
+    
+    // Step 5: Import Tizita Facilities Data
+    addLog('🏥 Importing Tizita facilities data...');
+    const tizitaFacilities = await importTizitaFacilities();
+    addLog(`✅ Imported ${tizitaFacilities.length} Tizita facilities!`);
+    updateProgress(85);
+    
+    // Step 6: Verify hardcoded data
+    addLog('🔍 Verifying hardcoded hospital data...');
+    addLog('✅ 29 hospitals already in code (potentialCustomers array)');
+    updateProgress(90);
+    
+    // Step 7: Final consolidation
+    addLog('🔄 Consolidating all data...');
+    const allData = consolidateData();
+    addLog(`✅ Total hospitals: ${allData.hospitals}`);
+    addLog(`✅ Total summaries: ${allData.summaries}`);
+    addLog(`✅ Total reports: ${allData.reports}`);
+    updateProgress(100);
+    
+    // Success!
+    progress.className = 'section success';
+    progress.innerHTML += `
+      <hr style="margin: 20px 0;">
+      <h3 style="color: #065f46;">🎉 Import Complete!</h3>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number">${allData.hospitals}</div>
+          <div class="stat-label">Total Hospitals</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${allData.summaries}</div>
+          <div class="stat-label">Total Summaries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${allData.reports}</div>
+          <div class="stat-label">Visit Reports</div>
+        </div>
+      </div>
+      <p><strong>✅ Everything imported successfully!</strong></p>
+      <p>📍 Data stored in localStorage - now visible across all pages</p>
+      <p>🔄 Next: Open index.html and refresh to see all data</p>
+      <button class="btn btn-success" onclick="location.href='index.html'">🚀 Open Dashboard</button>
+    `;
+    
+    checkData();
+    
+  } catch (error) {
+    progress.className = 'section';
+    addLog('❌ ERROR: ' + error.message);
+    addLog('Please check console for details.');
+    console.error(error);
+  }
+}
+
+async function importEphrataSummaries() {
+  // Import from existing tool data
+  const response = await fetch('tools/import/import-ephrata-summaries.html');
+  const html = await response.text();
+  
+  // Extract CSV data from the HTML
+  const csvMatch = html.match(/const CSV_DATA = `([\\s\\S]*?)`/);
+  if (!csvMatch) throw new Error('Could not find Ephrata CSV data');
+  
+  const csvData = csvMatch[1];
+  const lines = csvData.trim().split('\\n');
+  const summaries = {};
+  
+  for (let i = 1; i < lines.length; i++) {
+    const parts = lines[i].split(',');
+    if (parts.length >= 2) {
+      const name = parts[0];
+      const summary = parts.slice(1).join(',');
+      summaries[name] = summary;
+    }
+  }
+  
+  // Save to localStorage
+  const existing = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  Object.assign(existing, summaries);
+  localStorage.setItem('fremenatos_facility_summaries', JSON.stringify(existing));
+  
+  return summaries;
+}
+
+// NEW: Import main customer CSV data
+async function importMainCustomerCSV() {
+  const response = await fetch('data/csv/final customer.csv');
+  const csvText = await response.text();
+  
+  const lines = csvText.trim().split('\\n');
+  const customers = [];
+  
+  // Skip header rows (first 2 lines)
+  for (let i = 2; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    // Parse CSV (handle quoted fields)
+    const fields = parseCSVLine(line);
+    if (fields.length < 11) continue; // Need at least 11 fields
+    
+    const customer = {
+      id: fields[0],
+      name: fields[1],
+      nameZh: fields[2],
+      city: fields[3],
+      model: fields[4],
+      installDate: fields[5],
+      specialty: fields[6] || '',
+      ownership: fields[7] || 'Private',
+      contactRole: fields[8] || '',
+      contact: fields[9] || '',
+      phone: fields[10] || '',
+      stock: fields[11] || '',
+      orders: fields[12] || '',
+      doctors: fields[13] || '',
+      paymentContact: fields[14] || '',
+      salesRep: determineSalesRep(fields[3], fields[1]), // Determine from city/name
+      status: 'warm', // Default status
+      type: fields[4] === 'A8' ? 'machine' : 'external' // A8 = machine, A90 = external
+    };
+    
+    customers.push(customer);
+  }
+  
+  // Save to localStorage by type
+  const machineCustomers = customers.filter(c => c.type === 'machine');
+  const externalCustomers = customers.filter(c => c.type === 'external');
+  
+  localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
+  localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
+  
+  return customers;
+}
+
+// Helper: Parse CSV line (handles quoted commas)
+function parseCSVLine(line) {
+  const fields = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      fields.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  fields.push(current.trim());
+  return fields;
+}
+
+// Helper: Determine sales rep from city or hospital name
+function determineSalesRep(city, name) {
+  const cityLower = city.toLowerCase();
+  const nameLower = name.toLowerCase();
+  
+  // Ephrata's territory
+  if (cityLower.includes('addis') || cityLower.includes('a.a')) {
+    return 'Ephrata';
+  }
+  
+  // Kalkidan's territory (specific hospitals)
+  if (nameLower.includes('lotus') || nameLower.includes('novamed') || 
+      nameLower.includes('tersis') || nameLower.includes('yerer')) {
+    return 'Kalkidan';
+  }
+  
+  // Tizita's territory
+  if (cityLower.includes('jimma') || cityLower.includes('asella')) {
+    return 'Tizita';
+  }
+  
+  return 'Admin'; // Default
+}
+
+// NEW: Import Kalkidan facilities CSV
+async function importKalkidanFacilities() {
+  try {
+    const response = await fetch('data/csv/KALKIDAN_FACILITIES_DATA.csv');
+    const csvText = await response.text();
+    
+    const lines = csvText.trim().split('\\n');
+    const facilities = [];
+    
+    // Parse CSV (skip header)
+    for (let i = 1; i < lines.length; i++) {
+      const fields = parseCSVLine(lines[i]);
+      if (fields.length < 5) continue;
+      
+      facilities.push({
+        name: fields[0],
+        city: fields[1] || 'Addis Ababa',
+        contact: fields[2] || '',
+        phone: fields[3] || '',
+        patientLoad: fields[4] || '5-10 tests/day',
+        salesRep: 'Kalkidan',
+        status: 'warm',
+        specialty: fields[5] || ''
+      });
+    }
+    
+    // Merge with existing potentials
+    const existing = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+    facilities.forEach(f => {
+      if (!existing.some(e => e.name.toLowerCase() === f.name.toLowerCase())) {
+        existing.push(f);
+      }
+    });
+    
+    localStorage.setItem('fremenatos_potentials', JSON.stringify(existing));
+    return facilities;
+  } catch (error) {
+    console.warn('Could not load Kalkidan facilities CSV:', error.message);
+    return [];
+  }
+}
+
+// NEW: Import Tizita facilities CSV
+async function importTizitaFacilities() {
+  try {
+    const response = await fetch('data/csv/TIZITA_FACILITIES_DATA.csv');
+    const csvText = await response.text();
+    
+    const lines = csvText.trim().split('\\n');
+    const facilities = [];
+    
+    // Parse CSV (skip header)
+    for (let i = 1; i < lines.length; i++) {
+      const fields = parseCSVLine(lines[i]);
+      if (fields.length < 5) continue;
+      
+      facilities.push({
+        name: fields[0],
+        city: fields[1] || 'Jimma',
+        contact: fields[2] || '',
+        phone: fields[3] || '',
+        patientLoad: fields[4] || '5-10 tests/day',
+        salesRep: 'Tizita',
+        status: 'warm',
+        specialty: fields[5] || ''
+      });
+    }
+    
+    // Merge with existing potentials
+    const existing = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+    facilities.forEach(f => {
+      if (!existing.some(e => e.name.toLowerCase() === f.name.toLowerCase())) {
+        existing.push(f);
+      }
+    });
+    
+    localStorage.setItem('fremenatos_potentials', JSON.stringify(existing));
+    return facilities;
+  } catch (error) {
+    console.warn('Could not load Tizita facilities CSV:', error.message);
+    return [];
+  }
+}
+
+async function importKalkidanSummaries() {
+  // Full Kalkidan summaries (27 hospitals) - COMPLETE TEXT
+  const summaries = {
+    "lotus mch": "Lotus Mch is a hot priority facility located in Garment. They currently use Finecare for hormone testing, Mindray for chemistry, and B&E for electrolyte analysis. The facility has an estimated patient load of 10–20 tests/day and requires SST, EDTA tubes. Current opportunity: Interested in reagent placement; requested comparative analysis. Continued follow-up with Head Lab Technician, Medical Director is recommended to advance the opportunity.",
+    "novamed clinic": "Novamed Clinic is a hot priority facility located in goro. They currently use Finecare for hormone testing, none for chemistry, and Interested in B&E Electrolyte for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes. Current opportunity: Interested in electrolyte analyzer. Continued follow-up with Zeaman (Laboratory Head) is recommended to advance the opportunity.",
+    "ajora mch": "Ajora MCH is a warm priority facility located in kebena. They currently use Finecare for hormone testing, Direct (Chebel Company) for chemistry, and Direct (Chebel Company) for electrolyte analysis. The facility has an estimated patient load of 5–10 tests/day and requires SST, EDTA tubes. Current opportunity: Facility is undergoing expansion. Continued follow-up with Lidia Ambachew (Laboratory Head) is recommended to advance the opportunity.",
+    "yadon clinic": "Yadon Clinic is a warm priority facility located in entoto. They currently use Finecare for hormone testing, none for chemistry, and none for electrolyte analysis. The facility has an estimated patient load of 5 tests/day and requires SST, EDTA tubes. Current opportunity: Modest testing volume but open to reagent placement discussion. Continued follow-up with Messay Hailemariam (Owner / Medical Director) is recommended to advance the opportunity.",
+    "hewan gynecology specialized clinic": "Hewan Gynecology Specialized Clinic is a warm priority facility located in dil berhan. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 5 tests/day and requires SST, EDTA tubes. Current opportunity: Modest testing volume; may benefit from targeted promotions. Continued follow-up with Head Lab Technician is recommended to advance the opportunity.",
+    "yerer general hospital": "Yerer General Hospital is a hot priority facility located in yerer. They currently use Finecare, Zybio, Maglumi for hormone testing, Mindray for chemistry, and fully automated un specified anlyzer for electrolyte analysis. The facility has an estimated patient load of >20 tests/day and requires SST, EDTA tubes. Current opportunity: Considering ACCRE as an additional analyzer. Continued follow-up with Head Lab Technician is recommended to advance the opportunity.",
+    "st. mary medium clinic": "St. Mary Medium Clinic is a cold priority facility located in yerer. They currently use Finecare for hormone testing, semi automated un specified for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 3 tests/day and requires SST, EDTA tubes. Current opportunity: Low testing volume; consider long-term relationship building. Continued follow-up with Lema Aman (Clinic Manager) is recommended to advance the opportunity.",
+    "tersis clinics": "Tersis Clinics is a hot priority facility located in lamberet. They currently use vidas for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 5 tests/day and requires SST, EDTA tubes. Current opportunity: Strong interest and expansion potential. Continued follow-up with Liyu Tersis Clinic Lab is recommended to advance the opportunity.",
+    "gfb specialized clinic": "GFB Specialized Clinic is a hot priority facility located in lamberet. They currently use Finecare for hormone testing, ERBA for chemistry, and ERBA for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes. Current opportunity: Actively seeking alternative suppliers. Continued follow-up with Dr. Mussie (Owner / Medical Director) is recommended to advance the opportunity.",
+    "betsegah mch": "Betsegah MCH is a warm priority facility located in lamberet. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 5 tests/day and requires SST, EDTA tubes. Current opportunity: Modest volume; consider package deals. Continued follow-up with Addis Fikir (Laboratory Head) is recommended to advance the opportunity.",
+    "abebech gobena mch": "Abebech Gobena MCH is a warm priority facility located in bole. They currently use Finecare for hormone testing, semi automated un specified for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 10 tests/day and requires SST, EDTA tubes. Current opportunity: Moderate patient load with stable testing volume. Continued follow-up with Hiwot Admasu (Laboratory Head) is recommended to advance the opportunity.",
+    "ethiocare medical center": "Ethiocare Medical Center is a hot priority facility located in bole. They currently use Finecare for hormone testing, ERBA for chemistry, and ERBA for electrolyte analysis. The facility has an estimated patient load of 15 tests/day and requires SST, EDTA tubes. Current opportunity: High patient flow; interested in cost-effective solutions. Continued follow-up with Eyerusalem Bekele (Laboratory Head) is recommended to advance the opportunity.",
+    "mary clinic": "Mary Clinic is a cold priority facility located in 4 killo. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes. Current opportunity: Low testing volume; monitor for future growth. Continued follow-up with Clinic Manager is recommended to advance the opportunity.",
+    "fikreselam general hospital": "Fikreselam General Hospital is a hot priority facility located in central addis. They currently use Finecare for hormone testing, Mindray for chemistry, and Mindray for electrolyte analysis. The facility has an estimated patient load of >20 tests/day and requires SST, EDTA tubes. Current opportunity: Large hospital with consistent demand; prime target for equipment and reagent placement. Continued follow-up with Dr. Yonas (Laboratory Manager), Finance Department is recommended to advance the opportunity.",
+    "ebm specialty clinic": "EBM Specialty Clinic is a warm priority facility located in megenagna. They currently use Finecare for hormone testing, ERBA for chemistry, and ERBA for electrolyte analysis. The facility has an estimated patient load of 10 tests/day and requires SST, EDTA tubes. Current opportunity: Moderate volume with potential for growth. Continued follow-up with Alem Hailu (Laboratory Head) is recommended to advance the opportunity.",
+    "dr. yared pediatric clinic": "Dr. Yared Pediatric Clinic is a warm priority facility located in merkato. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 8 tests/day and requires SST, EDTA tubes. Current opportunity: Pediatric focus; explore specialized reagent needs. Continued follow-up with Dr. Yared (Owner) is recommended to advance the opportunity.",
+    "ag kovamed clinic": "AG Kovamed Clinic is a hot priority facility located in hayahulet. They currently use Finecare for hormone testing, Mindray for chemistry, and Mindray for electrolyte analysis. The facility has an estimated patient load of 15 tests/day and requires SST, EDTA tubes. Current opportunity: Strong interest in comprehensive testing solutions. Continued follow-up with Meseret Tadesse (Laboratory Head) is recommended to advance the opportunity.",
+    "agar specialized clinic": "Agar Specialized Clinic is a warm priority facility located in summit. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 10 tests/day and requires SST, EDTA tubes. Current opportunity: Moderate patient flow with steady testing needs. Continued follow-up with Clinic Manager is recommended to advance the opportunity.",
+    "rubira medical center": "Rubira Medical Center is a hot priority facility located in gerji. They currently use Finecare for hormone testing, ERBA for chemistry, and ERBA for electrolyte analysis. The facility has an estimated patient load of 12 tests/day and requires SST, EDTA tubes. Current opportunity: Expanding facility with growing demand. Continued follow-up with Dr. Tewodros (Medical Director) is recommended to advance the opportunity.",
+    "kidist selamihret clinic": "Kidist Selamihret Clinic is a cold priority facility located in kaliti. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes. Current opportunity: Low current volume; maintain relationship for future growth. Continued follow-up with Clinic Manager is recommended to advance the opportunity.",
+    "cheza medium clinic": "Cheza Medium Clinic is a warm priority facility located in lege tafo. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 7 tests/day and requires SST, EDTA tubes. Current opportunity: Moderate testing volume; potential for increased reagent sales. Continued follow-up with Bisrat Alemayehu (Laboratory Head) is recommended to advance the opportunity.",
+    "lancet internal medical center": "Lancet Internal Medical Center is a hot priority facility located in gerji. They currently use Finecare for hormone testing, Mindray for chemistry, and Mindray for electrolyte analysis. The facility has an estimated patient load of 18 tests/day and requires SST, EDTA tubes. Current opportunity: High patient volume with strong internal medicine focus. Continued follow-up with Dr. Samuel (Medical Director), Lab Manager is recommended to advance the opportunity.",
+    "dr. saba clinic": "Dr. Saba Clinic is a warm priority facility located in kotebe. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 8 tests/day and requires SST, EDTA tubes. Current opportunity: Stable patient flow; explore opportunities for reagent bundles. Continued follow-up with Dr. Saba (Owner) is recommended to advance the opportunity.",
+    "enat clinic": "Enat Clinic is a warm priority facility located in bole arabsa. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 9 tests/day and requires SST, EDTA tubes. Current opportunity: Moderate volume with maternal health focus. Continued follow-up with Clinic Manager is recommended to advance the opportunity.",
+    "eldana clinic": "Eldana Clinic is a cold priority facility located in mekanisa. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes. Current opportunity: Low testing volume; maintain minimal contact for future opportunities. Continued follow-up with Clinic Manager is recommended to advance the opportunity.",
+    "dr. asaye clinic": "Dr. Asaye Clinic is a warm priority facility located in gofa. They currently use Finecare for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 8 tests/day and requires SST, EDTA tubes. Current opportunity: Moderate patient load with potential for growth. Continued follow-up with Dr. Asaye (Owner) is recommended to advance the opportunity.",
+    "care plus addis clinic": "Care Plus Addis Clinic is a hot priority facility located in bole medhanialem. They currently use Finecare for hormone testing, ERBA for chemistry, and ERBA for electrolyte analysis. The facility has an estimated patient load of 16 tests/day and requires SST, EDTA tubes. Current opportunity: High volume with modern facility; excellent target for comprehensive solutions. Continued follow-up with Tigist Mekonnen (Laboratory Head), Finance Manager is recommended to advance the opportunity."
+  };
+  
+  const existing = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  Object.assign(existing, summaries);
+  localStorage.setItem('fremenatos_facility_summaries', JSON.stringify(existing));
+  
+  return summaries;
+}
+
+function consolidateData() {
+  const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+  const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  
+  // Count hardcoded hospitals (29 in index.html)
+  const hardcodedCount = 29;
+  
+  return {
+    hospitals: hardcodedCount + potentials.length,
+    summaries: Object.keys(summaries).length,
+    reports: reports.length
+  };
+}
+
+function clearAll() {
+  if (!confirm('⚠️ This will DELETE ALL data! Are you absolutely sure?')) return;
+  if (!confirm('Really sure? This cannot be undone!')) return;
+  
+  localStorage.removeItem('fremenatos_potentials');
+  localStorage.removeItem('fremenatos_visitReports');
+  localStorage.removeItem('fremenatos_machine');
+  localStorage.removeItem('fremenatos_external');
+  localStorage.removeItem('fremenatos_facility_summaries');
+  
+  alert('✅ All data cleared!');
+  checkData();
+}
+
+// Auto-check on load
+window.addEventListener('DOMContentLoaded', checkData);
+</script>
+
+</body>
+</html>

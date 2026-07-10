@@ -237,8 +237,8 @@ input:focus, select:focus {
 
 <script src="auth.js"></script>
 <script>
-// API URL - Update this with your Google Apps Script URL
-const API_URL = 'https://script.google.com/macros/s/AKfycbzTM_EPvzVaIwG2GpexwCz5m9KC-LTqNbX2OT9NRy1Qi8H3peCe7YY55w5-pYMQMYE/exec';
+// API URL - shared with the admin dashboard and sales pages
+const API_URL = '/.netlify/functions/proxy';
 // LOCAL_USERS_KEY is already defined in auth.js
 
 function loadLocalUsers() {
@@ -423,6 +423,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     // Submit registration
     const response = await fetch(API_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(registrationData)
     });
     

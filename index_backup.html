@@ -1906,7 +1906,7 @@ function clearVisitForm() {
 }
 
 // ===================== VISIT FORM =====================
-const SCRIPT_URL = '/.netlify/functions/proxy';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTM_EPvzVaIwG2GpexwCz5m9KC-LTqNbX2OT9NRy1Qi8H3peCe7YY55w5-pYMQMYE/exec';
 const salesColors = {
   'Ephrata':  '#6366f1',
   'Kalkidan': '#0e9f6e',
@@ -1959,7 +1959,6 @@ function submitVisitForm(e) {
   // Send to Google Sheets
   fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(data)
     })
     .then(r => r.json())
@@ -2125,21 +2124,15 @@ function getLocalReports() {
 }
 
 function getReports(callback) {
-  fetch(SCRIPT_URL + '?action=getVisitReports', {
-    method: 'GET',
-    headers: { 'Accept': 'application/json' }
-  })
-    .then(r => r.text())
-    .then(text => {
-      let res = {};
-      try { res = text ? JSON.parse(text) : {}; } catch (err) { res = {}; }
+  fetch(SCRIPT_URL + '?action=getVisitReports')
+    .then(r => r.json())
+    .then(res => {
       const remoteReports = (res && (res.status === 'success' || res.status === 'ok' || res.success === true)) ? (res.data || []) : [];
-      localStorage.setItem('fremenatos_visitReports', JSON.stringify(remoteReports));
       callback(remoteReports);
     })
     .catch(err => {
       console.error('Error fetching reports:', err);
-      callback(JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]'));
+      callback([]);
     });
 }
 
@@ -5575,7 +5568,7 @@ function loadMergedPotentials() {
   const merged = {};
   potentialCustomers.forEach(c => merged[c.name.toLowerCase()] = {...c, source: 'PDF'});
   
-  // Merge from backend-backed storage (latest shared data)
+  // Merge from localStorage (if any manual edits)
   const stored = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
   stored.forEach(c => merged[c.name.toLowerCase()] = {...c, source: 'Stored'});
   

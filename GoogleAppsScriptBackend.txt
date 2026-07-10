@@ -16,12 +16,20 @@ const SHEET_NAMES = {
 
 // ===================== MAIN HANDLERS =====================
 
+function doOptions(e) {
+  return ContentService.createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
+}
+
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
-    const action = data.action;
-    
-    // Route to appropriate handler based on action
+    const raw = e && e.postData && e.postData.contents ? e.postData.contents : '{}';
+    const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    const action = data && data.action ? data.action : '';
+
     if (action === 'getCustomers') return getCustomers();
     if (action === 'updateCustomer') return updateCustomer(data);
     if (action === 'saveCustomers') return saveCustomers(data.data);
@@ -42,39 +50,34 @@ function doPost(e) {
     if (action === 'savePotentialCustomers') return savePotentialCustomers(data.data);
     if (action === 'getFacilitySummaries') return getFacilitySummaries();
     if (action === 'saveFacilitySummaries') return saveFacilitySummaries(data.data);
-    
-    // Legacy visit report actions (for backward compatibility)
+
     if (action === 'insert') return addVisitReport(data);
     if (action === 'update') return updateVisitReport(data);
     if (action === 'delete') return deleteVisitReport(data);
-    
-    // Handle legacy visit report submission without action
-    if (!action && data.hospitalName) {
+
+    if (!action && data && data.hospitalName) {
       return addVisitReport(data);
     }
-    
+
     return error_('Unknown action: ' + action);
-    
-  } catch(err) {
-    return error_(err.message + '\n' + err.stack);
+  } catch (err) {
+    return error_(err && err.message ? err.message : String(err));
   }
 }
 
 function doGet(e) {
   try {
-    const action = e.parameter.action;
-    
+    const action = e && e.parameter && e.parameter.action ? e.parameter.action : '';
+
     if (action === 'getCustomers') return getCustomers();
     if (action === 'getUsers') return getUsers();
     if (action === 'getVisitReports') return getVisitReports();
     if (action === 'getPotentialCustomers') return getPotentialCustomers();
     if (action === 'getFacilitySummaries') return getFacilitySummaries();
-    
-    // Default: return visit reports (legacy)
+
     return getVisitReports();
-    
-  } catch(err) {
-    return error_(err.message);
+  } catch (err) {
+    return error_(err && err.message ? err.message : String(err));
   }
 }
 
@@ -754,17 +757,27 @@ function saveFacilitySummaries(summaries) {
 // ===================== HELPER FUNCTIONS =====================
 
 function success_(data) {
-  return ContentService.createTextOutput(JSON.stringify({
+  const output = ContentService.createTextOutput(JSON.stringify({
     status: 'success',
     data: data
   })).setMimeType(ContentService.MimeType.JSON);
+
+  output.setHeader('Access-Control-Allow-Origin', '*');
+  output.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  output.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
+  return output;
 }
 
 function error_(message) {
-  return ContentService.createTextOutput(JSON.stringify({
+  const output = ContentService.createTextOutput(JSON.stringify({
     status: 'error',
     message: message
   })).setMimeType(ContentService.MimeType.JSON);
+
+  output.setHeader('Access-Control-Allow-Origin', '*');
+  output.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  output.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
+  return output;
 }
 
 // ===================== INITIALIZE FUNCTION =====================

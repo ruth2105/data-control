@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>System Diagnostic</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #1e293b;
+  color: white;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #334155;
+  padding: 40px;
+  border-radius: 12px;
+}
+h1 {
+  color: #38bdf8;
+}
+.section {
+  background: #1e293b;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  border-left: 4px solid #38bdf8;
+}
+.good {
+  border-left-color: #10b981;
+  background: #064e3b;
+}
+.bad {
+  border-left-color: #dc2626;
+  background: #7f1d1d;
+}
+.warning {
+  border-left-color: #f59e0b;
+  background: #78350f;
+}
+.btn {
+  padding: 14px 28px;
+  background: #38bdf8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 10px 5px;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn:hover {
+  background: #0ea5e9;
+}
+.btn-danger {
+  background: #dc2626;
+}
+.btn-success {
+  background: #10b981;
+}
+pre {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  color: #38bdf8;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔍 System Diagnostic</h1>
+  <p>Let's find out what's wrong with your system...</p>
+
+  <button class="btn" onclick="runDiagnostic()">🔍 Run Diagnostic</button>
+  <button class="btn btn-success" onclick="location.href='app/sales.html'">Try Sales Page</button>
+  <button class="btn btn-success" onclick="location.href='SIMPLE_INDEX.html'">Try Simple Index</button>
+
+  <div id="results"></div>
+</div>
+
+<script>
+function runDiagnostic() {
+  const results = document.getElementById('results');
+  let html = '';
+  
+  // Check 1: localStorage data
+  try {
+    const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+    const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+    const machine = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+    const external = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+    const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+    
+    const totalHospitals = potentials.length + machine.length + external.length;
+    const totalSummaries = Object.keys(summaries).length;
+    
+    if (totalHospitals > 0) {
+      html += `
+        <div class="section good">
+          <h3>✅ localStorage Has Data!</h3>
+          <p><strong>Hospitals:</strong> ${totalHospitals}</p>
+          <p><strong>Visit Reports:</strong> ${reports.length}</p>
+          <p><strong>Summaries:</strong> ${totalSummaries}</p>
+          <p><strong>Status:</strong> Data exists but not displaying</p>
+          <p><strong>Solution:</strong> The page might not be loading it correctly. Try app/sales.html instead.</p>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="section bad">
+          <h3>❌ No Data in localStorage!</h3>
+          <p>This device has NO hospital data imported.</p>
+          <p><strong>You need to:</strong></p>
+          <ol>
+            <li>Import hospital data from CSV files</li>
+            <li>Or open this on the device where you imported data</li>
+            <li>Or upload data to Google Sheets from the device that has it</li>
+          </ol>
+        </div>
+      `;
+    }
+  } catch (e) {
+    html += `
+      <div class="section bad">
+        <h3>❌ Error Reading localStorage</h3>
+        <p>${e.message}</p>
+      </div>
+    `;
+  }
+  
+  // Check 2: File structure
+  html += `
+    <div class="section">
+      <h3>📁 File Structure Check</h3>
+      <p><strong>Current page:</strong> ${window.location.pathname}</p>
+      <p><strong>Base URL:</strong> ${window.location.origin}</p>
+      <p><strong>Is file:// protocol:</strong> ${window.location.protocol === 'file:' ? 'Yes (local)' : 'No (web server)'}</p>
+    </div>
+  `;
+  
+  // Check 3: Available files
+  html += `
+    <div class="section">
+      <h3>🔧 Next Steps:</h3>
+      <ol style="line-height: 2;">
+        <li><strong>If you see "No Data":</strong>
+          <br>→ Import data using tools/import/ files
+          <br>→ Or use the device where you imported data before
+        </li>
+        <li><strong>If you see "Has Data":</strong>
+          <br>→ The problem is with index.html
+          <br>→ Try opening app/sales.html instead
+          <br>→ Or use SIMPLE_INDEX.html
+        </li>
+        <li><strong>If on Netlify (web):</strong>
+          <br>→ Upload data to Google Sheets using UPLOAD_TO_SHEETS.html
+          <br>→ Run it from the device that has the data
+        </li>
+      </ol>
+    </div>
+  `;
+  
+  // Check 4: Quick actions
+  html += `
+    <div class="section warning">
+      <h3>⚡ Quick Actions:</h3>
+      <button class="btn" onclick="showSampleData()">📊 Show Sample Data</button>
+      <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+      <button class="btn btn-success" onclick="location.href='tools/import/'">📥 Go to Import Tools</button>
+    </div>
+  `;
+  
+  results.innerHTML = html;
+}
+
+function showSampleData() {
+  try {
+    const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+    const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+    
+    let html = '<div class="section"><h3>📋 Sample Data:</h3>';
+    
+    if (potentials.length > 0) {
+      html += '<h4>First 3 Hospitals:</h4><pre>';
+      html += JSON.stringify(potentials.slice(0, 3), null, 2);
+      html += '</pre>';
+    }
+    
+    const summaryKeys = Object.keys(summaries);
+    if (summaryKeys.length > 0) {
+      html += '<h4>First 3 Summaries:</h4><pre>';
+      summaryKeys.slice(0, 3).forEach(key => {
+        html += key + ': ' + summaries[key].substring(0, 100) + '...\\n\\n';
+      });
+      html += '</pre>';
+    }
+    
+    html += '</div>';
+    document.getElementById('results').innerHTML += html;
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+function clearAllData() {
+  if (!confirm('⚠️ This will DELETE ALL localStorage data! Are you sure?')) return;
+  if (!confirm('Really sure? This cannot be undone!')) return;
+  
+  localStorage.clear();
+  alert('✅ All data cleared! Refresh the page.');
+  location.reload();
+}
+
+// Auto-run on load
+window.addEventListener('DOMContentLoaded', runDiagnostic);
+</script>
+
+</body>
+</html>

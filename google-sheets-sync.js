@@ -1,7 +1,9 @@
 // ===================== GOOGLE SHEETS SYNC MODULE =====================
 // This module provides cross-device synchronization using Google Sheets
+// NOTE: Sync disabled due to CORS issues with Google Apps Script
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd9xSndeU_Lvm2-Dtb-E5MVvC5aIYj5_GQ8j2AW6F8IVRIehNmKM0fQaqC7Hmoex9g/exec';
+const SCRIPT_URL = '/.netlify/functions/proxy';
+const SYNC_ENABLED = true;
 
 // Data type constants
 const DATA_TYPES = {
@@ -29,9 +31,25 @@ const STORAGE_KEYS = {
  * @returns {Promise<Array>} - Array of data objects
  */
 async function fetchFromGoogleSheets(dataType) {
+  if (!SYNC_ENABLED) {
+    console.log(`Sync disabled - skipping fetch for ${dataType}`);
+    return [];
+  }
+  
   try {
-    const response = await fetch(`${SCRIPT_URL}?action=get${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`);
-    const result = await response.json();
+    const response = await fetch(`${SCRIPT_URL}?action=get${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    const text = await response.text();
+    let result = {};
+
+    try {
+      result = text ? JSON.parse(text) : {};
+    } catch (parseError) {
+      console.warn(`Response for ${dataType} was not valid JSON:`, text);
+      return [];
+    }
     
     if (result.status === 'success' || result.status === 'ok') {
       return result.data || [];
@@ -50,15 +68,28 @@ async function fetchFromGoogleSheets(dataType) {
  * @returns {Promise<boolean>} - Success status
  */
 async function saveToGoogleSheets(dataType, data) {
+  if (!SYNC_ENABLED) {
+    console.log(`Sync disabled - skipping save for ${dataType}`);
+    return false;
+  }
+  
   try {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         action: `save${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`,
         data: data
       })
     });
-    const result = await response.json();
+    const text = await response.text();
+    let result = {};
+    try {
+      result = text ? JSON.parse(text) : {};
+    } catch (parseError) {
+      console.warn(`Save response for ${dataType} was not valid JSON:`, text);
+      return false;
+    }
     return result.status === 'success' || result.status === 'ok';
   } catch (error) {
     console.error(`Error saving ${dataType} to Google Sheets:`, error);

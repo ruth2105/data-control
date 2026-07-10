@@ -4,6 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>弗雷米纳托斯贸易有限公司 – 客户门户</title>
+<script>
+// IMMEDIATE AUTHENTICATION CHECK - Runs before anything else
+(function() {
+  try {
+    const localData = localStorage.getItem('userSession');
+    const sessionData = sessionStorage.getItem('userSession');
+    const session = localData ? JSON.parse(localData) : (sessionData ? JSON.parse(sessionData) : null);
+    
+    if (!session || !session.username || !session.role) {
+      // Clear invalid sessions
+      localStorage.removeItem('userSession');
+      sessionStorage.removeItem('userSession');
+      // Force redirect to login
+      window.location.replace('login.html');
+    }
+  } catch(e) {
+    // If any error, redirect to login
+    window.location.replace('login.html');
+  }
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -772,9 +793,37 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 <script src="google-sheets-sync.js"></script>
 <script>
 // ===================== AUTHENTICATION CHECK =====================
-const currentUser = getCurrentUser();
-if (!currentUser) {
-  window.location.href = 'login.html';
+let currentUser = null;
+
+// Clear session function
+function clearSession() {
+  localStorage.removeItem('userSession');
+  sessionStorage.removeItem('userSession');
+}
+
+// Immediate redirect if not authenticated
+function checkAuth() {
+  currentUser = getCurrentUser();
+  if (!currentUser) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+// Check authentication immediately
+if (!checkAuth()) {
+  // If redirect fails, stop execution
+  window.location.replace('login.html');
+}
+
+// Clear any invalid sessions to prevent loading without data
+if (currentUser) {
+  // Validate session has required fields
+  if (!currentUser.username || !currentUser.role) {
+    clearSession();
+    window.location.href = 'login.html';
+  }
 }
 
 // Show team filter and Users tab only for admin users
@@ -822,10 +871,12 @@ function hDoctors(h) { return currentLang==='zh' ? (h.doctorsZh||h.doctors) : h.
 // ===================== DATA =====================
 // ===================== CUSTOMER DATA MANAGEMENT =====================
 async function getCustomerData(type) {
+  const fallbackData = type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
+
   // Try to sync with Google Sheets first
   try {
     const syncedData = await syncCustomers();
-    if (syncedData && syncedData.length > 0) {
+    if (Array.isArray(syncedData) && syncedData.length > 0) {
       if (type === 'machine') {
         return syncedData.filter(c => c.model === 'A8' || c.model === 'A90');
       } else {
@@ -836,14 +887,19 @@ async function getCustomerData(type) {
     console.log('Sync failed, using local data:', error);
   }
   
-  // Fall back to localStorage
+  // Fall back to localStorage only when it contains real data
   const key = 'fremenatos_' + type;
   const stored = localStorage.getItem(key);
   if (stored) {
-    try { return JSON.parse(stored); } catch(e) {}
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch(e) {}
   }
-  // Fall back to defaults
-  return type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
+
+  return fallbackData;
 }
 
 async function saveCustomerData(type, data) {
@@ -1371,7 +1427,8 @@ function renderCards() {
       : h.model === 'A90'
       ? `<span class="badge badge-a90">⚙ A90</span>`
       : `<span class="badge badge-ext">🔬 ${currentLang==='zh'?'外部':'External'}</span>`;
-    const firstContact = h.contacts[0];
+    const contacts = Array.isArray(h.contacts) ? h.contacts : [];
+    const firstContact = contacts[0];
     const contactPreview = firstContact
       ? `${hRole(firstContact)}${firstContact.name ? ': '+hName(firstContact) : ''}${firstContact.phone ? ' · '+firstContact.phone : ''}`
       : t('noContact');
@@ -1967,7 +2024,7 @@ function clearVisitForm() {
 }
 
 // ===================== VISIT FORM =====================
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd9xSndeU_Lvm2-Dtb-E5MVvC5aIYj5_GQ8j2AW6F8IVRIehNmKM0fQaqC7Hmoex9g/exec';
+// SCRIPT_URL is defined in google-sheets-sync.js
 const salesColors = {
   'Ephrata':  '#6366f1',
   'Kalkidan': '#0e9f6e',
@@ -3767,6 +3824,25 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize user management (load pending/active users)
   refreshUsers();
+  if (!window.__usersRefreshInterval) {
+    window.__usersRefreshInterval = window.setInterval(() => {
+      refreshUsers().catch(err => console.warn('User refresh failed:', err));
+    }, 4000);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      refreshUsers().catch(err => console.warn('User refresh failed:', err));
+    }
+  });
+  window.addEventListener('focus', () => {
+    refreshUsers().catch(err => console.warn('User refresh failed:', err));
+  });
+  window.addEventListener('online', () => {
+    refreshUsers().catch(err => console.warn('User refresh failed:', err));
+  });
+  window.addEventListener('users:updated', () => {
+    refreshUsers().catch(err => console.warn('User refresh failed:', err));
+  });
   
   const periodSelect = document.getElementById('reportPeriod');
   if (periodSelect) {
@@ -3828,13 +3904,17 @@ function renderDashboard() {
     'year': '今年拜访 / This Year',
     'custom': '拜访总数 / Total Visits'
   };
-  document.getElementById('kpiTotalLabel').textContent = periodLabels[period] || '拜访总数';
+  const kpiLabelEl = document.getElementById('kpiTotalLabel');
+  if (kpiLabelEl) {
+    kpiLabelEl.textContent = periodLabels[period] || '拜访总数';
+  }
 
   // KPI 1: Total Visits (period-based)
   document.getElementById('kpiTotalVisits').textContent = periodReports.length;
   
-  // KPI 2: Total Customers (all data including PDF)
-  document.getElementById('kpiTotalCustomers').textContent = allData.length;
+  // KPI 2: Total Customers (actual machine/external customers only)
+  const actualCustomerCount = (Array.isArray(machineCustomers) ? machineCustomers.length : 0) + (Array.isArray(externalCustomers) ? externalCustomers.length : 0);
+  document.getElementById('kpiTotalCustomers').textContent = actualCustomerCount;
 
   // KPI 3: Top Salesperson
   const salesCount = {};
@@ -4794,10 +4874,13 @@ function exportToExcel(lang) {
 
 // ===================== DYNAMIC STATS =====================
 function updateStats() {
-  const total = machineCustomers.length + externalCustomers.length;
+  const machineCount = Array.isArray(machineCustomers) ? machineCustomers.length : 0;
+  const externalCount = Array.isArray(externalCustomers) ? externalCustomers.length : 0;
+  const total = machineCount + externalCount;
+
   document.getElementById('statTotal').textContent = total;
-  document.getElementById('statMachine').textContent = machineCustomers.length;
-  document.getElementById('statExternal').textContent = externalCustomers.length;
+  document.getElementById('statMachine').textContent = machineCount;
+  document.getElementById('statExternal').textContent = externalCount;
 }
 
 // ===================== CUSTOMER-REPORT LINKAGE =====================
@@ -5669,6 +5752,17 @@ function updatePotentialStats() {
 async function initializeApp() {
   machineCustomers = await getCustomerData('machine');
   externalCustomers = await getCustomerData('external');
+
+  if (!Array.isArray(machineCustomers) || machineCustomers.length === 0) {
+    machineCustomers = MACHINE_DEFAULTS.slice();
+    localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
+  }
+  if (!Array.isArray(externalCustomers) || externalCustomers.length === 0) {
+    externalCustomers = EXTERNAL_DEFAULTS.slice();
+    localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
+  }
+  
+  // Only show actual customers who have machine accounts in the main list.
   allCustomers = [...machineCustomers, ...externalCustomers];
 
   // Save to localStorage directly
@@ -5858,8 +5952,6 @@ function exportCustomerList(type) {
 
 // ===================== USER MANAGEMENT =====================
 
-const LOCAL_USERS_KEY = 'fremenatos_users';
-
 function loadLocalUsers() {
   try {
     return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
@@ -5892,10 +5984,11 @@ async function refreshUsers() {
   try {
     // Use sync function to get latest data from Google Sheets
     const users = await syncUsers();
-    saveLocalUsers(users);
+    const normalizedUsers = Array.isArray(users) ? users : [];
+    saveLocalUsers(normalizedUsers);
 
-    const pending = users.filter(u => String(u.status || '').toLowerCase() === 'pending');
-    const active = users.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
+    const pending = normalizedUsers.filter(u => String(u.status || '').toLowerCase() === 'pending');
+    const active = normalizedUsers.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
     
     // Count salespeople from auth.js
     let authSalesCount = 0;
@@ -6093,6 +6186,7 @@ async function approveUser(username, preferredTeam = null) {
   try {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         action: 'approveUser',
         username: username,
@@ -6126,6 +6220,7 @@ async function rejectUser(username) {
   try {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         action: 'deleteUser',
         username: username
@@ -6183,6 +6278,7 @@ async function editUser(username) {
     
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(updateData)
     });
     
@@ -6217,6 +6313,7 @@ async function deleteUser(username) {
   try {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         action: 'deleteUser',
         username: username

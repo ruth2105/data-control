@@ -1,34 +1,18 @@
 // ===================== ADMIN BOSS DASHBOARD =====================
 // This file contains the dashboard functionality for the admin/boss view
 
-// Google Sheets Script URL (replace with your actual URL)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...'; // Replace with actual URL
+// SCRIPT_URL is defined in index.html and google-sheets-sync.js
+// NOTE: Google Sheets sync disabled due to CORS issues
 
 // ===================== GET REPORTS FUNCTION =====================
 function getReports(callback) {
-  // Try to fetch from Google Sheets
   try {
-    fetch(SCRIPT_URL + '?action=getReports')
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.status === 'success') {
-          callback(data.data || []);
-        } else {
-          // Fallback to localStorage
-          const localReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
-          callback(localReports);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching reports:', error);
-        // Fallback to localStorage
-        const localReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
-        callback(localReports);
-      });
-  } catch (error) {
-    console.error('Error in getReports:', error);
     const localReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
-    callback(localReports);
+    const reports = Array.isArray(localReports) ? localReports : [];
+    callback(reports);
+  } catch (error) {
+    console.warn('Failed to read visit reports from localStorage:', error);
+    callback([]);
   }
 }
 
@@ -53,21 +37,7 @@ function saveReport(report) {
   }
   
   localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
-  
-  // Try to sync with Google Sheets
-  try {
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'saveReport',
-        report: report
-      })
-    }).catch(error => {
-      console.error('Error syncing report to Google Sheets:', error);
-    });
-  } catch (error) {
-    console.error('Error syncing report:', error);
-  }
+  // Google Sheets sync disabled
 }
 
 // ===================== DELETE REPORT =====================
@@ -75,21 +45,7 @@ function deleteReport(reportId) {
   const reports = getLocalReports();
   const filtered = reports.filter(r => r.id !== reportId);
   localStorage.setItem('fremenatos_visitReports', JSON.stringify(filtered));
-  
-  // Try to sync with Google Sheets
-  try {
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'deleteReport',
-        reportId: reportId
-      })
-    }).catch(error => {
-      console.error('Error deleting report from Google Sheets:', error);
-    });
-  } catch (error) {
-    console.error('Error deleting report:', error);
-  }
+  // Google Sheets sync disabled
 }
 
 // ===================== INITIALIZE DASHBOARD =====================
@@ -97,11 +53,16 @@ function initializeDashboard() {
   // Load visit reports
   getReports(function(reports) {
     window.liveVisitReports = reports;
+    window.potentialFiltered = loadMergedPotentials();
+    window.livePotentialCustomers = window.potentialFiltered;
     console.log('Loaded', reports.length, 'visit reports');
+    if (typeof renderHotCustomers === 'function') {
+      renderHotCustomers();
+    }
   });
   
-  // Initialize charts if they exist
-  if (typeof Chart !== 'undefined') {
+  // Avoid duplicate chart initialization when the main dashboard already renders charts.
+  if (typeof Chart !== 'undefined' && typeof window.renderDashboard !== 'function') {
     initializeCharts();
   }
 }
@@ -188,28 +149,41 @@ function exportEquipmentAnalysis() {
 
 // ===================== HOT CUSTOMERS RENDERING =====================
 function renderHotCustomers() {
-  const teamFilter = document.getElementById('hotCustomersTeamFilter').value;
-  let hotCustomers = potentialFiltered.filter(c => c.status.toLowerCase() === 'hot');
+  const teamFilter = document.getElementById('hotCustomersTeamFilter')?.value || 'all';
+  const sourceCustomers = Array.isArray(window.potentialFiltered) && window.potentialFiltered.length > 0
+    ? window.potentialFiltered
+    : (Array.isArray(window.livePotentialCustomers) && window.livePotentialCustomers.length > 0
+      ? window.livePotentialCustomers
+      : (typeof potentialFiltered !== 'undefined' && Array.isArray(potentialFiltered) && potentialFiltered.length > 0
+        ? potentialFiltered
+        : (typeof loadMergedPotentials === 'function' ? loadMergedPotentials() : [])));
+
+  let hotCustomers = sourceCustomers.filter(c => String(c.status || '').toLowerCase() === 'hot');
   
   if (teamFilter !== 'all') {
     hotCustomers = hotCustomers.filter(c => c.salesRep === getTeamSalesperson(teamFilter));
   }
   
-  document.getElementById('hotCustomersCount').textContent = hotCustomers.length;
+  const countEl = document.getElementById('hotCustomersCount');
+  if (countEl) {
+    countEl.textContent = hotCustomers.length;
+  }
   
   const container = document.getElementById('hotCustomersList');
   if (container) {
-    container.innerHTML = hotCustomers.map(c => `
-      <div style="background:#fff;border:2px solid #dc2626;border-radius:8px;padding:12px;margin-bottom:8px">
-        <div style="font-weight:700;color:#991b1b">${c.name}</div>
-        <div style="font-size:0.85rem;color:#64748b">
-          ${c.address ? `📍 ${c.address}<br>` : ''}
-          ${c.contact ? `👤 ${c.contact}<br>` : ''}
-          ${c.phone ? `📱 ${c.phone}<br>` : ''}
-          👔 ${c.salesRep}
-        </div>
-      </div>
-    `).join('');
+    container.innerHTML = hotCustomers.length > 0
+      ? hotCustomers.map(c => `
+          <div style="background:#fff;border:2px solid #dc2626;border-radius:8px;padding:12px;margin-bottom:8px">
+            <div style="font-weight:700;color:#991b1b">${c.name || 'Unnamed customer'}</div>
+            <div style="font-size:0.85rem;color:#64748b">
+              ${c.address ? `📍 ${c.address}<br>` : ''}
+              ${c.contact ? `👤 ${c.contact}<br>` : ''}
+              ${c.phone ? `📱 ${c.phone}<br>` : ''}
+              ${c.salesRep ? `👔 ${c.salesRep}` : ''}
+            </div>
+          </div>
+        `).join('')
+      : '<div style="text-align:center;padding:24px;color:#64748b">No hot customers yet.</div>';
   }
 }
 
