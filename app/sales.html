@@ -261,6 +261,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">🏥 Customers</button>
     <button class="tab-btn" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Statistics</button>
+    <button class="tab-btn" onclick="switchTab('form')" id="tab-form">📝 Visit Form</button>
     <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">📋 My Team Reports</button>
     <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">👤 Profile</button>
   </div>
@@ -431,6 +432,159 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   </div>
 
   <!-- VISIT FORM PAGE -->
+  <div id="page-form" class="page">
+    <div class="vf-card" style="border:2px solid #3b82f6;margin-bottom:16px">
+      <div class="vf-title" style="color:#3b82f6">📝 登记拜访 / Register Visit</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">业务员 / Salesperson</label>
+          <select class="vf-select" id="visitSalesPerson">
+            <option value="">-- 请选择 --</option>
+          </select>
+        </div>
+        <div>
+          <label class="vf-label">日期 / Date</label>
+          <input class="vf-input" type="date" id="visitDate">
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">医院名称 / Hospital Name</label>
+        <input class="vf-input" type="text" id="visitHospital" list="hospitalDatalist" placeholder="输入医院名称…">
+        <datalist id="hospitalDatalist"></datalist>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">医院名称（中文）/ Hospital Name (中文)</label>
+        <input class="vf-input" type="text" id="visitHospitalZh" placeholder="输入医院中文名称…">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">被访人 / Contact Person</label>
+          <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
+        </div>
+        <div>
+          <label class="vf-label">被访人（中文）/ Contact Person (中文)</label>
+          <input class="vf-input" type="text" id="visitContactZh" placeholder="中文姓名">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">职位 / Position</label>
+          <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
+        </div>
+        <div>
+          <label class="vf-label">职位（中文）/ Position (中文)</label>
+          <input class="vf-input" type="text" id="visitPositionZh" placeholder="中文职位">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">电话 / Phone</label>
+          <input class="vf-input" type="text" id="visitPhone" placeholder="手机号码">
+        </div>
+        <div>
+          <label class="vf-label">医院地址 / Address</label>
+          <input class="vf-input" type="text" id="visitAddress" placeholder="如: Bole, Ayat">
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">拜访类型 / Visit Type</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtFirst" value="First contact"> 初次接触 / First Contact</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtPromo" value="Product promotion"> 产品推广 / Product Promotion</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtRelation" value="Customer relationship maintenance"> 客情维护 / Relationship</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtIssue" value="Issue follow-up"> 问题跟进 / Issue Follow-up</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtOther" value="Other"> 其他 / Other</label>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">讨论内容 / Discussion Notes</label>
+        <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">讨论内容（中文）/ Discussion Notes (中文)</label>
+        <textarea class="vf-textarea" id="visitNotesZh" rows="3" placeholder="中文讨论内容" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">现有设备 / Current Equipment in Use</label>
+        <textarea class="vf-textarea" id="visitEquipment" rows="2" placeholder="如: 激素: Finecare • 生化: Semi-Automatic • 血球: Mindray" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">拜访结果 / Outcome</label>
+        <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">拜访结果（中文）/ Outcome (中文)</label>
+        <textarea class="vf-textarea" id="visitOutcomeZh" rows="3" placeholder="中文拜访结果" style="font-family:monospace"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
+        <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
+        <textarea class="vf-textarea" id="visitSummary" rows="4" placeholder="请简要总结本次拜访的关键要点、达成的共识、下一步行动计划等。此总结将显示在报告中。" style="font-family:monospace;background:#fff"></textarea>
+      </div>
+
+      <div style="margin-bottom:12px;padding:16px;background:#f0fdf4;border:2px solid #86efac;border-radius:10px">
+        <label class="vf-label" style="color:#166534;font-size:1rem">📦 产品订单 / Product Orders</label>
+        <div id="orderItems" style="margin-bottom:8px">
+          <div class="order-row" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center">
+            <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
+            <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
+            <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
+            <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
+          </div>
+        </div>
+        <button type="button" onclick="addOrderRow()" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">+ 添加产品 / Add Product</button>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label class="vf-label">客户分类 / Customer Category</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catActive" value="Active Customer"> 有效客户 / Active</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catNeeds" value="Customer with Needs"> 有需求客户 / With Needs</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catKey" value="Key Customer"> 重点客户 / Key</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catClosed" value="Closed Deal"> 已成交客户 / Closed Deal</label>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label class="vf-label">客户潜力 / Potential</label>
+          <select class="vf-select" id="visitPotential">
+            <option value="">-- 请选择 --</option>
+            <option value="Hot">🔥 热门 / Hot</option>
+            <option value="Warm">🌤️ 温暖 / Warm</option>
+            <option value="Cold">❄️ 冷淡 / Cold</option>
+          </select>
+        </div>
+        <div>
+          <label class="vf-label">下次拜访日期 / Next Visit</label>
+          <input class="vf-input" type="date" id="visitNextDate">
+        </div>
+        <div>
+          <label class="vf-label">下次目标 / Next Target</label>
+          <input class="vf-input" type="text" id="visitNextTarget" placeholder="如: 跟进报价">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px">
+        <button type="button" onclick="submitSingleVisit()" style="flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 提交 / Submit</button>
+        <button type="button" onclick="clearVisitForm()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">↺ 重置 / Reset</button>
+      </div>
+      <div id="singleVisitStatus" style="margin-top:12px;padding:10px;border-radius:8px;display:none"></div>
+    </div>
+  </div>
+
   <!-- CUSTOMER EDIT MODAL -->
     <div class="modal-overlay" id="customerEditOverlay" onclick="if(event.target===this)closeCustomerEdit()">
       <div class="modal" style="max-width:760px">
@@ -552,161 +706,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           </div>
           <div id="bulkImportStatus" style="margin-top:16px;padding:12px;border-radius:8px;display:none"></div>
         </div>
-      </div>
-
-      <!-- SINGLE VISIT FORM (always visible) -->
-      <div class="vf-card" style="border:2px solid #3b82f6;margin-bottom:16px">
-        <div class="vf-title" style="color:#3b82f6">📝 登记拜访 / Register Visit</div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div>
-            <label class="vf-label">业务员 / Salesperson</label>
-            <select class="vf-select" id="visitSalesPerson">
-              <option value="">-- 请选择 --</option>
-              <option>Ephrata</option>
-              <option>Kalkidan</option>
-              <option>Tizita</option>
-            </select>
-          </div>
-          <div>
-            <label class="vf-label">日期 / Date</label>
-            <input class="vf-input" type="date" id="visitDate">
-          </div>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">医院名称 / Hospital Name</label>
-          <input class="vf-input" type="text" id="visitHospital" list="hospitalDatalist" placeholder="输入医院名称…">
-          <datalist id="hospitalDatalist"></datalist>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">医院名称（中文）/ Hospital Name (中文)</label>
-          <input class="vf-input" type="text" id="visitHospitalZh" placeholder="输入医院中文名称…">
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div>
-            <label class="vf-label">被访人 / Contact Person</label>
-            <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
-          </div>
-          <div>
-            <label class="vf-label">被访人（中文）/ Contact Person (中文)</label>
-            <input class="vf-input" type="text" id="visitContactZh" placeholder="中文姓名">
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div>
-            <label class="vf-label">职位 / Position</label>
-            <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
-          </div>
-          <div>
-            <label class="vf-label">职位（中文）/ Position (中文)</label>
-            <input class="vf-input" type="text" id="visitPositionZh" placeholder="中文职位">
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div>
-            <label class="vf-label">电话 / Phone</label>
-            <input class="vf-input" type="text" id="visitPhone" placeholder="手机号码">
-          </div>
-          <div>
-            <label class="vf-label">医院地址 / Address</label>
-            <input class="vf-input" type="text" id="visitAddress" placeholder="如: Bole, Ayat">
-          </div>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">拜访类型 / Visit Type</label>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtFirst" value="First contact"> 初次接触 / First Contact</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtPromo" value="Product promotion"> 产品推广 / Product Promotion</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtRelation" value="Customer relationship maintenance"> 客情维护 / Relationship</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtIssue" value="Issue follow-up"> 问题跟进 / Issue Follow-up</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="vtOther" value="Other"> 其他 / Other</label>
-          </div>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">讨论内容 / Discussion Notes</label>
-          <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">讨论内容（中文）/ Discussion Notes (中文)</label>
-          <textarea class="vf-textarea" id="visitNotesZh" rows="3" placeholder="中文讨论内容" style="font-family:monospace"></textarea>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">现有设备 / Current Equipment in Use</label>
-          <textarea class="vf-textarea" id="visitEquipment" rows="2" placeholder="如: 激素: Finecare • 生化: Semi-Automatic • 血球: Mindray" style="font-family:monospace"></textarea>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">拜访结果 / Outcome</label>
-          <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">拜访结果（中文）/ Outcome (中文)</label>
-          <textarea class="vf-textarea" id="visitOutcomeZh" rows="3" placeholder="中文拜访结果" style="font-family:monospace"></textarea>
-        </div>
-
-        <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
-          <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
-          <textarea class="vf-textarea" id="visitSummary" rows="4" placeholder="请简要总结本次拜访的关键要点、达成的共识、下一步行动计划等。此总结将显示在报告中。" style="font-family:monospace;background:#fff"></textarea>
-        </div>
-
-        <div style="margin-bottom:12px;padding:16px;background:#f0fdf4;border:2px solid #86efac;border-radius:10px">
-          <label class="vf-label" style="color:#166534;font-size:1rem">📦 产品订单 / Product Orders</label>
-          <div id="orderItems" style="margin-bottom:8px">
-            <div class="order-row" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center">
-              <input class="vf-input" type="text" placeholder="产品名称 / Product" style="font-size:0.85rem">
-              <input class="vf-input" type="number" placeholder="数量 / Qty" style="font-size:0.85rem" min="0" step="1">
-              <input class="vf-input" type="text" placeholder="单位 / Unit" style="font-size:0.85rem" value="pcs">
-              <input class="vf-input" type="number" placeholder="单价 / Price" style="font-size:0.85rem" min="0" step="0.01">
-            </div>
-          </div>
-          <button type="button" onclick="addOrderRow()" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem">+ 添加产品 / Add Product</button>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label class="vf-label">客户分类 / Customer Category</label>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catActive" value="Active Customer"> 有效客户 / Active</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catNeeds" value="Customer with Needs"> 有需求客户 / With Needs</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catKey" value="Key Customer"> 重点客户 / Key</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:0.9rem;cursor:pointer"><input type="checkbox" id="catClosed" value="Closed Deal"> 已成交客户 / Closed Deal</label>
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
-          <div>
-            <label class="vf-label">客户潜力 / Potential</label>
-            <select class="vf-select" id="visitPotential">
-              <option value="">-- 请选择 --</option>
-              <option value="Hot">🔥 热门 / Hot</option>
-              <option value="Warm">🌤️ 温暖 / Warm</option>
-              <option value="Cold">❄️ 冷淡 / Cold</option>
-            </select>
-          </div>
-          <div>
-            <label class="vf-label">下次拜访日期 / Next Visit</label>
-            <input class="vf-input" type="date" id="visitNextDate">
-          </div>
-          <div>
-            <label class="vf-label">下次目标 / Next Target</label>
-            <input class="vf-input" type="text" id="visitNextTarget" placeholder="如: 跟进报价">
-          </div>
-        </div>
-
-        <div style="display:flex;gap:12px">
-          <button type="button" onclick="submitSingleVisit()" style="flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:1rem">✅ 提交 / Submit</button>
-          <button type="button" onclick="clearVisitForm()" style="background:#6b7280;color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer">↺ 重置 / Reset</button>
-        </div>
-        <div id="singleVisitStatus" style="margin-top:12px;padding:10px;border-radius:8px;display:none"></div>
       </div>
 
       <!-- FILTER CONTROLS -->
@@ -1636,7 +1635,8 @@ function switchTab(tab) {
     filterPotential('all'); // Show all by default
   }
   if (tab === 'dashboard') renderDashboard();
-  if (tab === 'reports') { renderReports(); setupVisitForm(); }
+  if (tab === 'reports') { renderReports(); }
+  if (tab === 'form') { setupVisitForm(); }
   if (tab === 'profile') { loadProfileInfo(); }
 }
 
@@ -2335,6 +2335,34 @@ function setupVisitForm() {
     JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]').forEach(c => names.add(c.name));
     datalist.innerHTML = [...names].sort().map(n => `<option value="${n}">`).join('');
   }
+
+  const user = getCurrentUser();
+  const salesSelect = document.getElementById('visitSalesPerson');
+  if (salesSelect) {
+    const allUsers = { ...USERS };
+    const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+    localUsers.forEach(u => { if (u && u.username) allUsers[u.username] = u; });
+
+    const salesNames = Object.values(allUsers)
+      .filter(u => u.role === 'sales')
+      .map(u => normalizeSalesName(u.name))
+      .filter((name, index, self) => name && self.indexOf(name) === index)
+      .sort();
+
+    const options = (user && user.role === 'sales' && user.teamId ? getTeamSalesMembers() : salesNames)
+      .filter(Boolean)
+      .map(name => `<option value="${name}">${name}</option>`);
+
+    salesSelect.innerHTML = `<option value="">-- 请选择 --</option>${options.join('')}`;
+    if (user && user.role === 'sales' && user.teamId && !options.includes(normalizeSalesName(user.name))) {
+      salesSelect.insertAdjacentHTML('beforeend', `<option value="${normalizeSalesName(user.name)}">${normalizeSalesName(user.name)}</option>`);
+    }
+    if (user && user.role === 'sales') {
+      const currentName = normalizeSalesName(user.name);
+      salesSelect.value = currentName;
+    }
+  }
+
   const today = new Date().toISOString().split('T')[0];
   const dateInput = document.getElementById('visitDate');
   if (dateInput && !dateInput.value) dateInput.value = today;
