@@ -1,4 +1,4 @@
-const APP_SCRIPT_URL = process.env.APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwvOP2A0OoC13ZIOTQRHFnclGL8CCDo9j3xd2Cm1rbnmGg97WMsgVCXwUMzq3pF0XlP/exec';
+const APP_SCRIPT_URL = process.env.APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbzTM_EPvzVaIwG2GpexwCz5m9KC-LTqNbX2OT9NRy1Qi8H3peCe7YY55w5-pYMQMYE/exec';
 
 function buildHeaders(event) {
   const headers = {
