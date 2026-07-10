@@ -27,6 +27,13 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="firebase-client.js"></script>
+<script src="firebase-service.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="google-sheets-api.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
@@ -860,31 +867,31 @@ const cityZhMap = {
 };
 
 function cityZh(city) { return cityZhMap[city] || city; }
-function hn(h) { return currentLang==='zh' ? (h.nameZh||h.name) : h.name; }
-function hc(h) { return currentLang==='zh' ? cityZh(h.city) : h.city; }
-function hRole(c) { return currentLang==='zh' ? (c.roleZh||c.role) : c.role; }
-function hName(c) { return currentLang==='zh' ? (c.nameZh||c.name) : c.name; }
-function hStock(h) { return currentLang==='zh' ? (h.stockZh||h.stock) : h.stock; }
-function hOrder(h) { return currentLang==='zh' ? (h.orderZh||h.order) : h.order; }
-function hDoctors(h) { return currentLang==='zh' ? (h.doctorsZh||h.doctors) : h.doctors; }
+function hn(h) { return h.nameZh || h.name; }
+function hc(h) { return cityZh(h.city) || h.city; }
+function hRole(c) { return c.roleZh || c.role; }
+function hName(c) { return c.nameZh || c.name; }
+function hStock(h) { return h.stockZh || h.stock; }
+function hOrder(h) { return h.orderZh || h.order; }
+function hDoctors(h) { return h.doctorsZh || h.doctors; }
 
 // ===================== DATA =====================
 // ===================== CUSTOMER DATA MANAGEMENT =====================
 async function getCustomerData(type) {
   const fallbackData = type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
 
-  // Try to sync with Google Sheets first
+  // Try to sync with Google Sheets first using new API
   try {
-    const syncedData = await syncCustomers();
-    if (Array.isArray(syncedData) && syncedData.length > 0) {
+    const result = await getCustomers();
+    if (result.success && Array.isArray(result.data) && result.data.length > 0) {
       if (type === 'machine') {
-        return syncedData.filter(c => c.model === 'A8' || c.model === 'A90');
+        return result.data.filter(c => c.model === 'A8' || c.model === 'A90');
       } else {
-        return syncedData.filter(c => !c.model || c.model === 'External');
+        return result.data.filter(c => !c.model || c.model === 'EXT');
       }
     }
   } catch (error) {
-    console.log('Sync failed, using local data:', error);
+    console.log('Google Sheets sync failed, using local data:', error);
   }
   
   // Fall back to localStorage only when it contains real data
@@ -905,11 +912,14 @@ async function getCustomerData(type) {
 async function saveCustomerData(type, data) {
   localStorage.setItem('fremenatos_' + type, JSON.stringify(data));
   
-  // Sync with Google Sheets
+  // Sync with Google Sheets using new API
   try {
-    await saveToGoogleSheets(DATA_TYPES.CUSTOMERS, data);
+    // Save each customer individually
+    for (const customer of data) {
+      await saveCustomer(customer);
+    }
   } catch (error) {
-    console.log('Failed to sync customer data:', error);
+    console.log('Failed to sync customer data to Google Sheets:', error);
   }
   
   // Reload the references
@@ -1861,38 +1871,52 @@ function importBulkData() {
       action: 'insert'
     };
     
-    // Send to Google Sheets
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(reportData)
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.status === 'ok') {
-        successCount++;
+    const saveReport = async () => {
+      if (window.firebaseService && window.firebaseService.isReady()) {
+        try {
+          const result = await saveVisitReportToFirestore(reportData);
+          if (!result || result.success !== true) {
+            throw new Error(result && result.message ? result.message : 'Firestore save returned failure');
+          }
+          successCount++;
+        } catch (error) {
+          console.warn('Import Firestore save failed, falling back to Google Sheets:', error);
+          const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) });
+          const res = await response.json();
+          if (res.status === 'ok') {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        }
       } else {
-        errorCount++;
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) });
+        const res = await response.json();
+        if (res.status === 'ok') {
+          successCount++;
+        } else {
+          errorCount++;
+        }
       }
-      saveVisitReportLocal(reportData);
-      // Update status
-      statusDiv.innerHTML = `⏳ 正在导入 / Importing... ${index + 1} / ${records.length}<br>成功: ${successCount} / 失败: ${errorCount}`;
-      // Import next
-      setTimeout(() => importNext(index + 1), 100); // Small delay to avoid rate limits
-    })
-    .catch(err => {
-      errorCount++;
-      console.error('Import error:', err);
-      saveVisitReportLocal(reportData);
-      // Continue anyway
-      setTimeout(() => importNext(index + 1), 100);
-    });
+    };
+
+    saveReport()
+      .catch(err => {
+        errorCount++;
+        console.error('Import error:', err);
+      })
+      .finally(() => {
+        saveVisitReportLocal(reportData);
+        statusDiv.innerHTML = `⏳ 正在导入 / Importing... ${index + 1} / ${records.length}<br>成功: ${successCount} / 失败: ${errorCount}`;
+        setTimeout(() => importNext(index + 1), 100);
+      });
   }
   
   // Start import
   importNext(0);
 }
 
-function submitSingleVisit() {
+async function submitSingleVisit() {
   const salesPerson = document.getElementById('visitSalesPerson').value;
   const date = document.getElementById('visitDate').value;
   const hospitalName = document.getElementById('visitHospital').value.trim();
@@ -1963,9 +1987,21 @@ function submitSingleVisit() {
   statusDiv.style.color = '#1e40af';
   statusDiv.innerHTML = '⏳ 提交中 / Submitting...';
 
-  // Try to send to Google Sheets (fire-and-forget)
-  fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) })
-    .then(r => r.json()).catch(() => {});
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    try {
+      const result = await saveVisitReportToFirestore(reportData);
+      if (!result || result.success !== true) {
+        throw new Error(result && result.message ? result.message : 'Firestore save returned failure');
+      }
+    } catch (error) {
+      console.warn('Firestore submit failed, falling back to Google Sheets:', error);
+      fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) })
+        .then(r => r.json()).catch(() => {});
+    }
+  } else {
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) })
+      .then(r => r.json()).catch(() => {});
+  }
 
   // Save locally
   saveVisitReportLocal(reportData);
@@ -2122,19 +2158,43 @@ function submitVisitForm(e) {
   });
 }
 
-function saveVisitReportLocal(data) {
+async function saveVisitReportLocal(data) {
   let reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
   const idx = reports.findIndex(r => r.id == data.id);
   if (idx >= 0) reports[idx] = data;
   else reports.push(data);
   localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
+  
+  // Sync with Firestore first, then fallback to Google Sheets
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    try {
+      const result = await saveVisitReportToFirestore(data);
+      if (!result || result.success !== true) {
+        throw new Error(result && result.message ? result.message : 'Firestore save returned failure');
+      }
+    } catch (error) {
+      console.warn('Failed to sync visit report to Firestore, falling back to Google Sheets:', error);
+      try {
+        await saveVisitReport(data);
+      } catch (innerError) {
+        console.log('Failed to sync visit report to Google Sheets:', innerError);
+      }
+    }
+  } else {
+    try {
+      await saveVisitReport(data);
+    } catch (error) {
+      console.log('Failed to sync visit report to Google Sheets:', error);
+    }
+  }
+  
   // Also update potential customers list from this report
   if (data.customerPotential) {
     addPotentialFromReport(data);
   }
 }
 
-function addPotentialFromReport(data) {
+async function addPotentialFromReport(data) {
   let potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
   const name = data.hospitalName || '';
   if (!name) return;
@@ -2158,6 +2218,14 @@ function addPotentialFromReport(data) {
   if (existing >= 0) potentials[existing] = entry;
   else potentials.push(entry);
   localStorage.setItem('fremenatos_potentials', JSON.stringify(potentials));
+  
+  // Sync with Google Sheets
+  try {
+    await savePotentialCustomer(entry);
+  } catch (error) {
+    console.log('Failed to sync potential customer to Google Sheets:', error);
+  }
+  
   updatePotentialStats();
   filterPotentialCustomers();
 }
@@ -2166,8 +2234,17 @@ function getLocalReports() {
   return JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
 }
 
-function getReports(callback) {
-  // Fetch from Google Sheets
+async function getReports(callback) {
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    try {
+      const reports = await getVisitReportsFromFirestore();
+      callback(Array.isArray(reports) ? reports : []);
+      return;
+    } catch (error) {
+      console.warn('Failed to load reports from Firestore:', error);
+    }
+  }
+
   fetch(SCRIPT_URL)
     .then(r => r.json())
     .then(res => {
@@ -2611,7 +2688,7 @@ function filterByTeam(teamId) {
 let _lastDeleted = null;
 let _deleteUndoTimeout = null;
 
-function deleteReport(id) {
+async function deleteReport(id) {
   if (!confirm(t('repDeleteConfirm'))) return;
   
   // Remove from localStorage
@@ -2623,22 +2700,12 @@ function deleteReport(id) {
     localStorage.setItem('fremenatos_visitReports', JSON.stringify(localReports));
   }
   
-  // Try Google Sheets sync with proper error handling
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify({ action: 'delete', id: id })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success' || data.status === 'ok') {
-      console.log('✅ Report deleted from Google Sheets');
-    } else {
-      console.warn('⚠️ Backend delete warning:', data.message);
-    }
-  })
-  .catch(error => {
-    console.warn('⚠️ Backend sync failed (offline mode):', error);
-  });
+  // Sync with Google Sheets using new API
+  try {
+    await deleteVisitReport(id);
+  } catch (error) {
+    console.log('Failed to delete report from Google Sheets:', error);
+  }
   
   closeModal();
   renderReports();
@@ -3138,7 +3205,7 @@ function openReportDetailObj(r) {
 }
 
 // ===================== LANGUAGE =====================
-let currentLang = localStorage.getItem('fremenatos_lang') || 'en';
+let currentLang = localStorage.getItem('fremenatos_lang') || 'zh';
 
 const LANG = {
   en: {
@@ -3843,15 +3910,20 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('users:updated', () => {
     refreshUsers().catch(err => console.warn('User refresh failed:', err));
   });
-  
-  const periodSelect = document.getElementById('reportPeriod');
-  if (periodSelect) {
-    periodSelect.addEventListener('change', (e) => {
-      const customDiv = document.getElementById('customDateRange');
-      if (customDiv) {
-        customDiv.style.display = e.target.value === 'custom' ? 'block' : 'none';
+
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    listenFirestoreUsers();
+    listenFirestoreVisitReports(() => {
+      if (document.querySelector('.tab-btn.active')?.id === 'tab-reports') {
+        renderReports();
       }
+      renderDashboard();
     });
+    getVisitReportsFromFirestore().then(() => {
+      renderReports();
+      renderDashboard();
+    }).catch(err => console.warn('Firestore reports load failed:', err));
+    syncUsersFromFirestore().catch(err => console.warn('Firestore user sync failed:', err));
   }
 });
 
@@ -5982,9 +6054,13 @@ async function refreshUsers() {
   const MAX_SALESPEOPLE = 12;
   
   try {
-    // Use sync function to get latest data from Google Sheets
-    const users = await syncUsers();
-    const normalizedUsers = Array.isArray(users) ? users : [];
+    let normalizedUsers = [];
+    if (window.firebaseService && window.firebaseService.isReady()) {
+      normalizedUsers = await window.firebaseService.getUsers();
+    } else {
+      const users = await syncUsers();
+      normalizedUsers = Array.isArray(users) ? users : [];
+    }
     saveLocalUsers(normalizedUsers);
 
     const pending = normalizedUsers.filter(u => String(u.status || '').toLowerCase() === 'pending');
@@ -6184,25 +6260,29 @@ async function approveUser(username, preferredTeam = null) {
   }, 500);
   
   try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        action: 'approveUser',
-        username: username,
-        teamId: normalizedTeamId,
-        status: 'active'
-      })
-    });
-    
-    const data = await response.json();
-    const isSuccess = data && (data.status === 'success' || data.status === 'ok' || data.success === true || /approved/i.test(String(data.message || '')));
+    let response = null;
+    if (window.firebaseService && window.firebaseService.isReady()) {
+      response = await approveUserInFirestore(username, { teamId: normalizedTeamId, status: 'active' });
+    } else {
+      const backendResponse = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          action: 'approveUser',
+          username: username,
+          teamId: normalizedTeamId,
+          status: 'active'
+        })
+      });
+      response = await backendResponse.json();
+    }
+    const isSuccess = response && (response.status === 'success' || response.status === 'ok' || response.success === true || /approved/i.test(String(response.message || '')));
     
     if (isSuccess) {
       alert('✅ User approved!');
       refreshUsers();
     } else {
-      alert('⚠️ Approved locally. Backend returned: ' + (data.message || 'unknown error'));
+      alert('⚠️ Approved locally. Backend returned: ' + (response.message || 'unknown error'));
     }
   } catch (error) {
     console.error(error);
@@ -6218,24 +6298,31 @@ async function rejectUser(username) {
   refreshUsers();
   
   try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        action: 'deleteUser',
-        username: username
-      })
-    });
-    
-    const data = await response.json();
-    const isSuccess = data && (data.status === 'success' || data.status === 'ok' || data.success === true || /removed|deleted|rejected/i.test(String(data.message || '')));
-    
-    if (isSuccess) {
-      alert('❌ User rejected and removed');
-      refreshUsers();
+    if (window.firebaseService && window.firebaseService.isReady()) {
+      const result = await deleteUserInFirestore(username);
+      if (result && result.success === true) {
+        alert('❌ User rejected and removed');
+      } else {
+        throw new Error(result && result.message ? result.message : 'Firestore delete failed');
+      }
     } else {
-      alert('⚠️ Removed locally. Backend returned: ' + (data.message || 'unknown error'));
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          action: 'deleteUser',
+          username: username
+        })
+      });
+      const data = await response.json();
+      const isSuccess = data && (data.status === 'success' || data.status === 'ok' || data.success === true || /removed|deleted|rejected/i.test(String(data.message || '')));
+      if (isSuccess) {
+        alert('❌ User rejected and removed');
+      } else {
+        throw new Error(data.message || 'Backend delete failed');
+      }
     }
+    refreshUsers();
   } catch (error) {
     console.error(error);
     alert('⚠️ Removed locally. Network issue while syncing to the backend.');
@@ -6265,33 +6352,38 @@ async function editUser(username) {
   
   try {
     const updateData = {
-      action: 'updateUser',
-      username: username,
       name: newName,
       nameZh: newName,
       teamId: parseInt(newTeam)
     };
-    
     if (newPassword) {
       updateData.password = newPassword;
     }
-    
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(updateData)
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      alert('✅ User updated!' + (newPassword ? ' Password changed.' : ''));
-      refreshUsers();
+
+    if (window.firebaseService && window.firebaseService.isReady()) {
+      const result = await window.firebaseService.updateUser(username, updateData);
+      if (result && result.success === true) {
+        alert('✅ User updated!' + (newPassword ? ' Password changed.' : ''));
+        refreshUsers();
+      } else {
+        throw new Error(result && result.message ? result.message : 'Firestore update failed');
+      }
     } else {
-      alert('Error: ' + data.message);
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ action: 'updateUser', username: username, ...updateData })
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        alert('✅ User updated!' + (newPassword ? ' Password changed.' : ''));
+        refreshUsers();
+      } else {
+        throw new Error(data.message || 'Backend update failed');
+      }
     }
   } catch (error) {
-    alert('Network error');
+    alert('Network error or update failed: ' + (error.message || error));
     console.error(error);
   }
 }
@@ -6309,32 +6401,38 @@ async function deleteUser(username) {
     initializeSalespersonDropdowns();
   }, 500);
 
-  // Try to sync with backend
+  // Try to sync with backend / Firestore
   try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        action: 'deleteUser',
-        username: username
-      })
-    });
-
-    const data = await response.json();
-    const isSuccess = data.status === 'success' || data.status === 'ok' || data.message === 'User deleted';
-
-    if (isSuccess) {
-      console.log('✅ User deleted from Google Sheets');
-      alert('✅ User deleted successfully - A new salesperson can now be registered');
-      refreshUsers();
+    if (window.firebaseService && window.firebaseService.isReady()) {
+      const result = await deleteUserInFirestore(username);
+      if (result && result.success === true) {
+        console.log('✅ User deleted from Firestore');
+        alert('✅ User deleted successfully - A new salesperson can now be registered');
+        refreshUsers();
+      } else {
+        throw new Error(result && result.message ? result.message : 'Firestore delete failed');
+      }
     } else {
-      console.warn('⚠️ Backend delete warning:', data.message);
-      alert('⚠️ User deleted locally. Backend returned: ' + (data.message || 'unknown error'));
-      refreshUsers();
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ action: 'deleteUser', username: username })
+      });
+      const data = await response.json();
+      const isSuccess = data.status === 'success' || data.status === 'ok' || data.message === 'User deleted';
+      if (isSuccess) {
+        console.log('✅ User deleted from Google Sheets');
+        alert('✅ User deleted successfully - A new salesperson can now be registered');
+        refreshUsers();
+      } else {
+        console.warn('⚠️ Backend delete warning:', data.message);
+        alert('⚠️ User deleted locally. Backend returned: ' + (data.message || 'unknown error'));
+        refreshUsers();
+      }
     }
   } catch (error) {
-    console.warn('⚠️ Backend sync failed (offline mode):', error);
-    alert('✅ User deleted locally (offline mode - will sync when online)');
+    console.warn('⚠️ Sync failed:', error);
+    alert('✅ User deleted locally (offline mode or sync failed)');
     refreshUsers();
   }
 }

@@ -6,6 +6,13 @@
 <title>Sales Dashboard - Fremenatos Trading PLC</title>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="../firebase-client.js"></script>
+<script src="../firebase-service.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../google-sheets-api.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
@@ -573,14 +580,30 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           <datalist id="hospitalDatalist"></datalist>
         </div>
 
+        <div style="margin-bottom:12px">
+          <label class="vf-label">医院名称（中文）/ Hospital Name (中文)</label>
+          <input class="vf-input" type="text" id="visitHospitalZh" placeholder="输入医院中文名称…">
+        </div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <label class="vf-label">被访人 / Contact Person</label>
             <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
           </div>
           <div>
+            <label class="vf-label">被访人（中文）/ Contact Person (中文)</label>
+            <input class="vf-input" type="text" id="visitContactZh" placeholder="中文姓名">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
             <label class="vf-label">职位 / Position</label>
             <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
+          </div>
+          <div>
+            <label class="vf-label">职位（中文）/ Position (中文)</label>
+            <input class="vf-input" type="text" id="visitPositionZh" placeholder="中文职位">
           </div>
         </div>
 
@@ -612,6 +635,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         </div>
 
         <div style="margin-bottom:12px">
+          <label class="vf-label">讨论内容（中文）/ Discussion Notes (中文)</label>
+          <textarea class="vf-textarea" id="visitNotesZh" rows="3" placeholder="中文讨论内容" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px">
           <label class="vf-label">现有设备 / Current Equipment in Use</label>
           <textarea class="vf-textarea" id="visitEquipment" rows="2" placeholder="如: 激素: Finecare • 生化: Semi-Automatic • 血球: Mindray" style="font-family:monospace"></textarea>
         </div>
@@ -619,6 +647,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         <div style="margin-bottom:12px">
           <label class="vf-label">拜访结果 / Outcome</label>
           <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label class="vf-label">拜访结果（中文）/ Outcome (中文)</label>
+          <textarea class="vf-textarea" id="visitOutcomeZh" rows="3" placeholder="中文拜访结果" style="font-family:monospace"></textarea>
         </div>
 
         <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
@@ -810,18 +843,34 @@ const cityZhMap = {
 };
 
 function cityZh(city) { return cityZhMap[city] || city; }
-function hn(h) { return currentLang==='zh' ? (h.nameZh||h.name) : h.name; }
+function hn(h) { return h.nameZh || h.name; }
 function hc(h) { return currentLang==='zh' ? cityZh(h.city) : h.city; }
-function hRole(c) { return currentLang==='zh' ? (c.roleZh||c.role) : c.role; }
-function hName(c) { return currentLang==='zh' ? (c.nameZh||c.name) : c.name; }
-function hStock(h) { return currentLang==='zh' ? (h.stockZh||h.stock) : h.stock; }
-function hOrder(h) { return currentLang==='zh' ? (h.orderZh||h.order) : h.order; }
-function hDoctors(h) { return currentLang==='zh' ? (h.doctorsZh||h.doctors) : h.doctors; }
+function hRole(c) { return c.roleZh || c.role; }
+function hName(c) { return c.nameZh || c.name; }
+function hStock(h) { return h.stockZh || h.stock; }
+function hOrder(h) { return h.orderZh || h.order; }
+function hDoctors(h) { return h.doctorsZh || h.doctors; }
 
 // ===================== DATA =====================
 // ===================== CUSTOMER DATA MANAGEMENT =====================
-function getCustomerData(type) {
+async function getCustomerData(type) {
   const key = 'fremenatos_' + type;
+  
+  // Try to sync with Google Sheets first using new API
+  try {
+    const result = await getCustomers();
+    if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+      if (type === 'machine') {
+        return result.data.filter(c => c.model === 'A8' || c.model === 'A90');
+      } else {
+        return result.data.filter(c => !c.model || c.model === 'EXT');
+      }
+    }
+  } catch (error) {
+    console.log('Google Sheets sync failed, using local data:', error);
+  }
+  
+  // Fall back to localStorage
   const stored = localStorage.getItem(key);
   if (stored) {
     try { return JSON.parse(stored); } catch(e) {}
@@ -830,8 +879,18 @@ function getCustomerData(type) {
   return type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
 }
 
-function saveCustomerData(type, data) {
+async function saveCustomerData(type, data) {
   localStorage.setItem('fremenatos_' + type, JSON.stringify(data));
+  
+  // Sync with Google Sheets using new API
+  try {
+    for (const customer of data) {
+      await saveCustomer(customer);
+    }
+  } catch (error) {
+    console.log('Failed to sync customer data to Google Sheets:', error);
+  }
+  
   // Reload the references
   if (type === 'machine') {
     machineCustomers.length = 0;
@@ -1739,31 +1798,18 @@ function importBulkData() {
       action: 'insert'
     };
     
-    // Send to Google Sheets
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(reportData)
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.status === 'ok') {
-        successCount++;
-      } else {
-        errorCount++;
-      }
-      saveVisitReportLocal(reportData);
-      // Update status
-      statusDiv.innerHTML = `⏳ 正在导入 / Importing... ${index + 1} / ${records.length}<br>成功: ${successCount} / 失败: ${errorCount}`;
-      // Import next
-      setTimeout(() => importNext(index + 1), 100); // Small delay to avoid rate limits
-    })
-    .catch(err => {
+    try {
+      await saveVisitReportLocal(reportData);
+      successCount++;
+    } catch (err) {
       errorCount++;
       console.error('Import error:', err);
-      saveVisitReportLocal(reportData);
-      // Continue anyway
-      setTimeout(() => importNext(index + 1), 100);
-    });
+    }
+
+    // Update status
+    statusDiv.innerHTML = `⏳ 正在导入 / Importing... ${index + 1} / ${records.length}<br>成功: ${successCount} / 失败: ${errorCount}`;
+    // Import next
+    setTimeout(() => importNext(index + 1), 100); // Small delay to avoid rate limits
   }
   
   // Start import
@@ -1774,13 +1820,18 @@ function submitSingleVisit() {
   const salesPerson = document.getElementById('visitSalesPerson').value;
   const date = document.getElementById('visitDate').value;
   const hospitalName = document.getElementById('visitHospital').value.trim();
+  const hospitalNameZh = document.getElementById('visitHospitalZh').value.trim();
   const contact = document.getElementById('visitContact').value.trim();
+  const contactZh = document.getElementById('visitContactZh').value.trim();
   const position = document.getElementById('visitPosition').value.trim();
+  const positionZh = document.getElementById('visitPositionZh').value.trim();
   const phone = document.getElementById('visitPhone').value.trim();
   const address = document.getElementById('visitAddress').value.trim();
   const notes = document.getElementById('visitNotes').value.trim();
+  const notesZh = document.getElementById('visitNotesZh').value.trim();
   const equipment = document.getElementById('visitEquipment').value.trim();
   const outcome = document.getElementById('visitOutcome').value.trim();
+  const outcomeZh = document.getElementById('visitOutcomeZh').value.trim();
   const summary = document.getElementById('visitSummary').value.trim();
   const potential = document.getElementById('visitPotential').value;
   const nextDate = document.getElementById('visitNextDate').value;
@@ -1821,17 +1872,23 @@ function submitSingleVisit() {
     fillDate: date,
     salesPerson: salesPerson,
     hospitalName: hospitalName,
+    hospitalNameZh: hospitalNameZh,
     hospitalAddress: address,
     visitingName: contact,
+    visitingNameZh: contactZh,
     position: position,
+    positionZh: positionZh,
     phone: phone,
     visitType: visitTypes,
     customerCategory: categories,
     customerPotential: potential,
     visitPurpose: notes,
+    visitPurposeZh: notesZh,
     notes: notes,  // Save discussion notes to notes field (for summary display)
+    notesZh: notesZh,
     equipNeeds: equipment,
     visitProgress: outcome,
+    visitProgressZh: outcomeZh,
     summary: summary,  // Save the dedicated summary field
     nextVisitDate: nextDate,
     nextVisitTarget: nextTarget,
@@ -1844,16 +1901,20 @@ function submitSingleVisit() {
   statusDiv.style.color = '#1e40af';
   statusDiv.innerHTML = '⏳ 提交中 / Submitting...';
 
-  // Try to send to Google Sheets (fire-and-forget)
-  fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(reportData) })
-    .then(r => r.json()).catch(() => {});
+  try {
+    await saveVisitReportLocal(reportData);
+    statusDiv.style.background = '#f0fdf4';
+    statusDiv.style.color = '#166534';
+    statusDiv.innerHTML = `✅ 提交成功 / Submitted!<br>${hospitalName} — ${potential}`;
+  } catch (error) {
+    console.warn('Submit failed, saving locally:', error);
+    statusDiv.style.background = '#fef2f2';
+    statusDiv.style.color = '#991b1b';
+    statusDiv.innerHTML = `⚠️ 保存到本地 / Saved locally<br>${hospitalName} — ${potential}`;
+  }
 
-  // Save locally
-  saveVisitReportLocal(reportData);
-
-  statusDiv.style.background = '#f0fdf4';
-  statusDiv.style.color = '#166534';
-  statusDiv.innerHTML = `✅ 提交成功 / Submitted!<br>${hospitalName} — ${potential}`;
+  clearVisitForm();
+  setTimeout(() => { statusDiv.style.display = 'none'; renderReports(); }, 2000);
 
   clearVisitForm();
   setTimeout(() => { statusDiv.style.display = 'none'; renderReports(); }, 2000);
@@ -1876,13 +1937,18 @@ function addOrderRow() {
 
 function clearVisitForm() {
   document.getElementById('visitHospital').value = '';
+  document.getElementById('visitHospitalZh').value = '';
   document.getElementById('visitContact').value = '';
+  document.getElementById('visitContactZh').value = '';
   document.getElementById('visitPosition').value = '';
+  document.getElementById('visitPositionZh').value = '';
   document.getElementById('visitPhone').value = '';
   document.getElementById('visitAddress').value = '';
   document.getElementById('visitNotes').value = '';
+  document.getElementById('visitNotesZh').value = '';
   document.getElementById('visitEquipment').value = '';
   document.getElementById('visitOutcome').value = '';
+  document.getElementById('visitOutcomeZh').value = '';
   document.getElementById('visitSummary').value = '';
   document.getElementById('visitPotential').value = '';
   document.getElementById('visitNextDate').value = '';
@@ -1956,45 +2022,32 @@ function submitVisitForm(e) {
   btn.disabled = true;
   btn.textContent = t('vfSubmitting');
 
-  // Send to Google Sheets
-  fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.status === 'ok') {
-        saveVisitReportLocal(data);
-        form.reset();
-        const previousEditId = _editingId;
-        _editingId = null;
-        btn.disabled = false;
-        btn.textContent = t('vfSubmit');
-        
-        // Auto-fill date and salesperson for next entry
-        const fillDateInput = document.getElementById('fillDate');
-        if (fillDateInput) {
-          fillDateInput.value = new Date().toISOString().split('T')[0];
-        }
-        document.querySelector('select[name="salesPerson"]').value = '';
+  try {
+    await saveVisitReportLocal(data);
+    form.reset();
+    const previousEditId = _editingId;
+    _editingId = null;
+    btn.disabled = false;
+    btn.textContent = t('vfSubmit');
 
-        alert(previousEditId ? t('vfUpdateOk') : t('vfSubmitOk'));
-        
-        // Refresh dashboard if on dashboard tab
-        if (currentTab === 'dashboard') {
-          renderDashboard();
-        }
-        
-        switchTab('reports');
-      } else {
-        throw new Error(res.message || 'Submit failed');
-      }
-    })
-    .catch(err => {
-      console.warn('Google Sheets submit failed, saving locally:', err);
-      // Save locally even if server fails
-      saveVisitReportLocal(data);
+    // Auto-fill date and salesperson for next entry
+    const fillDateInput = document.getElementById('fillDate');
+    if (fillDateInput) {
+      fillDateInput.value = new Date().toISOString().split('T')[0];
+    }
+    document.querySelector('select[name="salesPerson"]').value = '';
+
+    alert(previousEditId ? t('vfUpdateOk') : t('vfSubmitOk'));
+
+    // Refresh dashboard if on dashboard tab
+    if (currentTab === 'dashboard') {
+      renderDashboard();
+    }
+
+    switchTab('reports');
+  } catch (err) {
+    console.warn('Submit failed, saving locally:', err);
+    saveVisitReportLocal(data);
     btn.disabled = false;
     btn.textContent = t('vfSubmit');
     form.reset();
@@ -2003,7 +2056,7 @@ function submitVisitForm(e) {
     document.querySelector('select[name="salesPerson"]').value = '';
     alert('报告已保存到本地 / Report saved locally');
     switchTab('reports');
-  });
+  }
 }
 
 let pendingSyncInProgress = false;
@@ -2079,52 +2132,58 @@ async function syncPendingData() {
 window.addEventListener('online', () => syncPendingData());
 window.addEventListener('load', () => syncPendingData());
 
-function saveVisitReportLocal(data) {
+async function saveVisitReportLocal(data) {
   let reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
   const idx = reports.findIndex(r => r.id == data.id);
   if (idx >= 0) reports[idx] = data;
   else reports.push(data);
   localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
-  queuePendingSync('visitReport', data);
-  syncPendingData();
+
+  let synced = false;
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    try {
+      const result = await saveVisitReportToFirestore(data);
+      synced = result && result.success === true;
+    } catch (error) {
+      console.log('Failed to sync visit report to Firestore:', error);
+    }
+  }
+
+  if (!synced) {
+    try {
+      const result = await saveVisitReport(data);
+      synced = result && result.status !== 'error';
+    } catch (error) {
+      console.log('Failed to sync visit report to Google Sheets:', error);
+    }
+  }
+
+  if (!synced) {
+    queuePendingSync('visitReport', data);
+    syncPendingData();
+  }
+
   // Also update potential customers list from this report
   if (data.customerPotential) {
     addPotentialFromReport(data);
   }
 }
 
-function addPotentialFromReport(data) {
-  let potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
-  const name = data.hospitalName || '';
-  if (!name) return;
-  const existing = potentials.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
-  const entry = {
-    name: name,
-    address: data.hospitalAddress || '',
-    contact: data.visitingName || '',
-    phone: data.phone || '',
-    patientLoad: '',
-    hormoneAnalyzer: data.otherBrand1 || data.equipNeeds || '',
-    chemAnalyzer: '',
-    electrolyteAnalyzer: '',
-    testTubes: '',
-    status: data.customerPotential || 'Warm',
-    notes: data.visitProgress || data.visitPurpose || data.outcome || '',
-    salesRep: data.salesPerson || '',
-    fromVisit: true
-  };
-  if (existing >= 0) potentials[existing] = entry;
-  else potentials.push(entry);
-  localStorage.setItem('fremenatos_potentials', JSON.stringify(potentials));
-  updatePotentialStats();
-  filterPotentialCustomers();
-}
-
 function getLocalReports() {
   return JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
 }
 
-function getReports(callback) {
+async function getReports(callback) {
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    try {
+      const reports = await getVisitReportsFromFirestore();
+      callback(reports);
+      return;
+    } catch (error) {
+      console.warn('Failed to load reports from Firestore:', error);
+    }
+  }
+
   fetch(SCRIPT_URL + '?action=getVisitReports', {
     method: 'GET',
     headers: { 'Accept': 'application/json' }
@@ -2386,7 +2445,7 @@ function displayReports(reports) {
     return `<div class="rep-card" onclick='openReportDetailObj(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
       <div class="rep-avatar" style="background:${color}">${salesInitials(salesPersonName)}</div>
       <div class="rep-info">
-        <div class="rep-hospital">${r.hospitalName || 'Unknown Hospital'}</div>
+        <div class="rep-hospital">${r.hospitalNameZh || r.hospitalName || 'Unknown Hospital'}</div>
         <div class="rep-meta">
           <span>👤 ${salesBadge}</span>
           ${date ? `<span>📅 ${date}</span>` : ''}
@@ -3207,7 +3266,7 @@ function openReportDetailObj(r) {
 }
 
 // ===================== LANGUAGE =====================
-let currentLang = localStorage.getItem('fremenatos_lang') || 'en';
+let currentLang = localStorage.getItem('fremenatos_lang') || 'zh';
 
 const LANG = {
   en: {

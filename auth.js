@@ -1,6 +1,76 @@
 // ===================== AUTHENTICATION SYSTEM =====================
 
 const LOCAL_USERS_KEY = 'fremenatos_users';
+const API_PROXY_URL = '/.netlify/functions/proxy';
+
+async function authenticateBackend(username, password) {
+  if (!username || !password) {
+    return { success: false, message: 'Missing credentials' };
+  }
+
+  try {
+    const response = await fetch(API_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ action: 'authenticate', username, password })
+    });
+
+    const result = await response.json();
+    if (result && result.status === 'success') {
+      return { success: true, user: result.data || result };
+    }
+
+    return { success: false, message: result.message || 'Invalid username or password' };
+  } catch (error) {
+    return { success: false, message: error.message || 'Unable to reach backend' };
+  }
+}
+
+async function authenticateFirebase(username, password) {
+  if (!(window.firebaseService && window.firebaseService.isReady())) {
+    return { success: false, message: 'Firebase unavailable' };
+  }
+  return await window.firebaseService.authenticateUser(username, password);
+}
+
+async function authenticateAny(username, password) {
+  if (window.firebaseService && window.firebaseService.isReady()) {
+    const firebaseResult = await authenticateFirebase(username, password);
+    if (firebaseResult && firebaseResult.success) {
+      return firebaseResult;
+    }
+  }
+  return await authenticateBackend(username, password);
+}
+
+async function registerFirebaseUser(userData) {
+  if (!(window.firebaseService && window.firebaseService.isReady())) {
+    return { success: false, message: 'Firebase unavailable' };
+  }
+  return await window.firebaseService.registerUser(userData);
+}
+
+async function createSession(user, rememberMe = false) {
+  if (!user || !user.username) return false;
+
+  const session = {
+    username: String(user.username).trim().toLowerCase(),
+    role: user.role,
+    teamId: user.teamId,
+    name: user.name,
+    nameZh: user.nameZh,
+    loginTime: new Date().toISOString(),
+    rememberMe: rememberMe
+  };
+
+  if (rememberMe) {
+    localStorage.setItem('userSession', JSON.stringify(session));
+  } else {
+    sessionStorage.setItem('userSession', JSON.stringify(session));
+  }
+
+  return true;
+}
 
 // User database (in production, this should be on a server)
 const USERS = {

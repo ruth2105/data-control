@@ -4,7 +4,7 @@
 // This combines your existing code with sync functions
 // ============================================
 
-const SHEET_ID = '1lVTpBiw6LfSatgIMSOEpT6zG_5UVd3c_HzSTZxHGEzY'; // Your existing sheet ID
+const SHEET_ID = '1GlK4edSMMeMGwUjbHRvzMpW7yznhEiTpEgqFeHJYTYM'; // Updated to the shared sheet
 
 const SHEET_NAMES = {
   USERS: 'Users',
@@ -18,10 +18,7 @@ const SHEET_NAMES = {
 
 function doOptions(e) {
   return ContentService.createTextOutput('')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function doPost(e) {
@@ -761,10 +758,6 @@ function success_(data) {
     status: 'success',
     data: data
   })).setMimeType(ContentService.MimeType.JSON);
-
-  output.setHeader('Access-Control-Allow-Origin', '*');
-  output.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  output.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
   return output;
 }
 
@@ -773,10 +766,6 @@ function error_(message) {
     status: 'error',
     message: message
   })).setMimeType(ContentService.MimeType.JSON);
-
-  output.setHeader('Access-Control-Allow-Origin', '*');
-  output.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  output.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
   return output;
 }
 
