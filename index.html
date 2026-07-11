@@ -7696,6 +7696,38 @@ function closeTabMenu() {
     try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
   } catch(e) { console.warn('Team fix failed', e); }
 })();
+
+// One-time: ensure Tizita's reports are assigned to username 'tizita' and teamId 2
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_tizita_fix_done')) return;
+    const reportsKey = 'fremenatos_visitReports';
+    const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+    if (!Array.isArray(reports) || reports.length === 0) { localStorage.setItem('fremenatos_tizita_fix_done','1'); return; }
+
+    let changed = 0;
+    reports.forEach(r => {
+      const text = ((r.salesPerson||r.salesperson||'') + ' ' + (r.username||'') + ' ' + (r.reportedBy||'') + ' ' + (r.hospitalName||'')).toLowerCase();
+      if (/\btizita\b/i.test(text) || /\btizu27fremnatos\b/i.test(text)) {
+        if ((r.username||'').toLowerCase() !== 'tizita') {
+          r.username = 'tizita';
+          r.teamId = 2;
+          changed++;
+        }
+      }
+    });
+
+    if (changed > 0) {
+      const now = Date.now();
+      localStorage.setItem(reportsKey + '_tizita_backup_' + now, JSON.stringify(reports));
+      localStorage.setItem(reportsKey, JSON.stringify(reports));
+      console.log('Tizita remap: updated', changed, 'reports; backup at', reportsKey + '_tizita_backup_' + now);
+    }
+
+    localStorage.setItem('fremenatos_tizita_fix_done','1');
+    try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
+  } catch (e) { console.warn('Tizita fix failed', e); }
+})();
 </script>
 </body>
 </html>
