@@ -590,20 +590,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         <datalist id="hospitalDatalist"></datalist>
       </div>
 
-      <div style="margin-bottom:12px">
-        <label class="vf-label">医院名称（中文）/ Hospital Name (中文)</label>
-        <input class="vf-input" type="text" id="visitHospitalZh" placeholder="输入医院中文名称…">
-      </div>
+      <!-- Removed duplicate hospital name (Chinese) field -->
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
           <label class="vf-label">被访人 / Contact Person</label>
           <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
         </div>
-        <div>
-          <label class="vf-label">被访人（中文）/ Contact Person (中文)</label>
-          <input class="vf-input" type="text" id="visitContactZh" placeholder="中文姓名">
-        </div>
+        <div><!-- Removed duplicate Chinese contact field --></div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
@@ -611,10 +605,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
           <label class="vf-label">职位 / Position</label>
           <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
         </div>
-        <div>
-          <label class="vf-label">职位（中文）/ Position (中文)</label>
-          <input class="vf-input" type="text" id="visitPositionZh" placeholder="中文职位">
-        </div>
+        <div><!-- Removed duplicate Chinese position field --></div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
@@ -644,10 +635,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
       </div>
 
-      <div style="margin-bottom:12px">
-        <label class="vf-label">讨论内容（中文）/ Discussion Notes (中文)</label>
-        <textarea class="vf-textarea" id="visitNotesZh" rows="3" placeholder="中文讨论内容" style="font-family:monospace"></textarea>
-      </div>
+      <!-- Removed Chinese discussion notes field -->
 
       <div style="margin-bottom:12px">
         <label class="vf-label">现有设备 / Current Equipment in Use</label>
@@ -659,10 +647,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
       </div>
 
-      <div style="margin-bottom:12px">
-        <label class="vf-label">拜访结果（中文）/ Outcome (中文)</label>
-        <textarea class="vf-textarea" id="visitOutcomeZh" rows="3" placeholder="中文拜访结果" style="font-family:monospace"></textarea>
-      </div>
+      <!-- Removed Chinese outcome field -->
 
       <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
         <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
@@ -2002,18 +1987,14 @@ async function submitMainVisitForm() {
   const salesPerson = document.getElementById('visitSalesPerson').value;
   const date = document.getElementById('visitDate').value;
   const hospitalName = document.getElementById('visitHospital').value.trim();
-  const hospitalNameZh = document.getElementById('visitHospitalZh').value.trim();
+  // Removed Chinese hospital name field
   const contact = document.getElementById('visitContact').value.trim();
-  const contactZh = document.getElementById('visitContactZh').value.trim();
   const position = document.getElementById('visitPosition').value.trim();
-  const positionZh = document.getElementById('visitPositionZh').value.trim();
   const phone = document.getElementById('visitPhone').value.trim();
   const address = document.getElementById('visitAddress').value.trim();
   const notes = document.getElementById('visitNotes').value.trim();
-  const notesZh = document.getElementById('visitNotesZh').value.trim();
   const equipment = document.getElementById('visitEquipment').value.trim();
   const outcome = document.getElementById('visitOutcome').value.trim();
-  const outcomeZh = document.getElementById('visitOutcomeZh').value.trim();
   const summary = document.getElementById('visitSummary').value.trim();
   const potential = document.getElementById('visitPotential').value;
   const nextDate = document.getElementById('visitNextDate').value;
@@ -2057,23 +2038,18 @@ async function submitMainVisitForm() {
     fillDate: date,
     salesPerson: salesPerson,
     hospitalName: hospitalName,
-    hospitalNameZh: hospitalNameZh,
+    // hospitalNameZh removed
     hospitalAddress: address,
     visitingName: contact,
-    visitingNameZh: contactZh,
     position: position,
-    positionZh: positionZh,
     phone: phone,
     visitType: visitTypes,
     customerCategory: categories,
     customerPotential: potential,
     visitPurpose: notes,
-    visitPurposeZh: notesZh,
     notes: notes,
-    notesZh: notesZh,
     equipNeeds: equipment,
     visitProgress: outcome,
-    visitProgressZh: outcomeZh,
     summary: summary,
     nextVisitDate: nextDate,
     nextVisitTarget: nextTarget,
@@ -2104,18 +2080,13 @@ async function submitMainVisitForm() {
 
 function clearVisitFormMain() {
   document.getElementById('visitHospital').value = '';
-  document.getElementById('visitHospitalZh').value = '';
   document.getElementById('visitContact').value = '';
-  document.getElementById('visitContactZh').value = '';
   document.getElementById('visitPosition').value = '';
-  document.getElementById('visitPositionZh').value = '';
   document.getElementById('visitPhone').value = '';
   document.getElementById('visitAddress').value = '';
   document.getElementById('visitNotes').value = '';
-  document.getElementById('visitNotesZh').value = '';
   document.getElementById('visitEquipment').value = '';
   document.getElementById('visitOutcome').value = '';
-  document.getElementById('visitOutcomeZh').value = '';
   document.getElementById('visitSummary').value = '';
   document.getElementById('visitPotential').value = '';
   document.getElementById('visitNextDate').value = '';
@@ -2753,7 +2724,7 @@ function getAllSalespeople() {
   // Get from local storage registered users
   const localUsers = loadLocalUsers ? loadLocalUsers() : [];
   localUsers.forEach(user => {
-    if (user.role === 'sales' && user.name && !salespeople.some(s => s.name === user.name)) {
+    if (user.role === 'sales' && user.name && String(user.status || '').toLowerCase() !== 'pending' && !salespeople.some(s => s.name === user.name)) {
       salespeople.push({ name: user.name, teamId: user.teamId || user.preferredTeam });
     }
   });
@@ -2784,6 +2755,21 @@ function initializeSalespersonDropdowns() {
       option.textContent = person.name;
       bulkSalesDropdown.appendChild(option);
     });
+  }
+  // Initialize single visit salesperson dropdown
+  const visitSalesDropdown = document.getElementById('visitSalesPerson');
+  if (visitSalesDropdown) {
+    const salespeople = getAllSalespeople();
+    visitSalesDropdown.innerHTML = '<option value="">-- 请选择 --</option>' +
+      salespeople
+        .sort((a,b) => a.name.localeCompare(b.name))
+        .map(p => `<option value="${p.name}">${p.name}</option>`)
+        .join('');
+    // If current user is sales, select their name
+    try {
+      const cu = getCurrentUser();
+      if (cu && cu.role === 'sales') visitSalesDropdown.value = cu.name;
+    } catch (e) {}
   }
 }
 
@@ -3573,46 +3559,12 @@ function openReportDetailObj(r) {
     rowFull(t('rdetCategory'), cats.join(', ')) +
     rowFull('🌡️ ' + t('vfPotential'), potentialDisplay) +
     rowFull(t('rdetOutcome'), r.visitProgress) +
+    rowFull('📝 ' + (currentLang==='zh'?'拜访总结':'Visit Summary'), r.summary || '-') +
     row(t('rdetNextDate'), r.nextVisitDate) +
     row(t('rdetNextTarget'), r.nextVisitTarget)
   );
   
-  // FACILITY SUMMARY SECTION - Show hospital summary from facility summaries storage
-  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
-  const hospitalName = r.hospitalName || r.name || '';
-  
-  // Try exact match first
-  let summaryText = facilitySummaries[hospitalName];
-  
-  if (!summaryText) {
-    // Try case-insensitive search
-    const matchingKey = Object.keys(facilitySummaries).find(key => 
-      key.toLowerCase() === hospitalName.toLowerCase()
-    );
-    if (matchingKey) {
-      summaryText = facilitySummaries[matchingKey];
-    }
-  }
-  
-  if (!summaryText) {
-    // Try fuzzy/partial match (for cases like "tersis clinics - liyu" vs "tersis clinics")
-    const hospitalNameLower = hospitalName.toLowerCase();
-    const matchingKey = Object.keys(facilitySummaries).find(key => {
-      const keyLower = key.toLowerCase();
-      // Check if either contains the other
-      return hospitalNameLower.includes(keyLower) || keyLower.includes(hospitalNameLower);
-    });
-    if (matchingKey) {
-      summaryText = facilitySummaries[matchingKey];
-    }
-  }
-  
-  if (summaryText) {
-    rightPanel += `<div class="rdet-section">
-      <div class="rdet-section-title">📝 Hospital Summary / 医院摘要</div>
-      <div style="background:#f3f4f6;border:2px solid #9ca3af;border-radius:8px;padding:16px;margin-top:12px;line-height:1.6;white-space:pre-wrap;color:#1f2937">${summaryText}</div>
-    </div>`;
-  }
+  // Facility-level summaries are intentionally not shown in the report detail per user request
   
   rightPanel += `</div>`;
 
@@ -6587,8 +6539,10 @@ async function refreshUsers() {
 function renderUsersFromLocalStorage() {
   const users = loadLocalUsers();
   console.log('All local users:', users); // Debug
-  const pending = users.filter(u => String(u.status || '').toLowerCase() === 'pending');
-  const active = users.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
+  const deleted = JSON.parse(localStorage.getItem('fremenatos_deleted_users') || '[]');
+  const visibleUsers = users.filter(u => !deleted.includes(String(u.username || '').trim()));
+  const pending = visibleUsers.filter(u => String(u.status || '').toLowerCase() === 'pending');
+  const active = visibleUsers.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
   console.log('Pending users:', pending); // Debug
   console.log('Active users:', active); // Debug
   document.getElementById('pendingCount').textContent = pending.length;
@@ -6913,6 +6867,17 @@ async function deleteUser(username) {
   const localUsers = loadLocalUsers().filter(user => user.username !== username);
   saveLocalUsers(localUsers);
   renderUsersFromLocalStorage();
+
+  // If this was a built-in user (defined in `USERS`), mark as deleted so login will be blocked
+  try {
+    if (typeof USERS !== 'undefined' && USERS[username]) {
+      const deleted = JSON.parse(localStorage.getItem('fremenatos_deleted_users') || '[]');
+      if (!deleted.includes(username)) {
+        deleted.push(username);
+        localStorage.setItem('fremenatos_deleted_users', JSON.stringify(deleted));
+      }
+    }
+  } catch (e) {}
 
   // Update salesperson dropdowns after deletion
   setTimeout(() => {

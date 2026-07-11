@@ -38,9 +38,19 @@ function getStoredUsers() {
   }
 }
 
+function getDeletedUsers() {
+  try {
+    return JSON.parse(localStorage.getItem('fremenatos_deleted_users') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
 function getUserRecord(username) {
   const normalizedUsername = String(username || '').trim().toLowerCase();
   const localUsers = getStoredUsers();
+  const deleted = getDeletedUsers();
+  if (deleted.includes(normalizedUsername)) return null;
   const localUser = localUsers.find(u => String(u.username || '').trim().toLowerCase() === normalizedUsername);
 
   if (localUser) {

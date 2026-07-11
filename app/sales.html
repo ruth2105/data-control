@@ -528,10 +528,7 @@ function logout() {
         <datalist id="hospitalDatalist"></datalist>
       </div>
 
-      <div style="margin-bottom:12px">
-        <label class="vf-label">医院名称（中文）/ Hospital Name (中文)</label>
-        <input class="vf-input" type="text" id="visitHospitalZh" placeholder="输入医院中文名称…">
-      </div>
+      <!-- Removed duplicate hospital name (Chinese) field to avoid confusion -->
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
@@ -539,8 +536,7 @@ function logout() {
           <input class="vf-input" type="text" id="visitContact" placeholder="姓名">
         </div>
         <div>
-          <label class="vf-label">被访人（中文）/ Contact Person (中文)</label>
-          <input class="vf-input" type="text" id="visitContactZh" placeholder="中文姓名">
+          <!-- Removed duplicate Chinese contact field -->
         </div>
       </div>
 
@@ -550,8 +546,7 @@ function logout() {
           <input class="vf-input" type="text" id="visitPosition" placeholder="如: Lab Head, Medical Director">
         </div>
         <div>
-          <label class="vf-label">职位（中文）/ Position (中文)</label>
-          <input class="vf-input" type="text" id="visitPositionZh" placeholder="中文职位">
+          <!-- Removed duplicate Chinese position field -->
         </div>
       </div>
 
@@ -582,10 +577,7 @@ function logout() {
         <textarea class="vf-textarea" id="visitNotes" rows="3" placeholder="讨论了什么？推广了什么产品？" style="font-family:monospace"></textarea>
       </div>
 
-      <div style="margin-bottom:12px">
-        <label class="vf-label">讨论内容（中文）/ Discussion Notes (中文)</label>
-        <textarea class="vf-textarea" id="visitNotesZh" rows="3" placeholder="中文讨论内容" style="font-family:monospace"></textarea>
-      </div>
+      <!-- Removed Chinese discussion notes field -->
 
       <div style="margin-bottom:12px">
         <label class="vf-label">现有设备 / Current Equipment in Use</label>
@@ -597,10 +589,7 @@ function logout() {
         <textarea class="vf-textarea" id="visitOutcome" rows="3" placeholder="拜访取得了什么结果？客户有什么反馈？" style="font-family:monospace"></textarea>
       </div>
 
-      <div style="margin-bottom:12px">
-        <label class="vf-label">拜访结果（中文）/ Outcome (中文)</label>
-        <textarea class="vf-textarea" id="visitOutcomeZh" rows="3" placeholder="中文拜访结果" style="font-family:monospace"></textarea>
-      </div>
+      <!-- Removed Chinese outcome field -->
 
       <div style="margin-bottom:12px;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px">
         <label class="vf-label" style="color:#92400e;font-size:1rem">📝 拜访总结 / Visit Summary</label>
@@ -759,9 +748,6 @@ function logout() {
               <label class="vf-label">业务员 / Salesperson</label>
               <select class="vf-select" id="bulkSalesPerson">
                 <option value="">-- 请选择 --</option>
-                <option>Ephrata</option>
-                <option>Kalkidan</option>
-                <option>Tizita</option>
               </select>
             </div>
             <div>
@@ -1896,6 +1882,14 @@ async function importBulkData() {
       customerCategory: [],
       action: 'insert'
     };
+    // If importer is a sales user, attach teamId so reports are visible to the team
+    try {
+      const _user = getCurrentUser();
+      if (_user && _user.role === 'sales' && _user.teamId) {
+        reportData.teamId = _user.teamId;
+        reportData.salesPerson = reportData.salesPerson || normalizeSalesName(_user.name);
+      }
+    } catch (e) {}
     
     try {
       await saveVisitReportLocal(reportData);
@@ -1919,18 +1913,14 @@ async function submitSingleVisit() {
   const salesPerson = document.getElementById('visitSalesPerson').value;
   const date = document.getElementById('visitDate').value;
   const hospitalName = document.getElementById('visitHospital').value.trim();
-  const hospitalNameZh = document.getElementById('visitHospitalZh').value.trim();
+  // Removed Chinese hospital name field
   const contact = document.getElementById('visitContact').value.trim();
-  const contactZh = document.getElementById('visitContactZh').value.trim();
   const position = document.getElementById('visitPosition').value.trim();
-  const positionZh = document.getElementById('visitPositionZh').value.trim();
   const phone = document.getElementById('visitPhone').value.trim();
   const address = document.getElementById('visitAddress').value.trim();
   const notes = document.getElementById('visitNotes').value.trim();
-  const notesZh = document.getElementById('visitNotesZh').value.trim();
   const equipment = document.getElementById('visitEquipment').value.trim();
   const outcome = document.getElementById('visitOutcome').value.trim();
-  const outcomeZh = document.getElementById('visitOutcomeZh').value.trim();
   const summary = document.getElementById('visitSummary').value.trim();
   const potential = document.getElementById('visitPotential').value;
   const nextDate = document.getElementById('visitNextDate').value;
@@ -1971,29 +1961,34 @@ async function submitSingleVisit() {
     fillDate: date,
     salesPerson: salesPerson,
     hospitalName: hospitalName,
-    hospitalNameZh: hospitalNameZh,
     hospitalAddress: address,
     visitingName: contact,
-    visitingNameZh: contactZh,
     position: position,
-    positionZh: positionZh,
     phone: phone,
     visitType: visitTypes,
     customerCategory: categories,
     customerPotential: potential,
     visitPurpose: notes,
-    visitPurposeZh: notesZh,
     notes: notes,  // Save discussion notes to notes field (for summary display)
-    notesZh: notesZh,
     equipNeeds: equipment,
     visitProgress: outcome,
-    visitProgressZh: outcomeZh,
     summary: summary,  // Save the dedicated summary field
     nextVisitDate: nextDate,
     nextVisitTarget: nextTarget,
     orders: orders,
     action: 'insert'
   };
+
+  // If the current user is a sales user, attach their teamId and prefer their registered name
+  try {
+    const _user = getCurrentUser();
+    if (_user && _user.role === 'sales' && _user.teamId) {
+      reportData.teamId = _user.teamId;
+      reportData.salesPerson = reportData.salesPerson || normalizeSalesName(_user.name);
+    }
+  } catch (e) {
+    // ignore if getCurrentUser not available
+  }
 
   statusDiv.style.display = 'block';
   statusDiv.style.background = '#eff6ff';
@@ -2036,18 +2031,13 @@ function addOrderRow() {
 
 function clearVisitForm() {
   document.getElementById('visitHospital').value = '';
-  document.getElementById('visitHospitalZh').value = '';
   document.getElementById('visitContact').value = '';
-  document.getElementById('visitContactZh').value = '';
   document.getElementById('visitPosition').value = '';
-  document.getElementById('visitPositionZh').value = '';
   document.getElementById('visitPhone').value = '';
   document.getElementById('visitAddress').value = '';
   document.getElementById('visitNotes').value = '';
-  document.getElementById('visitNotesZh').value = '';
   document.getElementById('visitEquipment').value = '';
   document.getElementById('visitOutcome').value = '';
-  document.getElementById('visitOutcomeZh').value = '';
   document.getElementById('visitSummary').value = '';
   document.getElementById('visitPotential').value = '';
   document.getElementById('visitNextDate').value = '';
@@ -2071,7 +2061,8 @@ function clearVisitForm() {
 }
 
 // ===================== VISIT FORM =====================
-const SCRIPT_URL = '/.netlify/functions/proxy';
+// Guard SCRIPT_URL to avoid duplicate global declarations when multiple scripts load
+window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
 const salesColors = {
   'Ephrata':  '#6366f1',
   'Kalkidan': '#0e9f6e',
@@ -2381,7 +2372,7 @@ function getTeamSalesMembers() {
   const allUsers = { ...USERS };
   const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
   localUsers.forEach(u => {
-    if (u && u.username) {
+    if (u && u.username && String(u.status || '').toLowerCase() !== 'pending') {
       allUsers[u.username] = u;
     }
   });
@@ -2403,7 +2394,7 @@ function populateSalesFilter() {
   const allUsers = { ...USERS };
   const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
   localUsers.forEach(u => {
-    if (u && u.username) allUsers[u.username] = u;
+    if (u && u.username && String(u.status || '').toLowerCase() !== 'pending') allUsers[u.username] = u;
   });
 
   const salesUsers = Object.values(allUsers)
@@ -2440,7 +2431,7 @@ function setupVisitForm() {
   if (salesSelect) {
     const allUsers = { ...USERS };
     const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-    localUsers.forEach(u => { if (u && u.username) allUsers[u.username] = u; });
+    localUsers.forEach(u => { if (u && u.username && String(u.status || '').toLowerCase() !== 'pending') allUsers[u.username] = u; });
 
     const salesNames = Object.values(allUsers)
       .filter(u => u.role === 'sales')
@@ -2459,6 +2450,16 @@ function setupVisitForm() {
     if (user && user.role === 'sales') {
       const currentName = normalizeSalesName(user.name);
       salesSelect.value = currentName;
+    }
+
+    // Populate bulk import salesperson select as well (dynamic list of registered sales users)
+    const bulkSelect = document.getElementById('bulkSalesPerson');
+    if (bulkSelect) {
+      bulkSelect.innerHTML = `<option value="">-- 请选择 --</option>${options.join('')}`;
+      if (user && user.role === 'sales' && user.teamId && !options.includes(normalizeSalesName(user.name))) {
+        bulkSelect.insertAdjacentHTML('beforeend', `<option value="${normalizeSalesName(user.name)}">${normalizeSalesName(user.name)}</option>`);
+      }
+      if (user && user.role === 'sales') bulkSelect.value = normalizeSalesName(user.name);
     }
   }
 
@@ -3373,42 +3374,7 @@ function openReportDetailObj(r) {
     row(t('rdetNextTarget'), r.nextVisitTarget)
   );
   
-  // FACILITY SUMMARY SECTION - Show hospital summary from facility summaries storage
-  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
-  const hospitalName = r.hospitalName || r.name || '';
-  
-  // Try exact match first
-  let summaryText = facilitySummaries[hospitalName];
-  
-  if (!summaryText) {
-    // Try case-insensitive search
-    const matchingKey = Object.keys(facilitySummaries).find(key => 
-      key.toLowerCase() === hospitalName.toLowerCase()
-    );
-    if (matchingKey) {
-      summaryText = facilitySummaries[matchingKey];
-    }
-  }
-  
-  if (!summaryText) {
-    // Try fuzzy/partial match (for cases like "tersis clinics - liyu" vs "tersis clinics")
-    const hospitalNameLower = hospitalName.toLowerCase();
-    const matchingKey = Object.keys(facilitySummaries).find(key => {
-      const keyLower = key.toLowerCase();
-      // Check if either contains the other
-      return hospitalNameLower.includes(keyLower) || keyLower.includes(hospitalNameLower);
-    });
-    if (matchingKey) {
-      summaryText = facilitySummaries[matchingKey];
-    }
-  }
-  
-  if (summaryText) {
-    rightPanel += `<div class="rdet-section">
-      <div class="rdet-section-title">📝 Hospital Summary / 医院摘要</div>
-      <div style="background:#f3f4f6;border:2px solid #9ca3af;border-radius:8px;padding:16px;margin-top:12px;line-height:1.6;white-space:pre-wrap;color:#1f2937">${summaryText}</div>
-    </div>`;
-  }
+  // Facility-level summaries are intentionally not shown in the report detail per user request
   
   rightPanel += `</div>`;
 

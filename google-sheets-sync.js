@@ -2,7 +2,7 @@
 // This module provides cross-device synchronization using Google Sheets
 // NOTE: Sync disabled due to CORS issues with Google Apps Script
 
-const SCRIPT_URL = '/.netlify/functions/proxy';
+window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
 const SYNC_ENABLED = true;
 
 // Data type constants

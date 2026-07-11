@@ -1,7 +1,7 @@
 // Google Sheets API Client for Hospital Management System
 // This replaces localStorage with Google Sheets backend
 
-const SCRIPT_URL = '/.netlify/functions/proxy';
+window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
 
 // Generic GET request helper
 async function apiGet(action, params = {}) {
