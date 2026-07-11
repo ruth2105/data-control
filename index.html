@@ -7509,6 +7509,61 @@ function closeTabMenu() {
     console.warn('Strict reassignment failed:', e);
   }
 })();
+
+// Manual mapping: reassign specific report authors to registered users by exact name/username
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_manual_mapping_done')) return;
+    const mapKeys = ['ephrata','tizu27fremnatos','tizita','kal','kalkidan','tsega'];
+    const users = JSON.parse(localStorage.getItem('fremenatos_users') || '[]');
+    if (!Array.isArray(users) || users.length === 0) return;
+    const reportsKey = 'fremenatos_visitReports';
+    const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+    if (!Array.isArray(reports) || reports.length === 0) return;
+
+    // Backup
+    const now = Date.now();
+    localStorage.setItem(reportsKey + '_manual_backup_' + now, JSON.stringify(reports));
+
+    // Build lookup for known map keys to user objects (exact match on username/name/nameZh)
+    const lookup = {};
+    mapKeys.forEach(k => {
+      const key = (k||'').toLowerCase();
+      const found = users.find(u => [u.username, u.name, u.nameZh].some(v => (v||'').toLowerCase() === key));
+      if (found) lookup[key] = found;
+    });
+
+    // Apply mapping: for each report, if any source field contains a map key as whole word, assign to that user
+    let changed = 0;
+    const fields = ['username','salesPerson','salesperson','salesName','reportedBy','contactPerson','contact'];
+    reports.forEach(r => {
+      const text = fields.map(f => (r[f]||'').toString().toLowerCase()).join(' ');
+      for (const k of Object.keys(lookup)) {
+        const re = new RegExp('\\b' + k.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&') + '\\b','i');
+        if (re.test(text)) {
+          const u = lookup[k];
+          if (u && u.username && r.username !== u.username) {
+            r.username = u.username;
+            if (u.teamId) r.teamId = u.teamId;
+            changed++;
+          }
+          break;
+        }
+      }
+    });
+
+    if (changed>0) {
+      localStorage.setItem(reportsKey, JSON.stringify(reports));
+      console.log('Manual mapping reassigned', changed, 'reports. Backup:', reportsKey + '_manual_backup_' + now);
+    } else {
+      console.log('Manual mapping made no changes. Backup saved at', reportsKey + '_manual_backup_' + now);
+    }
+
+    localStorage.setItem('fremenatos_manual_mapping_done','1');
+  } catch (e) {
+    console.warn('Manual mapping failed:', e);
+  }
+})();
 </script>
 </body>
 </html>
