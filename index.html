@@ -2923,9 +2923,14 @@ function displayReports(reports) {
     // 🔒 ACCESS CONTROL: Sales users see their own reports and their team's reports; admin sees all reports
     let matchUser = true;
     if (currentUser && currentUser.role === 'sales' && currentUser.teamId) {
-      const isOwnReport = (r.username && currentUser.username && r.username === currentUser.username);
-      const isTeamReport = reportTeamId == currentUser.teamId;
-      matchUser = isOwnReport || isTeamReport;
+      // If report has an explicit username and it's not the current user, only show it if team matches
+      if (r.username && currentUser.username && r.username !== currentUser.username) {
+        matchUser = reportTeamId == currentUser.teamId;
+      } else {
+        const isOwnReport = (r.username && currentUser.username && r.username === currentUser.username);
+        const isTeamReport = reportTeamId == currentUser.teamId;
+        matchUser = isOwnReport || isTeamReport;
+      }
     }
     
     return matchSearch && matchSales && matchCat && matchPotential && matchTeam && matchUser;
