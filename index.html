@@ -6498,13 +6498,8 @@ async function refreshUsers() {
     const pending = normalizedUsers.filter(u => String(u.status || '').toLowerCase() === 'pending');
     const active = normalizedUsers.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
     
-    // Count salespeople from auth.js
-    let authSalesCount = 0;
-    if (typeof USERS !== 'undefined') {
-      authSalesCount = Object.values(USERS).filter(u => u.role === 'sales').length;
-    }
-    
-    const totalActive = active.length + authSalesCount;
+    // Count only admin-approved local active users (do not include built-in USERS)
+    const totalActive = active.length;
     const remaining = MAX_SALESPEOPLE - totalActive;
     
     document.getElementById('pendingCount').textContent = pending.length;
@@ -6519,13 +6514,8 @@ async function refreshUsers() {
     const pending = users.filter(u => String(u.status || '').toLowerCase() === 'pending');
     const active = users.filter(u => String(u.status || '').toLowerCase() === 'active' && (u.role === 'sales' || !u.role));
 
-    // Count salespeople from auth.js
-    let authSalesCount = 0;
-    if (typeof USERS !== 'undefined') {
-      authSalesCount = Object.values(USERS).filter(u => u.role === 'sales').length;
-    }
-    
-    const totalActive = active.length + authSalesCount;
+    // Count only admin-approved local active users (do not include built-in USERS)
+    const totalActive = active.length;
     const remaining = MAX_SALESPEOPLE - totalActive;
 
     document.getElementById('pendingCount').textContent = pending.length;
@@ -6683,13 +6673,8 @@ async function approveUser(username, preferredTeam = null) {
     String(u.status || '').toLowerCase() === 'active'
   ).length;
   
-  // Also count salespeople from auth.js USERS object
-  let authSalesCount = 0;
-  if (typeof USERS !== 'undefined') {
-    authSalesCount = Object.values(USERS).filter(u => u.role === 'sales').length;
-  }
-  
-  const totalSalesCount = activeSalesCount + authSalesCount;
+  // Total sales count uses only approved local users (start from 0)
+  const totalSalesCount = activeSalesCount;
   
   // Check if adding this user would exceed the limit
   const selectedUser = existingUsers.find(user => user.username === username);
