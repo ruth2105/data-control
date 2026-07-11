@@ -7627,6 +7627,70 @@ function closeTabMenu() {
     console.warn('Auto-restore failed', e);
   }
 })();
+
+// One-time: enforce correct team assignments for known users and update reports
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_team_fix_done')) return;
+    const usersKey = 'fremenatos_users';
+    const reportsKey = 'fremenatos_visitReports';
+    const users = JSON.parse(localStorage.getItem(usersKey) || '[]');
+    if (!Array.isArray(users) || users.length === 0) {
+      localStorage.setItem('fremenatos_team_fix_done','1');
+      return;
+    }
+
+    // Desired mapping from your message
+    const desired = {
+      'tizita': 2,
+      'tizu27fremnatos': 2,
+      'ephrata': 3,
+      'tsega': 1,
+      'kal': 2,
+      'kalkidan': 2
+    };
+
+    let updated = 0;
+    const updatedUsers = users.map(u => {
+      const key = (u.username||'').toLowerCase();
+      if (desired[key] && Number(u.teamId) !== Number(desired[key])) {
+        updated++;
+        return { ...u, teamId: Number(desired[key]) };
+      }
+      return u;
+    });
+
+    if (updated>0) {
+      localStorage.setItem(usersKey, JSON.stringify(updatedUsers));
+      console.log('Team fix: updated', updated, 'user teamIds');
+    }
+
+    // Update reports so username -> teamId
+    const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+    if (Array.isArray(reports) && reports.length>0) {
+      let changed = 0;
+      reports.forEach(r => {
+        const uname = (r.username||'').toLowerCase();
+        if (desired[uname] && Number(r.teamId) !== Number(desired[uname])) {
+          r.teamId = Number(desired[uname]);
+          changed++;
+        }
+      });
+      if (changed>0) {
+        // backup and save
+        const now = Date.now();
+        localStorage.setItem(reportsKey + '_teamfix_backup_' + now, JSON.stringify(reports));
+        localStorage.setItem(reportsKey, JSON.stringify(reports));
+        console.log('Team fix: updated', changed, 'reports and backed up to', reportsKey + '_teamfix_backup_' + now);
+      }
+    }
+
+    localStorage.setItem('fremenatos_team_fix_done','1');
+    // Refresh UI if possible
+    try { if (typeof refreshUsers === 'function') refreshUsers(); } catch(e){}
+    try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
+  } catch(e) { console.warn('Team fix failed', e); }
+})();
 </script>
 </body>
 </html>
