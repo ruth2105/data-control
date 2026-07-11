@@ -2920,10 +2920,12 @@ function displayReports(reports) {
     const reportTeamId = r.teamId || getTeamIdBySalesperson(r.salesPerson);
     const matchTeam = !filterTeam || reportTeamId == filterTeam;
     
-    // 🔒 ACCESS CONTROL: Sales users can only see their own team's reports; admin sees all reports
+    // 🔒 ACCESS CONTROL: Sales users see their own reports and their team's reports; admin sees all reports
     let matchUser = true;
     if (currentUser && currentUser.role === 'sales' && currentUser.teamId) {
-      matchUser = reportTeamId == currentUser.teamId;
+      const isOwnReport = (r.username && currentUser.username && r.username === currentUser.username);
+      const isTeamReport = reportTeamId == currentUser.teamId;
+      matchUser = isOwnReport || isTeamReport;
     }
     
     return matchSearch && matchSales && matchCat && matchPotential && matchTeam && matchUser;
@@ -6692,8 +6694,24 @@ async function approveUser(username, preferredTeam = null) {
     teamId = Number(teamInput);
   }
   
-  const normalizedTeamId = Number.isFinite(teamId) && teamId >= 1 && teamId <= 6 ? teamId : 1;
-  
+  let normalizedTeamId = Number.isFinite(teamId) && teamId >= 1 && teamId <= 6 ? teamId : 1;
+
+  // Warn if the chosen team appears full and allow admin to pick another team
+  const TEAM_COUNT = existingUsers.filter(u => u.role === 'sales' && String(u.status||'').toLowerCase() === 'active' && u.teamId === normalizedTeamId).length;
+  const TEAM_LIMIT = Math.max(1, Math.ceil(MAX_SALESPEOPLE / 6));
+  if (TEAM_COUNT >= TEAM_LIMIT) {
+    const proceed = confirm(`⚠️ Team ${normalizedTeamId} currently has ${TEAM_COUNT} active sales (recommended limit ${TEAM_LIMIT}).\n\nDo you still want to assign ${username} to Team ${normalizedTeamId}? Choose Cancel to pick another team.`);
+    if (!proceed) {
+      const newTeamInput = prompt(`Enter a different team number for ${selectedUser.name} (1-6), or leave blank to cancel:`);
+      const newTeam = Number(newTeamInput);
+      if (!Number.isFinite(newTeam) || newTeam < 1 || newTeam > 6) {
+        alert('Assignment cancelled. No changes made.');
+        return;
+      }
+      normalizedTeamId = newTeam;
+    }
+  }
+
   if (!confirm(`Approve ${username} and assign to Team ${normalizedTeamId}?`)) return;
 
   const approvedUser = {
