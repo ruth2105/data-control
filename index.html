@@ -6500,6 +6500,10 @@ async function refreshUsers() {
       const users = await syncUsers();
       normalizedUsers = Array.isArray(users) ? users : [];
     }
+
+    // Preserve any local edits that are not present in the remote sync result
+    const localUsers = loadLocalUsers();
+    normalizedUsers = mergeUsers(normalizedUsers, localUsers);
     saveLocalUsers(normalizedUsers);
 
     const pending = normalizedUsers.filter(u => String(u.status || '').toLowerCase() === 'pending');
