@@ -7345,20 +7345,37 @@ function closeTabMenu() {
 (function(){
   try {
     if (localStorage.getItem('fremenatos_builtin_converted')) return;
-    const builtins = ['sales1','sales2','sales3'];
     const LOCAL_KEY = 'fremenatos_users';
     const DEL_KEY = 'fremenatos_deleted_users';
     const local = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
     const deleted = JSON.parse(localStorage.getItem(DEL_KEY) || '[]');
     let added = 0, blocked = 0;
-    builtins.forEach(uname => {
-      const exists = local.find(u => String(u.username||'').toLowerCase() === uname.toLowerCase());
+
+    const source = (typeof window.USERS !== 'undefined') ? window.USERS : {
+      sales1:{name:'Ephrata',nameZh:'Ephrata',role:'sales',teamId:1},
+      sales2:{name:'Kalkidan',nameZh:'Kalkidan',role:'sales',teamId:2},
+      sales3:{name:'Tizita',nameZh:'Tizita',role:'sales',teamId:3}
+    };
+
+    Object.entries(source).forEach(([uname,u]) => {
+      if (!u || String(u.role||'').toLowerCase() !== 'sales') return;
+      const username = String(uname||'').trim();
+      const exists = local.find(x => String(x.username||'').trim().toLowerCase() === username.toLowerCase());
       if (!exists) {
-        local.push({ username: uname, name: uname, nameZh: '', role: 'sales', teamId: null, status: 'pending', password: '' });
+        local.push({
+          username: username,
+          name: u.name || username,
+          nameZh: u.nameZh || '',
+          role: 'sales',
+          teamId: u.teamId ?? null,
+          status: 'pending',
+          password: '123456'
+        });
         added++;
       }
-      if (!deleted.includes(uname)) { deleted.push(uname); blocked++; }
+      if (!deleted.includes(username)) { deleted.push(username); blocked++; }
     });
+
     if (added>0 || blocked>0) {
       localStorage.setItem(LOCAL_KEY, JSON.stringify(local));
       localStorage.setItem(DEL_KEY, JSON.stringify(deleted));
