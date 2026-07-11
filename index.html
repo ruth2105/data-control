@@ -7785,6 +7785,59 @@ function closeTabMenu() {
     try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
   } catch (e) { console.warn('ephratas->ephrata fix failed', e); }
 })();
+
+// One-time: dedupe Tizita accounts (keep longest name, remove shorter duplicate(s))
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_dedupe_tizita')) return;
+    const usersKey = 'fremenatos_users';
+    const reportsKey = 'fremenatos_visitReports';
+    const users = JSON.parse(localStorage.getItem(usersKey) || '[]');
+    if (!Array.isArray(users) || users.length === 0) { localStorage.setItem('fremenatos_dedupe_tizita','1'); return; }
+
+    const candidates = users.filter(u => (u.name||'').toLowerCase().includes('tizita'));
+    if (candidates.length < 2) { localStorage.setItem('fremenatos_dedupe_tizita','1'); return; }
+
+    // Choose primary as the one with the longest name
+    candidates.sort((a,b) => (b.name||'').length - (a.name||'').length);
+    const primary = candidates[0];
+    const toRemove = candidates.slice(1);
+
+    // Backup users
+    const nowUsers = Date.now();
+    localStorage.setItem(usersKey + '_dedupe_tizita_users_backup_' + nowUsers, JSON.stringify(users));
+
+    // Update reports: reassign any reports owned by removed usernames to primary
+    const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+    let changed = 0;
+    reports.forEach(r => {
+      const uname = (r.username||'').toLowerCase();
+      toRemove.forEach(rem => {
+        if (uname === (rem.username||'').toLowerCase()) {
+          r.username = primary.username;
+          r.teamId = primary.teamId || primary.preferredTeam || r.teamId;
+          changed++;
+        }
+      });
+    });
+
+    if (changed > 0) {
+      const nowReports = Date.now();
+      localStorage.setItem(reportsKey + '_dedupe_tizita_backup_' + nowReports, JSON.stringify(reports));
+      localStorage.setItem(reportsKey, JSON.stringify(reports));
+      console.log('Dedupe Tizita: reassigned', changed, 'reports to', primary.username);
+    }
+
+    // Remove duplicate users
+    const remaining = users.filter(u => !toRemove.some(r => (r.username||'').toLowerCase() === (u.username||'').toLowerCase()));
+    localStorage.setItem(usersKey, JSON.stringify(remaining));
+    localStorage.setItem('fremenatos_dedupe_tizita','1');
+    try { if (typeof refreshUsers === 'function') refreshUsers(); } catch(e){}
+    try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
+  } catch (e) {
+    console.warn('Dedupe Tizita failed:', e);
+  }
+})();
 </script>
 </body>
 </html>
