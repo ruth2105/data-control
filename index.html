@@ -11,17 +11,17 @@
     const localData = localStorage.getItem('userSession');
     const sessionData = sessionStorage.getItem('userSession');
     const session = localData ? JSON.parse(localData) : (sessionData ? JSON.parse(sessionData) : null);
-    
+
     if (!session || !session.username || !session.role) {
       // Clear invalid sessions
       localStorage.removeItem('userSession');
       sessionStorage.removeItem('userSession');
       // Force redirect to login
-      window.location.replace('login.html');
+      window.location.replace('login.html?v=20260711');
     }
-  } catch(e) {
+  } catch (e) {
     // If any error, redirect to login
-    window.location.replace('login.html');
+    window.location.replace('login.html?v=20260711');
   }
 })();
 </script>
@@ -41,8 +41,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .header{background:linear-gradient(135deg,#1a56db 0%,#1e40af 100%);color:#fff;padding:0}
 .header-inner{max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:16px}
 .logo-circle{width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;border:2px solid rgba(255,255,255,0.4);flex-shrink:0}
+.header-text{min-width:0}
 .header-text h1{font-size:1.5rem;font-weight:800;letter-spacing:.5px}
 .header-text p{font-size:.85rem;opacity:.8;margin-top:2px}
+.header-actions{display:flex;align-items:center;gap:16px;margin-left:auto}
 /* STATS BAR */
 .stats-bar{background:#1a56db;border-top:1px solid rgba(255,255,255,0.15)}
 .stats-inner{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;gap:24px;flex-wrap:wrap}
@@ -231,48 +233,63 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .del-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;margin-top:12px;transition:background .2s}
 .del-btn:hover{background:#fecaca}
 /* RESPONSIVE */
-@media(max-width:640px){
-  .vf-grid,.vf-grid-3{grid-template-columns:1fr}
-  .vf-full{grid-column:1}
-  .rdet-grid{grid-template-columns:1fr}
-  .rdet-full{grid-column:1}
-  .vf-submit-btn{padding:12px;font-size:0.95rem}
-  .order-row{grid-template-columns:1fr !important}
-  .order-row button{width:100%;margin-top:8px !important}
-  .vf-card{padding:16px;margin-bottom:16px}
-  .vf-title{font-size:1rem;margin-bottom:12px}
-  .vf-label{font-size:0.7rem}
-  .vf-input,.vf-select,.vf-textarea{font-size:0.85rem;padding:8px 10px}
-  .vf-checkbox-label{font-size:0.8rem;padding:4px 8px}
-  .tabs{flex-wrap:nowrap;overflow-x:auto;padding:4px;justify-content:space-between}
+@media (max-width: 900px) {
+  .header-inner{padding:16px 16px;gap:12px;align-items:flex-start}
+  .header-text h1{font-size:1.2rem}
+  .header-text p{font-size:0.8rem}
+  .main{padding:16px}
+  .stats-inner{gap:8px;padding:10px 16px}
+  .filters{padding:12px}
+  .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+}
+@media (max-width: 680px) {
+  body{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  .header-inner{flex-wrap:wrap;padding:14px 12px}
+  .header-text{flex:1 1 100%}
+  .header-text h1{font-size:1.03rem;line-height:1.25}
+  .header-text p{font-size:0.72rem}
+  .lang-toggle{margin-left:0;width:100%;justify-content:flex-end}
+  .header-actions{width:100%;margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+  .header-actions > div,.header-actions button{flex:1 1 calc(50% - 4px);min-width:0}
+  .header-actions > div{padding:8px 10px;text-align:left}
+  .header-actions button{padding:8px 12px;font-size:0.82rem}
+  .main{padding:12px}
+  .tabs{padding:4px;border-radius:14px}
   .tabs-container{display:none}
   .tab-menu-toggle{display:block}
-  .tab-btn{padding:8px 12px;font-size:0.8rem;min-width:80px;white-space:nowrap;flex:1}
+  .tab-btn{padding:8px 10px;font-size:0.78rem;min-width:76px}
+  .filters{display:grid;gap:10px;align-items:stretch;padding:12px}
+  .search-wrap{min-width:100%}
+  .filter-group{width:100%;display:flex;flex-wrap:wrap}
+  .filter-btn{flex:1 1 calc(50% - 6px);justify-content:center}
+  .stats-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 12px}
+  .stat-item{background:rgba(255,255,255,.12);border-radius:999px;padding:6px 8px;font-size:0.72rem}
+  .stat-item strong{font-size:0.9rem}
+  .cards-grid{grid-template-columns:1fr;gap:12px}
+  .hospital-card{padding:14px}
+  .card-products-row{flex-direction:column;align-items:flex-start}
+  .card-badges{gap:4px}
+  .modal-overlay{padding:10px}
+  .modal-header,.modal-body,.modal-actions{padding:16px}
+  .modal-info-grid,.edit-fields-grid,.vf-grid,.vf-grid-3,.rdet-grid{grid-template-columns:1fr}
+  .modal-split{grid-template-columns:1fr;gap:0}
+  .modal-panel-left{border-right:none;border-bottom:2px solid #10b981;box-shadow:none;order:1}
+  .modal-panel-right{order:2}
+  .vf-full,.rdet-full,.edit-section,.vf-section-divider{grid-column:1}
+  .vf-card{padding:14px;margin-bottom:14px}
+  .vf-title{font-size:1rem;margin-bottom:12px}
+  .vf-label{font-size:0.68rem}
+  .vf-input,.vf-select,.vf-textarea{font-size:0.84rem;padding:8px 10px}
+  .vf-checkbox-label{font-size:0.78rem;padding:4px 8px}
+  .rep-card{padding:12px 14px;gap:10px}
+  .rep-filters{display:grid;grid-template-columns:1fr;gap:8px}
+  .rep-search,.rep-select{min-width:100%}
 }
 /* LANG TOGGLE */
 .lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
 .lang-btn{padding:6px 14px;border-radius:20px;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
 .lang-btn.active{background:rgba(255,255,255,.25);border-color:#fff}
 .lang-btn:hover:not(.active){background:rgba(255,255,255,.1)}
-/* RESPONSIVE */
-@media(max-width:640px){
-  .header-inner{padding:12px 12px;gap:8px;flex-wrap:wrap}
-  .header-text h1{font-size:1rem}
-  .header-text p{font-size:0.7rem}
-  .main{padding:12px}
-  .cards-grid{grid-template-columns:1fr}
-  .modal-info-grid{grid-template-columns:1fr}
-  .modal-split{grid-template-columns:1fr;gap:0}
-  .modal-panel-left{border-right:none;border-bottom:2px solid #10b981;box-shadow:none;order:1}
-  .modal-panel-right{order:2}
-  .edit-fields-grid{grid-template-columns:1fr}
-  .filters{padding:12px;flex-direction:column}
-  .filter-group{width:100%}
-  .search-wrap{min-width:100%}
-  .stats-inner{gap:8px;padding:8px 12px}
-  .stat-item{font-size:0.7rem}
-  .stat-item strong{font-size:0.9rem}
-}
 /* Real-time sync pulse animation */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -293,7 +310,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
       <button class="lang-btn active" onclick="setLang('zh')" id="btn-zh">中文</button>
     </div>
-    <div style="display:flex;align-items:center;gap:16px">
+    <div class="header-actions">
       <div style="text-align:right;cursor:pointer;padding:8px 12px;border-radius:6px;transition:background 0.2s" onclick="openPasswordChangeModal()" title="Click to change password">
         <div style="font-size:0.9rem;font-weight:600" id="userName">Administrator</div>
         <div style="font-size:0.75rem;opacity:0.8" id="userRole">Admin</div>
@@ -706,6 +723,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
   <!-- USER MANAGEMENT PAGE -->
   <div id="page-users" class="page">
     <!-- CHANGE PASSWORD SECTION -->
+    <div id="adminPasswordNotice" style="display:none;margin-bottom:12px;padding:12px 14px;border-radius:10px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-size:0.9rem;font-weight:700"></div>
     <div class="vf-card" style="border:2px solid #6366f1;background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);margin-bottom:20px">
       <h3 style="font-size:1.1rem;font-weight:800;color:#6366f1;margin-bottom:16px;display:flex;align-items:center;gap:8px">
         🔐 Change Admin Password
@@ -824,7 +842,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
               </div>
               <div class="edit-fields-grid">
                 <div class="vf-group vf-full"><label class="vf-label" data-lkey="ceNameEn"></label><input class="vf-input" name="name" required></div>
-                <div class="vf-group vf-full"><label class="vf-label" data-lkey="ceNameZh"></label><input class="vf-input" name="nameZh"></div>
                 <div class="vf-group"><label class="vf-label" data-lkey="ceCity"></label><input class="vf-input" name="city" required list="cityList"></div>
                 <div class="vf-group"><label class="vf-label">Specialty</label><input class="vf-input" name="specialty" placeholder="e.g., General, Cardiology"></div>
                 <div class="vf-group"><label class="vf-label">专科</label><input class="vf-input" name="specialtyZh" placeholder="例如：综合、心脏科"></div>
@@ -1006,6 +1023,33 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 // ===================== AUTHENTICATION CHECK =====================
 let currentUser = null;
 
+function changePassword(event) {
+  event.preventDefault();
+
+  const currentPassword = document.getElementById('currentPassword').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+
+  if (!newPassword || newPassword.length < 6) {
+    alert('New password must be at least 6 characters');
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    alert('New passwords do not match');
+    return;
+  }
+
+  const result = changeCurrentUserPassword(currentPassword, newPassword);
+  if (!result.success) {
+    alert(result.message || 'Password change failed');
+    return;
+  }
+
+  alert('✅ Password changed successfully. Please log in again.');
+  logout();
+}
+
 // Clear session function
 function clearSession() {
   localStorage.removeItem('userSession');
@@ -1047,16 +1091,6 @@ if (currentUser && currentUser.role === 'admin') {
   if (usersTab) {
     usersTab.style.display = 'block';
   }
-  
-  // Hide Visit Form tab for admin (only sales team needs to create reports)
-  const formTab = document.getElementById('tab-form');
-  if (formTab) {
-    formTab.style.display = 'none';
-  }
-  const formTabMobile = document.getElementById('tab-form-mobile');
-  if (formTabMobile) {
-    formTabMobile.style.display = 'none';
-  }
 }
 
 // ===================== CITY MAP (English → Chinese) =====================
@@ -1081,10 +1115,10 @@ const cityZhMap = {
 };
 
 function cityZh(city) { return cityZhMap[city] || city; }
-function hn(h) { return h.nameZh || h.name; }
+function hn(h) { return h.name || h.nameZh || ''; }
 function hc(h) { return cityZh(h.city) || h.city; }
 function hRole(c) { return c.roleZh || c.role; }
-function hName(c) { return c.nameZh || c.name; }
+function hName(c) { return c.name || c.nameZh || ''; }
 function hStock(h) { return h.stockZh || h.stock; }
 function hOrder(h) { return h.orderZh || h.order; }
 function hDoctors(h) { return h.doctorsZh || h.doctors; }
@@ -1213,7 +1247,7 @@ async function openCustomerEdit(type, id) {
   
   document.getElementById('editType').value = actualType;
   document.getElementById('editId').value = id;
-  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (currentLang === 'zh' ? (c.nameZh || c.name) : (c.name || c.nameZh));
+  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (c.name || c.nameZh || '');
   document.querySelector('#customerEditForm [name="name"]').value = c.name || '';
   document.querySelector('#customerEditForm [name="nameZh"]').value = c.nameZh || '';
   document.querySelector('#customerEditForm [name="city"]').value = c.city || '';
@@ -2900,13 +2934,11 @@ function displayReports(reports) {
     const reportTeamId = r.teamId || getTeamIdBySalesperson(r.salesPerson);
     const matchTeam = !filterTeam || reportTeamId == filterTeam;
     
-    // 🔒 ACCESS CONTROL: Sales users can only see their own team's reports
+    // 🔒 ACCESS CONTROL: Sales users can only see their own team's reports; admin sees all reports
     let matchUser = true;
     if (currentUser && currentUser.role === 'sales' && currentUser.teamId) {
-      // Sales user - only show reports from their team
       matchUser = reportTeamId == currentUser.teamId;
     }
-    // Admin can see all reports (matchUser stays true)
     
     return matchSearch && matchSales && matchCat && matchPotential && matchTeam && matchUser;
   });
@@ -4176,7 +4208,7 @@ async function refreshCustomerEditIfOpen() {
   if (!type || !id) return;
   const c = (await getCustomerData(type)).find(x => x.id === id);
   if (!c) return;
-  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (currentLang === 'zh' ? (c.nameZh || c.name) : (c.name || c.nameZh));
+  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (c.name || c.nameZh || '');
   applyCustomerEditLabels();
 }
 
@@ -6632,7 +6664,8 @@ function renderActiveUsers(users) {
         ${user.email ? `📧 ${user.email}<br>` : ''}
         Last login: ${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}
       </div>
-      <div style="display:flex;gap:6px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="team-user-btn" data-username="${user.username}" style="flex:1;background:#ecfeff;color:#0f766e;border:none;padding:6px;border-radius:6px;font-size:0.8rem;font-weight:700;cursor:pointer">🔁 Team</button>
         <button class="edit-user-btn" data-username="${user.username}" style="flex:1;background:#dbeafe;color:#1e40af;border:none;padding:6px;border-radius:6px;font-size:0.8rem;font-weight:700;cursor:pointer">✏️ Edit</button>
         <button class="delete-user-btn" data-username="${user.username}" style="background:#fee2e2;color:#dc2626;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:700;cursor:pointer">🗑️</button>
       </div>
@@ -6643,9 +6676,46 @@ function renderActiveUsers(users) {
     btn.addEventListener('click', () => deleteUser(btn.getAttribute('data-username')));
   });
 
+  container.querySelectorAll('.team-user-btn').forEach(btn => {
+    btn.addEventListener('click', () => reassignUserTeam(btn.getAttribute('data-username')));
+  });
+
   container.querySelectorAll('.edit-user-btn').forEach(btn => {
     btn.addEventListener('click', () => editUser(btn.getAttribute('data-username')));
   });
+}
+
+async function reassignUserTeam(username) {
+  const teamInput = prompt(`Assign new team for ${username}:\n\nEnter team number (1-6):\n1 - Team 1\n2 - Team 2\n3 - Team 3\n4 - Team 4\n5 - Team 5\n6 - Team 6`);
+  if (teamInput === null) return;
+
+  const teamId = Number(teamInput);
+  if (!Number.isFinite(teamId) || teamId < 1 || teamId > 6) {
+    alert('Invalid team selection');
+    return;
+  }
+
+  try {
+    const updateData = { teamId };
+    if (window.firebaseService && window.firebaseService.isReady()) {
+      const result = await window.firebaseService.updateUser(username, updateData);
+      if (result && result.success === true) {
+        alert('✅ Team reassigned successfully');
+        refreshUsers();
+      } else {
+        throw new Error(result && result.message ? result.message : 'Firestore update failed');
+      }
+    } else {
+      const localUsers = loadLocalUsers();
+      const updatedUsers = localUsers.map(user => user.username === username ? { ...user, ...updateData } : user);
+      saveLocalUsers(updatedUsers);
+      alert('✅ Team reassigned successfully');
+      refreshUsers();
+    }
+  } catch (error) {
+    alert('Team update failed: ' + (error.message || error));
+    console.error(error);
+  }
 }
 
 async function approveUser(username, preferredTeam = null) {

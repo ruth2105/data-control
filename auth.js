@@ -74,10 +74,10 @@ async function createSession(user, rememberMe = false) {
 
 // User database (in production, this should be on a server)
 const USERS = {
-  admin: { 
-    password: 'admin123', // Change this!
-    role: 'admin', 
-    teamId: null, 
+  admin: {
+    password: '',
+    role: 'admin',
+    teamId: null,
     name: 'Administrator',
     nameZh: '管理员'
   },
@@ -100,6 +100,86 @@ const TEAMS = {
   6: { name: 'Team 6', nameZh: '第六组', color: '#06b6d4' }
 };
 
+function getStoredUsers() {
+  try {
+    return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
+  } catch (error) {
+    return [];
+  }
+}
+
+function getUserRecord(username) {
+  const normalizedUsername = String(username || '').trim().toLowerCase();
+  const localUsers = getStoredUsers();
+  const localUser = localUsers.find(u => String(u.username || '').trim().toLowerCase() === normalizedUsername);
+
+  if (localUser) {
+    return { ...localUser, username: normalizedUsername };
+  }
+
+  if (USERS[normalizedUsername]) {
+    return { ...USERS[normalizedUsername], username: normalizedUsername };
+  }
+
+  return null;
+}
+
+function saveUserRecords(users) {
+  localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
+}
+
+function changeCurrentUserPassword(currentPassword, newPassword) {
+  const user = getCurrentUser();
+  if (!user) {
+    return { success: false, message: 'Not logged in' };
+  }
+
+  const normalizedUsername = String(user.username || '').trim().toLowerCase();
+  const userRecord = getUserRecord(normalizedUsername);
+  if (!userRecord) {
+    return { success: false, message: 'User not found' };
+  }
+
+  let actualPassword = userRecord.password;
+  if (normalizedUsername === 'admin') {
+    const storedAdminPassword = localStorage.getItem('admin_password');
+    if (storedAdminPassword) {
+      actualPassword = storedAdminPassword;
+    }
+  }
+
+  const hasExistingPassword = String(actualPassword || '').trim().length > 0;
+  if (hasExistingPassword && String(actualPassword || '') !== String(currentPassword || '')) {
+    return { success: false, message: 'Current password is incorrect' };
+  }
+
+  if (String(newPassword || '').length < 6) {
+    return { success: false, message: 'New password must be at least 6 characters' };
+  }
+
+  if (hasExistingPassword && String(newPassword || '') === String(currentPassword || '')) {
+    return { success: false, message: 'New password must be different from current password' };
+  }
+
+  const localUsers = getStoredUsers();
+  const existingIndex = localUsers.findIndex(u => String(u.username || '').trim().toLowerCase() === normalizedUsername);
+  const updatedUser = { ...userRecord, username: normalizedUsername, password: newPassword };
+
+  if (existingIndex >= 0) {
+    localUsers[existingIndex] = updatedUser;
+  } else {
+    localUsers.push(updatedUser);
+  }
+
+  saveUserRecords(localUsers);
+
+  if (normalizedUsername === 'admin') {
+    localStorage.setItem('admin_password', newPassword);
+  }
+
+  return { success: true, message: 'Password changed successfully' };
+}
+
 // ===================== LOGIN FUNCTION =====================
 function login(username, password, rememberMe = false) {
   const normalizedUsername = String(username || '').trim().toLowerCase();
@@ -121,7 +201,7 @@ function login(username, password, rememberMe = false) {
     return { success: false, message: 'Invalid username' };
   }
   
-  // Check if admin password was changed and stored in localStorage
+  // Admin accounts start without a fixed password and are forced to set one on first login.
   let actualPassword = user.password;
   if (normalizedUsername === 'admin') {
     const storedAdminPassword = localStorage.getItem('admin_password');
@@ -129,7 +209,22 @@ function login(username, password, rememberMe = false) {
       actualPassword = storedAdminPassword;
     }
   }
-  
+
+  if (normalizedUsername === 'admin' && !String(actualPassword || '').trim()) {
+    const isInitialSetup = Boolean(normalizedPassword && normalizedPassword.trim());
+    if (!isInitialSetup) {
+      return { success: false, message: 'Please choose a password for the admin account' };
+    }
+
+    return {
+      success: true,
+      role: user.role,
+      teamId: user.teamId,
+      message: 'Please set a new password',
+      mustChangePassword: true
+    };
+  }
+
   if (String(actualPassword || '') !== normalizedPassword) {
     return { success: false, message: 'Invalid password' };
   }
@@ -159,10 +254,17 @@ function login(username, password, rememberMe = false) {
     sessionStorage.setItem('userSession', JSON.stringify(session));
   }
   
-  return { 
-    success: true, 
+  return {
+    success: true,
     role: user.role,
     teamId: user.teamId,
+    user: {
+      username: normalizedUsername,
+      role: user.role,
+      teamId: user.teamId,
+      name: user.name,
+      nameZh: user.nameZh
+    },
     message: 'Login successful'
   };
 }
@@ -174,9 +276,17 @@ function clearSession() {
 }
 
 // ===================== LOGOUT FUNCTION =====================
+function getLoginRedirectUrl() {
+  const path = (window.location.pathname || '').toLowerCase();
+  if (path.includes('/app/')) {
+    return '../login.html?v=20260711';
+  }
+  return 'login.html?v=20260711';
+}
+
 function logout() {
   clearSession();
-  window.location.href = 'login.html';
+  window.location.replace(getLoginRedirectUrl());
 }
 
 // ===================== GET CURRENT USER =====================
@@ -194,30 +304,33 @@ function getCurrentUser() {
       const hoursDiff = (now - loginTime) / 1000 / 60 / 60;
       
       if (hoursDiff > 8) {
-        clearSession();
-        return null;
+        localStorage.removeItem('userSession');
+      } else {
+        return session;
       }
-      
-      return session;
     } catch (e) {
-      clearSession();
-      return null;
+      localStorage.removeItem('userSession');
     }
   }
   
-  // Check sessionStorage (Remember Me = NOT checked, ONE-TIME use only)
+  // Check sessionStorage (Remember Me = NOT checked, persists for the current browser tab)
   const sessionData = sessionStorage.getItem('userSession');
   
   if (sessionData) {
     try {
       const session = JSON.parse(sessionData);
+      const loginTime = new Date(session.loginTime);
+      const now = new Date();
+      const hoursDiff = (now - loginTime) / 1000 / 60 / 60;
       
-      if (!session.rememberMe) {
+      if (hoursDiff > 8) {
         sessionStorage.removeItem('userSession');
+        return null;
       }
       
       return session;
     } catch (e) {
+      sessionStorage.removeItem('userSession');
       return null;
     }
   }

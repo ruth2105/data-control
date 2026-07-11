@@ -225,9 +225,8 @@ input:focus{
   </form>
   
   <div style="margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;font-size:0.8rem;color:#64748b">
-    <strong>Default Admin Login:</strong><br>
-    Username: <code>admin</code><br>
-    Password: <code>admin123</code>
+    <strong>Admin access:</strong><br>
+    Use the admin account and set a new password on first login.
   </div>
 </div>
 
@@ -305,31 +304,39 @@ async function handleLogin(event) {
   const password = document.getElementById('loginPassword').value;
   const rememberMe = document.getElementById('rememberMe').checked;
 
-  // Try Firebase authentication first, then backend fallback
+  // Try backend/Firebase authentication first, but fall back to the local account system.
   const authResult = await authenticateAny(username, password);
-  if (authResult.success) {
+  const localResult = login(username, password, rememberMe);
+
+  if (authResult.success && authResult.user) {
     createSession(authResult.user, rememberMe);
     showSuccess('Login successful! Redirecting...');
-    const redirectUrl = authResult.user.role === 'sales' ? 'app/sales.html' : 'index.html';
     setTimeout(() => {
-      window.location.href = redirectUrl;
+      window.location.href = 'index.html';
     }, 1000);
     return;
   }
 
-  // Fallback to local authentication when no server backend is available
-  const result = login(username, password, rememberMe);
-  if (result.success) {
-    showSuccess('Login successful! Redirecting...');
-    const user = USERS[username.toLowerCase()];
-    const redirectUrl = user && user.role === 'sales' ? 'app/sales.html' : 'index.html';
+  if (localResult.success) {
+    const sessionUser = localResult.user || {
+      username: username.trim().toLowerCase(),
+      role: localResult.role || 'admin',
+      teamId: localResult.teamId || null,
+      name: username.trim(),
+      nameZh: username.trim()
+    };
+    createSession(sessionUser, rememberMe);
+
+    const shouldForcePasswordChange = Boolean(localResult.mustChangePassword);
+    showSuccess(shouldForcePasswordChange ? 'Welcome admin. Please set a new password.' : 'Login successful! Redirecting...');
+    const redirectUrl = shouldForcePasswordChange ? 'index.html?forcePasswordChange=1' : 'index.html';
     setTimeout(() => {
       window.location.href = redirectUrl;
     }, 1000);
   } else {
     const message = authResult.message && authResult.message !== 'Unable to reach backend'
       ? authResult.message
-      : result.message || 'Login failed';
+      : localResult.message || 'Login failed';
     showError(message);
   }
 }

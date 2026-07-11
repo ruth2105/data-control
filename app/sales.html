@@ -18,10 +18,13 @@
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
 /* HEADER */
 .header{background:linear-gradient(135deg,#1a56db 0%,#1e40af 100%);color:#fff;padding:0}
-.header-inner{max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:16px}
+.header-inner{max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap}
 .logo-circle{width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;border:2px solid rgba(255,255,255,0.4);flex-shrink:0}
+.header-text{min-width:0;flex:1 1 220px}
 .header-text h1{font-size:1.5rem;font-weight:800;letter-spacing:.5px}
 .header-text p{font-size:.85rem;opacity:.8;margin-top:2px}
+.lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.header-actions{display:flex;align-items:center;gap:16px;margin-left:auto;justify-content:flex-end;flex-wrap:wrap}
 /* STATS BAR */
 .stats-bar{background:#1a56db;border-top:1px solid rgba(255,255,255,0.15)}
 .stats-inner{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;gap:24px;flex-wrap:wrap}
@@ -210,53 +213,78 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 .del-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;margin-top:12px;transition:background .2s}
 .del-btn:hover{background:#fecaca}
 /* RESPONSIVE */
-@media(max-width:640px){
-  .vf-grid,.vf-grid-3{grid-template-columns:1fr}
-  .vf-full{grid-column:1}
-  .rdet-grid{grid-template-columns:1fr}
-  .rdet-full{grid-column:1}
-  .vf-submit-btn{padding:12px;font-size:0.95rem}
-  .order-row{grid-template-columns:1fr !important}
-  .order-row button{width:100%;margin-top:8px !important}
-  .vf-card{padding:16px;margin-bottom:16px}
-  .vf-title{font-size:1rem;margin-bottom:12px}
-  .vf-label{font-size:0.7rem}
-  .vf-input,.vf-select,.vf-textarea{font-size:0.85rem;padding:8px 10px}
-  .vf-checkbox-label{font-size:0.8rem;padding:4px 8px}
-  .tabs{flex-wrap:nowrap;overflow-x:auto;padding:4px;justify-content:space-between}
+@media (max-width: 900px) {
+  .header-inner{padding:16px 16px;gap:12px;align-items:flex-start}
+  .header-text h1{font-size:1.2rem}
+  .header-text p{font-size:0.8rem}
+  .main{padding:16px}
+  .stats-inner{gap:8px;padding:10px 16px}
+  .filters{padding:12px}
+  .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+}
+@media (max-width: 680px) {
+  body{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  .header-inner{flex-direction:column;align-items:stretch;padding:14px 12px}
+  .logo-circle{width:44px;height:44px}
+  .header-text{flex:1 1 100%}
+  .header-text h1{font-size:1.03rem;line-height:1.25}
+  .header-text p{font-size:0.72rem}
+  .lang-toggle{margin-left:0;justify-content:flex-start;width:auto;align-self:flex-start}
+  .header-actions{width:100%;margin-left:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;justify-content:stretch}
+  .header-actions > div{grid-column:1 / -1;padding:8px 10px;text-align:left}
+  .header-actions button{width:100%;padding:8px 12px;font-size:0.82rem}
+  .main{padding:12px}
+  .tabs{padding:4px;border-radius:14px}
   .tabs-container{display:none}
   .tab-menu-toggle{display:block}
-  .tab-btn{padding:8px 12px;font-size:0.8rem;min-width:80px;white-space:nowrap;flex:1}
+  .tab-btn{padding:8px 10px;font-size:0.78rem;min-width:76px}
+  .filters{display:grid;gap:10px;align-items:stretch;padding:12px}
+  .search-wrap{min-width:100%}
+  .filter-group{width:100%;display:flex;flex-wrap:wrap}
+  .filter-btn{flex:1 1 calc(50% - 6px);justify-content:center}
+  .stats-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 12px}
+  .stat-item{background:rgba(255,255,255,.12);border-radius:999px;padding:6px 8px;font-size:0.72rem}
+  .stat-item strong{font-size:0.9rem}
+  .cards-grid{grid-template-columns:1fr;gap:12px}
+  .hospital-card{padding:14px}
+  .card-products-row{flex-direction:column;align-items:flex-start}
+  .card-badges{gap:4px}
+  .modal-overlay{padding:10px}
+  .modal-header,.modal-body,.modal-actions{padding:16px}
+  .modal-info-grid,.edit-fields-grid,.vf-grid,.vf-grid-3,.rdet-grid{grid-template-columns:1fr}
+  .modal-split{grid-template-columns:1fr;gap:0}
+  .modal-panel-left{border-right:none;border-bottom:2px solid #10b981;box-shadow:none;order:1}
+  .modal-panel-right{order:2}
+  .vf-full,.rdet-full,.edit-section,.vf-section-divider{grid-column:1}
+  .vf-card{padding:14px;margin-bottom:14px}
+  .vf-title{font-size:1rem;margin-bottom:12px}
+  .vf-label{font-size:0.68rem}
+  .vf-input,.vf-select,.vf-textarea{font-size:0.84rem;padding:8px 10px}
+  .vf-checkbox-label{font-size:0.78rem;padding:4px 8px}
+  .rep-card{padding:12px 14px;gap:10px}
+  .rep-filters{display:grid;grid-template-columns:1fr;gap:8px}
+  .rep-search,.rep-select{min-width:100%}
 }
 /* LANG TOGGLE */
 .lang-toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
 .lang-btn{padding:6px 14px;border-radius:20px;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
 .lang-btn.active{background:rgba(255,255,255,.25);border-color:#fff}
 .lang-btn:hover:not(.active){background:rgba(255,255,255,.1)}
-/* RESPONSIVE */
-@media(max-width:640px){
-  .header-inner{padding:12px 12px;gap:8px;flex-wrap:wrap}
-  .header-text h1{font-size:1rem}
-  .header-text p{font-size:0.7rem}
-  .main{padding:12px}
-  .cards-grid{grid-template-columns:1fr}
-  .modal-info-grid{grid-template-columns:1fr}
-  .modal-split{grid-template-columns:1fr;gap:0}
-  .modal-panel-left{border-right:none;border-bottom:2px solid #10b981;box-shadow:none;order:1}
-  .edit-fields-grid{grid-template-columns:1fr}
-  .filters{padding:12px;flex-direction:column}
-  .filter-group{width:100%}
-  .search-wrap{min-width:100%}
-  .stats-inner{gap:8px;padding:8px 12px}
-  .stat-item{font-size:0.7rem}
-  .stat-item strong{font-size:0.9rem}
-}
-  .modal-panel-right{order:2}
-  .edit-fields-grid{grid-template-columns:1fr}
-  .filters{padding:12px}
-  .stats-inner{gap:12px}
-}
 </style>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.id === 'btn-' + lang));
+  document.documentElement.lang = lang;
+}
+function openPasswordChangeModal() {
+  alert('Password change is available from the account section.');
+}
+function logout() {
+  if (confirm('Logout now?')) {
+    window.location.replace('../login.html?v=20260711');
+  }
+}
+</script>
 </head>
 <body>
 
@@ -271,10 +299,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
       <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
       <button class="lang-btn active" onclick="setLang('zh')" id="btn-zh">中文</button>
     </div>
-    <div style="display:flex;align-items:center;gap:16px">
-      <div style="text-align:right;cursor:pointer;padding:8px 12px;border-radius:6px;transition:background 0.2s;hover:background:rgba(255,255,255,0.1)" onclick="openPasswordChangeModal()" title="Click to change password">
-        <div style="font-size:0.9rem;font-weight:600" id="userName">Administrator</div>
-        <div style="font-size:0.75rem;opacity:0.8" id="userRole">Admin</div>
+    <div class="header-actions">
+      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;border-radius:6px;transition:background 0.2s" onclick="openPasswordChangeModal()" title="Current signed-in account profile">
+        <div style="display:flex;flex-direction:column;align-items:flex-start">
+          <div style="font-size:0.9rem;font-weight:700;white-space:nowrap" id="userName">Signed-in account</div>
+          <div style="font-size:0.68rem;opacity:0.9;margin-top:1px">Current profile</div>
+        </div>
       </div>
       <button onclick="window.location.href='reports.html'" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600">📋 Reports</button>
       <button onclick="logout()" style="background:rgba(255,255,255,0.2);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600">🚪 Logout</button>
@@ -836,6 +866,30 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
         </div>
       </div>
     </div>
+
+    <div class="vf-card" style="max-width:600px;margin-top:20px;border:2px solid #0f766e">
+      <h3 style="font-size:1.1rem;font-weight:800;color:#0f766e;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        ✏️ <span data-en="Edit Profile" data-zh="编辑资料">Edit Profile</span>
+      </h3>
+      <form id="salesProfileForm" onsubmit="saveSalesProfile(event)">
+        <div class="vf-grid">
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-en="Username" data-zh="用户名">Username</label>
+            <input type="text" class="vf-input" id="salesProfileUsername" disabled>
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-en="Full Name" data-zh="姓名">Full Name</label>
+            <input type="text" class="vf-input" id="salesProfileName" required>
+          </div>
+          <div class="vf-group vf-full">
+            <label class="vf-label" data-en="Name (Chinese)" data-zh="中文姓名">Name (Chinese)</label>
+            <input type="text" class="vf-input" id="salesProfileNameZh">
+          </div>
+        </div>
+        <button type="submit" class="vf-submit-btn" style="background:linear-gradient(135deg,#0f766e,#0d9488);margin-top:12px">💾 Save Profile</button>
+      </form>
+      <div id="salesProfileStatus" style="margin-top:12px;padding:10px;border-radius:8px;display:none"></div>
+    </div>
   </div>
 
   <!-- MODAL -->
@@ -855,7 +909,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="auth.js"></script>
+<script src="auth.js?v=20260711"></script>
 <script>
 // ===================== AUTHENTICATION CHECK =====================
 const currentUser = requireAuth('sales');
@@ -895,55 +949,40 @@ function hDoctors(h) { return h.doctorsZh || h.doctors; }
 
 // ===================== DATA =====================
 // ===================== CUSTOMER DATA MANAGEMENT =====================
-async function getCustomerData(type) {
+function getCustomerData(type) {
   const key = 'fremenatos_' + type;
-  
-  // Try to sync with Google Sheets first using new API
-  try {
-    const result = await getCustomers();
-    if (result.success && Array.isArray(result.data) && result.data.length > 0) {
-      if (type === 'machine') {
-        return result.data.filter(c => c.model === 'A8' || c.model === 'A90');
-      } else {
-        return result.data.filter(c => !c.model || c.model === 'EXT');
-      }
-    }
-  } catch (error) {
-    console.log('Google Sheets sync failed, using local data:', error);
-  }
-  
-  // Fall back to localStorage
   const stored = localStorage.getItem(key);
+
   if (stored) {
-    try { return JSON.parse(stored); } catch(e) {}
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch (e) {
+      console.warn('Failed to parse stored customer data:', e);
+    }
   }
-  // Fall back to defaults
-  return type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
+
+  return type === 'machine' ? MACHINE_DEFAULTS.slice() : EXTERNAL_DEFAULTS.slice();
 }
 
-async function saveCustomerData(type, data) {
-  localStorage.setItem('fremenatos_' + type, JSON.stringify(data));
-  
-  // Sync with Google Sheets using new API
-  try {
-    for (const customer of data) {
-      await saveCustomer(customer);
-    }
-  } catch (error) {
-    console.log('Failed to sync customer data to Google Sheets:', error);
-  }
-  
-  // Reload the references
+function saveCustomerData(type, data) {
+  const normalized = Array.isArray(data) ? data : [];
+  localStorage.setItem('fremenatos_' + type, JSON.stringify(normalized));
+
   if (type === 'machine') {
     machineCustomers.length = 0;
-    data.forEach(d => machineCustomers.push(d));
+    normalized.forEach(d => machineCustomers.push(d));
   } else {
     externalCustomers.length = 0;
-    data.forEach(d => externalCustomers.push(d));
+    normalized.forEach(d => externalCustomers.push(d));
   }
-  // Rebuild allCustomers array
+
   allCustomers = [...machineCustomers, ...externalCustomers];
   updateStats();
+  populateHospitalList();
+  renderCityButtons();
   renderCards();
 }
 
@@ -998,7 +1037,7 @@ function openCustomerEdit(type, id) {
   
   document.getElementById('editType').value = actualType;
   document.getElementById('editId').value = id;
-  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (currentLang === 'zh' ? (c.nameZh || c.name) : (c.name || c.nameZh));
+  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (c.name || c.nameZh || '');
   document.querySelector('#customerEditForm [name="name"]').value = c.name || '';
   document.querySelector('#customerEditForm [name="nameZh"]').value = c.nameZh || '';
   document.querySelector('#customerEditForm [name="city"]').value = c.city || '';
@@ -1741,7 +1780,7 @@ function toggleBulkImport() {
   }
 }
 
-function importBulkData() {
+async function importBulkData() {
   const salesPerson = document.getElementById('bulkSalesPerson').value;
   const date = document.getElementById('bulkDate').value;
   const data = document.getElementById('bulkData').value;
@@ -1822,7 +1861,7 @@ function importBulkData() {
   let successCount = 0;
   let errorCount = 0;
   
-  function importNext(index) {
+  async function importNext(index) {
     if (index >= records.length) {
       // Done
       statusDiv.style.background = successCount > 0 ? '#f0fdf4' : '#fef2f2';
@@ -1876,7 +1915,7 @@ function importBulkData() {
   importNext(0);
 }
 
-function submitSingleVisit() {
+async function submitSingleVisit() {
   const salesPerson = document.getElementById('visitSalesPerson').value;
   const date = document.getElementById('visitDate').value;
   const hospitalName = document.getElementById('visitHospital').value.trim();
@@ -2051,7 +2090,7 @@ function normalizeSalesName(name) {
   return name;
 }
 
-function submitVisitForm(e) {
+async function submitVisitForm(e) {
   e.preventDefault();
   const form = e.target;
   const data = {};
@@ -2429,10 +2468,9 @@ function setupVisitForm() {
 }
 
 function displayReports(reports) {
-  // TEAM FILTERING: Sales users only see their team's reports
+  // TEAM FILTERING: Sales users only see their team's reports; admin sees all reports
   const user = getCurrentUser();
   
-  // First, filter visit reports by team
   if (user && user.role === 'sales' && user.teamId) {
     reports = reports.filter(r => r.teamId === user.teamId);
   }
@@ -2472,7 +2510,7 @@ function displayReports(reports) {
     teamId: null  // PDF customers don't have teamId initially
   }));
   
-  // TEAM FILTERING for PDF customers: Filter by salesRep matching team
+  // TEAM FILTERING for PDF customers: Sales users only see their team's customers; admin sees all
   if (user && user.role === 'sales' && user.teamId) {
     const teamNames = getTeamSalesMembers();
     pdfCustomers = pdfCustomers.filter(c => {
@@ -3968,7 +4006,7 @@ function refreshCustomerEditIfOpen() {
   if (!type || !id) return;
   const c = getCustomerData(type).find(x => x.id === id);
   if (!c) return;
-  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (currentLang === 'zh' ? (c.nameZh || c.name) : (c.name || c.nameZh));
+  document.getElementById('customerEditTitle').textContent = t('ceEditTitle') + ': ' + (c.name || c.nameZh || '');
   applyCustomerEditLabels();
 }
 
@@ -4080,14 +4118,7 @@ function applyCustomRange() {
 // Show/hide custom date range
 document.addEventListener('DOMContentLoaded', () => {
   updateUserDisplay();
-  machineCustomers = MACHINE_DEFAULTS.slice();
-  externalCustomers = EXTERNAL_DEFAULTS.slice();
-  allCustomers = [...machineCustomers, ...externalCustomers];
-  
-  // Initialize the page
-  renderCityButtons();
-  renderCards();
-  updateStats();
+  initializeCustomerData();
   populateSalesFilter();
   loadProfileInfo();
 
@@ -5972,21 +6003,23 @@ function updatePotentialStats() {
 }
 
 // ===================== INIT =====================
-// Load customer data from localStorage (with defaults fallback)
-machineCustomers = getCustomerData('machine');
-externalCustomers = getCustomerData('external');
-allCustomers = [...machineCustomers, ...externalCustomers];
+function initializeCustomerData() {
+  machineCustomers = getCustomerData('machine');
+  externalCustomers = getCustomerData('external');
+  allCustomers = [...machineCustomers, ...externalCustomers];
 
-// Save to localStorage directly
-localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
-localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
+  localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
+  localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
 
-currentTab = 'machine';
-updateStats();
-populateHospitalList();
-setLang('zh');
-renderCityButtons();
-renderCards();
+  currentTab = 'machine';
+  updateStats();
+  populateHospitalList();
+  setLang('zh');
+  renderCityButtons();
+  renderCards();
+}
+
+initializeCustomerData();
 
 // ===================== EXPORT CUSTOMER LIST =====================
 function exportCustomerList(type) {
@@ -6148,11 +6181,54 @@ function loadProfileInfo() {
   const user = getCurrentUser();
   if (!user) return;
   
-  document.getElementById('profileUsername').textContent = user.username;
-  document.getElementById('profileName').textContent = user.name;
+  const userNameEl = document.getElementById('userName');
+  const userRoleEl = document.getElementById('userRole');
+  const profileUsernameEl = document.getElementById('profileUsername');
+  const profileNameEl = document.getElementById('profileName');
+  const salesProfileUsernameEl = document.getElementById('salesProfileUsername');
+  const salesProfileNameEl = document.getElementById('salesProfileName');
+  const salesProfileNameZhEl = document.getElementById('salesProfileNameZh');
+  
+  if (userNameEl) userNameEl.textContent = user.name || user.username || 'User';
+  if (userRoleEl) userRoleEl.textContent = (user.role || 'Admin').toUpperCase();
+  if (profileUsernameEl) profileUsernameEl.textContent = user.username;
+  if (profileNameEl) profileNameEl.textContent = user.name;
+  if (salesProfileUsernameEl) salesProfileUsernameEl.value = user.username || '';
+  if (salesProfileNameEl) salesProfileNameEl.value = user.name || '';
+  if (salesProfileNameZhEl) salesProfileNameZhEl.value = user.nameZh || '';
   
   const teamInfo = getTeamInfo(user.teamId);
-  document.getElementById('profileTeam').textContent = teamInfo ? teamInfo.name : 'N/A';
+  const profileTeamEl = document.getElementById('profileTeam');
+  if (profileTeamEl) profileTeamEl.textContent = teamInfo ? teamInfo.name : 'N/A';
+}
+
+function saveSalesProfile(event) {
+  event.preventDefault();
+  const name = document.getElementById('salesProfileName').value.trim();
+  const nameZh = document.getElementById('salesProfileNameZh').value.trim();
+  const statusEl = document.getElementById('salesProfileStatus');
+
+  if (!name) {
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.style.background = '#fef3c7';
+      statusEl.style.color = '#92400e';
+      statusEl.textContent = '⚠️ Full name is required';
+    }
+    return;
+  }
+
+  const result = updateCurrentUserProfile({ name, nameZh });
+  if (statusEl) {
+    statusEl.style.display = 'block';
+    statusEl.style.background = result.success ? '#dcfce7' : '#fee2e2';
+    statusEl.style.color = result.success ? '#166534' : '#991b1b';
+    statusEl.textContent = result.success ? '✅ Profile updated successfully' : result.message;
+  }
+
+  if (result.success) {
+    loadProfileInfo();
+  }
 }
 
 // ===================== OPEN PASSWORD CHANGE MODAL =====================
@@ -6236,35 +6312,14 @@ function submitPasswordChange(event) {
     return;
   }
   
-  // Check current password
-  const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-  const userRecord = localUsers.find(u => u.username === user.username) || USERS[user.username];
-  
-  if (!userRecord || userRecord.password !== currentPassword) {
+  const result = changeCurrentUserPassword(currentPassword, newPassword);
+  if (!result.success) {
     statusDiv.style.display = 'block';
     statusDiv.style.background = '#fee2e2';
     statusDiv.style.color = '#991b1b';
-    statusDiv.textContent = '❌ Current password is incorrect';
+    statusDiv.textContent = '❌ ' + result.message;
     return;
   }
-  
-  if (newPassword === currentPassword) {
-    statusDiv.style.display = 'block';
-    statusDiv.style.background = '#fef3c7';
-    statusDiv.style.color = '#92400e';
-    statusDiv.textContent = '⚠️ New password must be different from current password';
-    return;
-  }
-  
-  // Update password
-  const userIndex = localUsers.findIndex(u => u.username === user.username);
-  if (userIndex >= 0) {
-    localUsers[userIndex].password = newPassword;
-  } else {
-    localUsers.push({ ...userRecord, password: newPassword });
-  }
-  
-  localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(localUsers));
   
   // Show success
   statusDiv.style.display = 'block';
@@ -6302,33 +6357,11 @@ function salesChangePassword(event) {
     return;
   }
   
-  // Check current password
-  const localUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-  const userRecord = localUsers.find(u => u.username === user.username) || USERS[user.username];
-  
-  if (!userRecord || userRecord.password !== currentPassword) {
-    alert(currentLang === 'zh' ? '当前密码错误' : 'Current password is incorrect');
+  const result = changeCurrentUserPassword(currentPassword, newPassword);
+  if (!result.success) {
+    alert(result.message);
     return;
   }
-  
-  if (newPassword === currentPassword) {
-    alert(currentLang === 'zh' ? '新密码不能与当前密码相同' : 'New password must be different from current password');
-    return;
-  }
-  
-  // Update password in localStorage
-  const userIndex = localUsers.findIndex(u => u.username === user.username);
-  if (userIndex >= 0) {
-    localUsers[userIndex].password = newPassword;
-  } else {
-    // Add to localStorage if only in USERS object
-    localUsers.push({
-      ...userRecord,
-      password: newPassword
-    });
-  }
-  
-  localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(localUsers));
   
   // Show success message
   alert(currentLang === 'zh' 
@@ -6385,6 +6418,34 @@ function closeTabMenu() {
 }
 </script>
 <script>
+window.addEventListener('load', function() {
+  try {
+    const allPage = document.getElementById('page-all');
+    if (allPage) allPage.classList.add('active');
+    if (typeof window.initializeCustomerData === 'function') {
+      window.initializeCustomerData();
+    }
+    setTimeout(function() {
+      if (typeof window.renderCards === 'function') window.renderCards();
+      if (typeof window.renderCityButtons === 'function') window.renderCityButtons();
+      if (typeof window.renderDashboard === 'function') window.renderDashboard();
+    }, 120);
+  } catch (e) {
+    console.error('Sales page init error:', e);
+  }
+});
+</script>
+<script>
+// Fallback UI helpers in case the earlier script block did not initialize them
+function renderCityButtons() {
+  const container = document.getElementById('cityFilters');
+  if (!container) return;
+  const cities = getCities();
+  container.innerHTML = cities.map(c =>
+    `<button class="filter-btn ${c===currentCity?'active':''}" onclick="setCity('${c}')">${getCityName(c)}</button>`
+  ).join('');
+}
+
 // Global tab and filter functions for onclick handlers
 function switchTab(tab) {
   currentTab = tab;
@@ -6436,6 +6497,230 @@ function applyFilters() {
   searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
   renderCards();
 }
+</script>
+<script>
+(function() {
+  const STORAGE_KEYS = { machine: 'fremenatos_machine', external: 'fremenatos_external' };
+  const CITY_TRANSLATIONS = {
+    All: { zh: '全部', en: 'All' },
+    'A.A': { zh: '亚的斯亚贝巴', en: 'A.A' },
+    Adama: { zh: '阿达玛', en: 'Adama' },
+    'Arba Minch': { zh: '阿尔巴明奇', en: 'Arba Minch' },
+    Asella: { zh: '阿塞拉', en: 'Asella' },
+    Awash: { zh: '阿瓦什', en: 'Awash' },
+    'Butajira': { zh: '布塔吉拉', en: 'Butajira' },
+    'D.B': { zh: 'D.B', en: 'D.B' },
+    'D.D': { zh: 'D.D', en: 'D.D' },
+    Dilla: { zh: '迪拉', en: 'Dilla' },
+    Harrar: { zh: '哈勒尔', en: 'Harrar' },
+    Hawassa: { zh: '哈瓦萨', en: 'Hawassa' },
+    Jimma: { zh: '吉马', en: 'Jimma' },
+    Shakiso: { zh: '沙基索', en: 'Shakiso' },
+    Shashemene: { zh: '沙谢梅内', en: 'Shashemene' },
+    Wolayta: { zh: '沃莱塔', en: 'Wolayta' },
+    Yirgalem: { zh: '伊尔加莱姆', en: 'Yirgalem' }
+  };
+  const state = { currentTab: 'all', currentCity: 'All', currentModel: 'All', searchTerm: '' };
+  let machineCustomers = [];
+  let externalCustomers = [];
+  let allCustomers = [];
+
+  function getCurrentLang() {
+    return (document.documentElement.lang || 'zh').toLowerCase();
+  }
+
+  function getCityName(city) {
+    const entry = CITY_TRANSLATIONS[city];
+    return entry ? (getCurrentLang() === 'zh' ? entry.zh : entry.en) : city;
+  }
+
+  function getCities() {
+    return Object.keys(CITY_TRANSLATIONS).sort((a, b) => a === 'All' ? -1 : b === 'All' ? 1 : a.localeCompare(b));
+  }
+
+  function readStoredCustomers(type) {
+    const key = STORAGE_KEYS[type] || `fremenatos_${type}`;
+    const fallback = type === 'machine'
+      ? (typeof MACHINE_DEFAULTS !== 'undefined' ? MACHINE_DEFAULTS.slice() : [])
+      : (typeof EXTERNAL_DEFAULTS !== 'undefined' ? EXTERNAL_DEFAULTS.slice() : []);
+
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) {
+        localStorage.setItem(key, JSON.stringify(fallback));
+        return fallback;
+      }
+
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+
+      localStorage.setItem(key, JSON.stringify(fallback));
+      return fallback;
+    } catch (e) {
+      localStorage.setItem(key, JSON.stringify(fallback));
+      return fallback;
+    }
+  }
+
+  function initializeCustomerData() {
+    machineCustomers = readStoredCustomers('machine');
+    externalCustomers = readStoredCustomers('external');
+    allCustomers = [...machineCustomers, ...externalCustomers];
+    updateStats();
+    renderCityButtons();
+    renderCards();
+    renderDashboard();
+    loadProfileInfo();
+  }
+
+  function updateStats() {
+    const total = machineCustomers.length + externalCustomers.length;
+    const totalEl = document.getElementById('statTotal');
+    const machineEl = document.getElementById('statMachine');
+    const externalEl = document.getElementById('statExternal');
+    if (totalEl) totalEl.textContent = total;
+    if (machineEl) machineEl.textContent = machineCustomers.length;
+    if (externalEl) externalEl.textContent = externalCustomers.length;
+  }
+
+  function renderCityButtons() {
+    const container = document.getElementById('cityFilters');
+    if (!container) return;
+    const buttons = getCities().map(city => `
+      <button class="filter-btn ${city === state.currentCity ? 'active' : ''}" onclick="setCity('${city}')">${getCityName(city)}</button>
+    `).join('');
+    container.innerHTML = buttons;
+  }
+
+  function getFiltered() {
+    const term = (state.searchTerm || '').toLowerCase();
+    return allCustomers.filter(customer => {
+      const name = (customer.name || '').toLowerCase();
+      const city = (customer.city || '').toLowerCase();
+      const matchesSearch = !term || name.includes(term) || city.includes(term);
+      const matchesCity = state.currentCity === 'All' || customer.city === state.currentCity;
+      const matchesModel = state.currentModel === 'All' || customer.model === state.currentModel;
+      return matchesSearch && matchesCity && matchesModel;
+    });
+  }
+
+  function renderCards() {
+    const grid = document.getElementById('cardsGrid');
+    const info = document.getElementById('resultsInfo');
+    if (!grid) return;
+    const filtered = getFiltered();
+    if (info) {
+      info.textContent = `显示 ${filtered.length} / ${allCustomers.length} 位客户`;
+    }
+    if (!filtered.length) {
+      grid.innerHTML = '<div class="no-results">没有匹配的客户</div>';
+      return;
+    }
+    grid.innerHTML = filtered.map(customer => {
+      const badge = customer.model === 'A8' ? '<span class="badge badge-a8">⚙ A8</span>' : customer.model === 'A90' ? '<span class="badge badge-a90">⚙ A90</span>' : '<span class="badge badge-ext">🔬 External</span>';
+      const contact = customer.contacts && customer.contacts.length ? `${customer.contacts[0].name || customer.contacts[0].role || 'Contact'}` : 'No contact';
+      return `
+        <div class="hospital-card">
+          <div class="card-number">${customer.id}</div>
+          <div class="card-header-block">
+            <div class="card-name">${customer.nameZh || customer.name}</div>
+            <div class="card-location"><span class="badge badge-city">📍 ${customer.city}</span></div>
+          </div>
+          <div class="card-products-row">
+            <div class="card-badges">${badge}</div>
+          </div>
+          <div class="card-date">📅 ${customer.date || '—'}</div>
+          <div class="card-contact">${contact}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderDashboard() {
+    const panel = document.getElementById('page-dashboard');
+    if (!panel) return;
+    const summary = document.getElementById('dashboardDateRange');
+    if (summary) summary.textContent = `客户总数: ${allCustomers.length} · 机器客户: ${machineCustomers.length} · 外部客户: ${externalCustomers.length}`;
+  }
+
+  function renderReports() {
+    const panel = document.getElementById('page-reports');
+    if (!panel) return;
+    const count = document.getElementById('reportsCount');
+    if (count) count.textContent = `当前可见 ${allCustomers.length} 个客户`;
+  }
+
+  function loadProfileInfo() {
+    const user = getCurrentUser();
+    const userNameEl = document.getElementById('userName');
+    if (userNameEl && user) {
+      userNameEl.textContent = user.name || user.username || 'User';
+    }
+  }
+
+  function setupVisitForm() {
+    const panel = document.getElementById('page-form');
+    if (!panel) return;
+  }
+
+  function switchTab(tab) {
+    state.currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    const tabButton = document.getElementById('tab-' + tab);
+    if (tabButton) tabButton.classList.add('active');
+    const mobileButton = document.getElementById('tab-' + tab + '-mobile');
+    if (mobileButton) mobileButton.classList.add('active');
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById('page-' + tab);
+    if (targetPage) targetPage.classList.add('active');
+    if (tab === 'all') {
+      state.currentCity = 'All';
+      state.currentModel = 'All';
+      state.searchTerm = '';
+      const input = document.getElementById('searchInput');
+      if (input) input.value = '';
+      renderCityButtons();
+      renderCards();
+    }
+    if (tab === 'dashboard') renderDashboard();
+    if (tab === 'reports') renderReports();
+    if (tab === 'form') setupVisitForm();
+    if (tab === 'profile') loadProfileInfo();
+  }
+
+  function setCity(city) {
+    state.currentCity = city;
+    renderCityButtons();
+    renderCards();
+  }
+
+  function setModel(model) {
+    state.currentModel = model;
+    document.querySelectorAll('.filter-btn[id^="model-"]').forEach(btn => btn.classList.remove('active'));
+    const target = document.getElementById('model-' + model);
+    if (target) target.classList.add('active');
+    renderCards();
+  }
+
+  function applyFilters() {
+    state.searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    renderCards();
+  }
+
+  window.switchTab = switchTab;
+  window.setCity = setCity;
+  window.setModel = setModel;
+  window.applyFilters = applyFilters;
+  window.renderCityButtons = renderCityButtons;
+  window.renderDashboard = renderDashboard;
+  window.renderReports = renderReports;
+  window.loadProfileInfo = loadProfileInfo;
+  window.setupVisitForm = setupVisitForm;
+  window.initializeCustomerData = initializeCustomerData;
+
+  initializeCustomerData();
+})();
 </script>
 </body>
 </html>
