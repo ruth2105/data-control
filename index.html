@@ -2711,24 +2711,24 @@ function checkData() {
 // Get all registered salespeople from the system (auth.js USERS object + local users)
 function getAllSalespeople() {
   const salespeople = [];
-  
-  // Get from auth.js USERS object (if available)
+
+  // Prefer local storage registered users first (override built-in USERS)
+  const localUsers = typeof loadLocalUsers === 'function' ? loadLocalUsers() : (JSON.parse(localStorage.getItem('fremenatos_users') || '[]'));
+  (localUsers || []).forEach(user => {
+    if (user && user.role === 'sales' && user.name && String(user.status || '').toLowerCase() !== 'pending') {
+      salespeople.push({ name: user.name, teamId: user.teamId || user.preferredTeam });
+    }
+  });
+
+  // Add built-in auth.js USERS only when no local user with same name exists
   if (typeof USERS !== 'undefined') {
     Object.values(USERS).forEach(user => {
-      if (user.role === 'sales' && user.name) {
+      if (user.role === 'sales' && user.name && !salespeople.some(s => s.name === user.name)) {
         salespeople.push({ name: user.name, teamId: user.teamId });
       }
     });
   }
-  
-  // Get from local storage registered users
-  const localUsers = loadLocalUsers ? loadLocalUsers() : [];
-  localUsers.forEach(user => {
-    if (user.role === 'sales' && user.name && String(user.status || '').toLowerCase() !== 'pending' && !salespeople.some(s => s.name === user.name)) {
-      salespeople.push({ name: user.name, teamId: user.teamId || user.preferredTeam });
-    }
-  });
-  
+
   return salespeople;
 }
 
