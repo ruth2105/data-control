@@ -7582,6 +7582,51 @@ function closeTabMenu() {
     console.warn('Manual mapping failed:', e);
   }
 })();
+
+// Auto-restore: if a logged-in sales user has zero visible reports, try to find a backup containing their reports and restore it
+(function(){
+  try {
+    const current = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+    if (!current || current.role !== 'sales') return;
+
+    const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports')||'[]');
+    // If user already has reports or there's nothing to restore, skip
+    const userHas = reports.some(r => (r.username||'').toLowerCase() === (current.username||'').toLowerCase() || (r.teamId||'') == current.teamId);
+    if (userHas) return;
+
+    // Look for backups (prefer manual_backup then regular backup)
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('fremenatos_visitReports') && k.includes('_backup_')).sort().reverse();
+    for (const k of keys) {
+      try {
+        const b = JSON.parse(localStorage.getItem(k)||'[]');
+        if (!Array.isArray(b) || b.length === 0) continue;
+        // Count reports in backup that mention the current user's name (whole word) or username
+        const name = (current.name||'').toLowerCase();
+        const uname = (current.username||'').toLowerCase();
+        const reName = name && name.length>2 ? new RegExp('\\b'+name.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')+'\\b','i') : null;
+        const matches = b.filter(r => {
+          const text = ((r.salesPerson||r.salesperson||'') + ' ' + (r.username||'') + ' ' + (r.reportedBy||'') + ' ' + (r.hospitalName||'')).toLowerCase();
+          if (uname && text.includes(uname)) return true;
+          if (reName && reName.test(text)) return true;
+          return false;
+        });
+        if (matches.length > 0) {
+          // Restore this backup and re-run strict reassignment
+          localStorage.setItem('fremenatos_visitReports', JSON.stringify(b));
+          console.log('Auto-restore: restored reports from', k, 'with', matches.length, 'matching entries for', current.username);
+          // Clear flags so reassignment scripts can run again
+          localStorage.removeItem('fremenatos_reassign_strict_done');
+          localStorage.removeItem('fremenatos_manual_mapping_done');
+          // Trigger a page refresh to let other scripts run and UI reload
+          setTimeout(()=>{ try { location.reload(); } catch(e){ console.log('Reload failed', e); } }, 800);
+          break;
+        }
+      } catch(e){}
+    }
+  } catch(e) {
+    console.warn('Auto-restore failed', e);
+  }
+})();
 </script>
 </body>
 </html>
