@@ -7426,6 +7426,89 @@ function closeTabMenu() {
     console.warn('Report reassignment failed:', e);
   }
 })();
+
+// Repair: backup current reports and run a stricter reassignment to avoid broad substring matches
+(function(){
+  try {
+    if (!localStorage.getItem('fremenatos_reassigned_by_name')) return; // only run if initial reassignment ran
+    if (localStorage.getItem('fremenatos_reassign_strict_done')) return;
+
+    const reportsKey = 'fremenatos_visitReports';
+    const now = Date.now();
+    const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+    if (!Array.isArray(reports) || reports.length === 0) {
+      localStorage.setItem('fremenatos_reassign_strict_done','1');
+      return;
+    }
+
+    // Backup
+    localStorage.setItem(reportsKey + '_backup_' + now, JSON.stringify(reports));
+
+    const users = JSON.parse(localStorage.getItem('fremenatos_users') || '[]');
+    if (!Array.isArray(users) || users.length === 0) {
+      localStorage.setItem('fremenatos_reassign_strict_done','1');
+      return;
+    }
+
+    // Build strict match table (ignore very short keys)
+    const table = users.map(u => {
+      const username = (u.username||'').trim();
+      const name = (u.name||'').trim();
+      const nameZh = (u.nameZh||'').trim();
+      const keys = [];
+      if (username.length >= 3) keys.push(username.toLowerCase());
+      if (name.length >= 3) keys.push(name.toLowerCase());
+      if (nameZh.length >= 3) keys.push(nameZh.toLowerCase());
+      return { user: u, keys: Array.from(new Set(keys)) };
+    }).filter(x => x.keys.length>0);
+
+    let changed = 0;
+    reports.forEach(r => {
+      const sourceFields = [r.username, r.salesperson, r.salesName, r.contactPerson, r.contact, r.reportedBy]
+        .map(x => (x||'').trim()).filter(Boolean);
+      if (sourceFields.length === 0) return;
+
+      // prefer exact username or name match
+      let assigned = null;
+      for (const sk of sourceFields) {
+        const s = sk.toLowerCase();
+        // exact match first
+        const exact = table.find(t => t.keys.includes(s));
+        if (exact) { assigned = exact; break; }
+      }
+
+      if (!assigned) {
+        // try whole-word match using word boundaries for each key
+        for (const t of table) {
+          for (const k of t.keys) {
+            const re = new RegExp("\\b" + k.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&') + "\\b", 'i');
+            if (sourceFields.some(sf => re.test(sf))) { assigned = t; break; }
+          }
+          if (assigned) break;
+        }
+      }
+
+      if (assigned && assigned.user && assigned.user.username) {
+        if (r.username !== assigned.user.username) {
+          r.username = assigned.user.username;
+          if (assigned.user.teamId) r.teamId = assigned.user.teamId;
+          changed++;
+        }
+      }
+    });
+
+    if (changed>0) {
+      localStorage.setItem(reportsKey, JSON.stringify(reports));
+      console.log('Strict reassignment updated', changed, 'reports. Backup at', reportsKey + '_backup_' + now);
+    } else {
+      console.log('Strict reassignment found no changes. Backup at', reportsKey + '_backup_' + now);
+    }
+
+    localStorage.setItem('fremenatos_reassign_strict_done','1');
+  } catch (e) {
+    console.warn('Strict reassignment failed:', e);
+  }
+})();
 </script>
 </body>
 </html>
