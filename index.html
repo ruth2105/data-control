@@ -7340,6 +7340,35 @@ function closeTabMenu() {
   }
 }
 </script>
+<script>
+// One-time conversion: move built-in sales into pending local registrations
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_builtin_converted')) return;
+    const builtins = ['sales1','sales2','sales3'];
+    const LOCAL_KEY = 'fremenatos_users';
+    const DEL_KEY = 'fremenatos_deleted_users';
+    const local = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+    const deleted = JSON.parse(localStorage.getItem(DEL_KEY) || '[]');
+    let added = 0, blocked = 0;
+    builtins.forEach(uname => {
+      const exists = local.find(u => String(u.username||'').toLowerCase() === uname.toLowerCase());
+      if (!exists) {
+        local.push({ username: uname, name: uname, nameZh: '', role: 'sales', teamId: null, status: 'pending', password: '' });
+        added++;
+      }
+      if (!deleted.includes(uname)) { deleted.push(uname); blocked++; }
+    });
+    if (added>0 || blocked>0) {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(local));
+      localStorage.setItem(DEL_KEY, JSON.stringify(deleted));
+      console.log('Converted built-in sales to pending registrations:', { added, blocked });
+      try { if (typeof refreshUsers === 'function') refreshUsers(); } catch(e){}
+    }
+    localStorage.setItem('fremenatos_builtin_converted', '1');
+  } catch (e) { console.warn('Conversion script failed:', e); }
+})();
+</script>
 </body>
 </html>
 
