@@ -7728,6 +7728,63 @@ function closeTabMenu() {
     try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
   } catch (e) { console.warn('Tizita fix failed', e); }
 })();
+
+// One-time: rename user 'ephratas' -> 'ephrata' and remap their reports to username 'ephrata' (team 3)
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_ephratas_fixed')) return;
+    const usersKey = 'fremenatos_users';
+    const reportsKey = 'fremenatos_visitReports';
+    const users = JSON.parse(localStorage.getItem(usersKey) || '[]');
+    if (Array.isArray(users) && users.length>0) {
+      const idx = users.findIndex(u => (u.username||'').toLowerCase() === 'ephratas');
+      if (idx !== -1) {
+        const targetIdx = users.findIndex(u => (u.username||'').toLowerCase() === 'ephrata');
+        if (targetIdx === -1) {
+          // rename
+          users[idx].username = 'ephrata';
+          users[idx].teamId = users[idx].teamId || 3;
+        } else {
+          // merge: move any non-empty fields to existing 'ephrata' then remove 'ephratas'
+          const from = users[idx];
+          const to = users[targetIdx];
+          ['name','nameZh','phone','email','teamId','status','role','preferredTeam'].forEach(k=>{
+            if ((!to[k] || to[k]==='') && from[k]) to[k]=from[k];
+          });
+          users.splice(idx,1);
+        }
+        // backup users
+        const now = Date.now();
+        localStorage.setItem(usersKey + '_backup_' + now, JSON.stringify(users));
+        localStorage.setItem(usersKey, JSON.stringify(users));
+        console.log('Renamed/merged ephratas -> ephrata in users (backup at ' + usersKey + '_backup_' + now + ')');
+      }
+    }
+
+    // Remap reports
+    const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+    if (Array.isArray(reports) && reports.length>0) {
+      let changed = 0;
+      reports.forEach(r => {
+        if ((r.username||'').toLowerCase() === 'ephratas') {
+          r.username = 'ephrata';
+          r.teamId = 3;
+          changed++;
+        }
+      });
+      if (changed>0) {
+        const now2 = Date.now();
+        localStorage.setItem(reportsKey + '_ephrata_backup_' + now2, JSON.stringify(reports));
+        localStorage.setItem(reportsKey, JSON.stringify(reports));
+        console.log('Remapped', changed, "reports from 'ephratas' to 'ephrata' (backup at " + reportsKey + '_ephrata_backup_' + now2 + ")');
+      }
+    }
+
+    localStorage.setItem('fremenatos_ephratas_fixed','1');
+    try { if (typeof refreshUsers === 'function') refreshUsers(); } catch(e){}
+    try { if (typeof renderReports === 'function') renderReports(); } catch(e){}
+  } catch (e) { console.warn('ephratas->ephrata fix failed', e); }
+})();
 </script>
 </body>
 </html>
