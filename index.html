@@ -7370,6 +7370,62 @@ function closeTabMenu() {
     localStorage.setItem('fremenatos_builtin_converted', '1');
   } catch (e) { console.warn('Conversion script failed:', e); }
 })();
+
+// One-time: reassign existing visit reports to registered sales by matching names/usernames
+(function(){
+  try {
+    if (localStorage.getItem('fremenatos_reassigned_by_name')) return;
+    const users = JSON.parse(localStorage.getItem('fremenatos_users') || '[]');
+    if (!Array.isArray(users) || users.length === 0) return;
+    const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+    if (!Array.isArray(reports) || reports.length === 0) return;
+
+    // Normalize user lookup keys
+    const userKeys = users.map(u => {
+      return {
+        user: u,
+        keys: [
+          (u.username||'').toLowerCase(),
+          (u.name||'').toLowerCase(),
+          (u.nameZh||'').toLowerCase(),
+          ((u.username||'') + ' ' + (u.name||'')).toLowerCase()
+        ].filter(Boolean)
+      };
+    });
+
+    let changed = 0;
+    reports.forEach(r => {
+      const candidates = [
+        (r.username||''),
+        (r.salesperson||''),
+        (r.salesName||''),
+        (r.contactPerson||''),
+        (r.contact||''),
+        (r.reportedBy||'')
+      ].map(x => (x||'').toLowerCase()).filter(Boolean);
+      if (candidates.length === 0) return;
+
+      // Try to find matching user
+      const match = userKeys.find(uk => uk.keys.some(k => candidates.some(c => c.includes(k) || k.includes(c))));
+      if (match && match.user && match.user.username) {
+        // Reassign report
+        if (r.username !== match.user.username) {
+          r.username = match.user.username;
+          if (match.user.teamId) r.teamId = match.user.teamId;
+          changed++;
+        }
+      }
+    });
+
+    if (changed > 0) {
+      localStorage.setItem('fremenatos_visitReports', JSON.stringify(reports));
+      console.log('Reassigned', changed, 'reports to registered sales by name');
+    }
+    localStorage.setItem('fremenatos_reassigned_by_name', '1');
+  } catch (e) {
+    console.warn('Report reassignment failed:', e);
+  }
+})();
 </script>
 </body>
 </html>
