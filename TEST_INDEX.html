@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test Index Fix</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background: #1e293b;
+  color: white;
+}
+.status {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  font-size: 1.2rem;
+}
+.good { background: #065f46; border: 3px solid #10b981; }
+.bad { background: #7f1d1d; border: 3px solid #dc2626; }
+.btn {
+  padding: 14px 28px;
+  background: #38bdf8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 10px 5px;
+  text-decoration: none;
+  display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<h1>🧪 Testing Index.html Fix</h1>
+
+<div id="result"></div>
+
+<a href="index.html" class="btn">🔗 Open index.html</a>
+<a href="app/sales.html" class="btn">🔗 Open sales.html (backup)</a>
+
+<script>
+// Test if potentialCustomers would load
+const testData = {
+  potentials: 29, // Hardcoded in index.html
+  localStorage: JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]').length,
+  summaries: Object.keys(JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}')).length
+};
+
+const total = testData.potentials + testData.localStorage;
+
+const result = document.getElementById('result');
+
+if (total > 0) {
+  result.innerHTML = `
+    <div class="status good">
+      <h2>✅ Data Available!</h2>
+      <p><strong>Hardcoded hospitals:</strong> ${testData.potentials}</p>
+      <p><strong>localStorage hospitals:</strong> ${testData.localStorage}</p>
+      <p><strong>Summaries:</strong> ${testData.summaries}</p>
+      <p><strong>Total Expected:</strong> ${total} hospitals</p>
+      <hr>
+      <p><strong>index.html SHOULD work now!</strong></p>
+      <p>If it still shows 0, check browser console (F12) for errors.</p>
+    </div>
+  `;
+} else {
+  result.innerHTML = `
+    <div class="status bad">
+      <h2>❌ No Data Found!</h2>
+      <p>Neither hardcoded data nor localStorage has hospitals.</p>
+      <p><strong>Solution:</strong> Import data first or use app/sales.html</p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>

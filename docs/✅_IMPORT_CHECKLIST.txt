@@ -1,0 +1,199 @@
+════════════════════════════════════════════════════════════════════
+  ✅ IMPORT CHECKLIST - DO THIS NOW!
+════════════════════════════════════════════════════════════════════
+
+You want to:
+✅ Add full sales notes/summaries (68 hospitals)
+✅ Add specialties you gave me (55+ hospitals)
+
+Everything is READY! Follow this checklist:
+
+════════════════════════════════════════════════════════════════════
+  📋 IMPORT 1: SPECIALTIES (DO THIS FIRST!)
+════════════════════════════════════════════════════════════════════
+
+[ ] STEP 1: Open import-specialties.html
+    └─ Double-click file OR drag to browser
+
+[ ] STEP 2: Upload HOSPITAL_SPECIALTIES_IMPORT.csv
+    └─ Click "Select CSV File" button
+    └─ Choose the CSV file
+
+[ ] STEP 3: Review preview (first 10 hospitals)
+    └─ Make sure data looks correct
+
+[ ] STEP 4: Click "✅ Import Specialties" button
+    └─ Wait for green success message
+    └─ Should say: "✅ Import complete! X specialties added"
+
+[ ] STEP 5: Verify import worked
+    └─ Open index.html
+    └─ Look at hospital cards
+    └─ See "Specialty: [name]" on cards
+    └─ Example: Addis Cardiac Hospital shows "Specialty: Cardiology"
+
+✅ DONE! Move to Import 2
+
+
+════════════════════════════════════════════════════════════════════
+  📝 IMPORT 2: SUMMARIES (DO THIS SECOND!)
+════════════════════════════════════════════════════════════════════
+
+[ ] STEP 1: Open import-summaries.html
+    └─ Double-click file OR drag to browser
+
+[ ] STEP 2: Upload HOSPITAL_SUMMARIES_IMPORT.csv
+    └─ Click "Select CSV File" button
+    └─ Choose the CSV file
+
+[ ] STEP 3: Review preview (first 10 hospitals)
+    └─ Make sure data looks correct
+
+[ ] STEP 4: Click "✅ Import Summaries to Visit Reports" button
+    └─ Wait for green success message
+    └─ Should say: "✅ Import complete! X summaries added"
+
+[ ] STEP 5: Verify import worked
+    └─ Open admin.html
+    └─ Go to "📊 Visit Reports" tab
+    └─ Click "Lotus MCH" card
+    └─ Scroll down to bottom
+    └─ See "📝 Hospital Summary / 医院摘要" section
+    └─ Read the full sales notes!
+
+✅ DONE! Everything imported!
+
+
+════════════════════════════════════════════════════════════════════
+  🔍 VERIFICATION CHECKLIST
+════════════════════════════════════════════════════════════════════
+
+After both imports, verify:
+
+SPECIALTIES:
+[ ] Open index.html (main page)
+[ ] Check hospital cards
+[ ] See specialty on cards (e.g., "Specialty: Cardiology")
+[ ] Click hospital card → See specialty in details
+[ ] Check multiple hospitals to confirm
+
+SUMMARIES:
+[ ] Open admin.html
+[ ] Go to Visit Reports tab
+[ ] Click any report card (try these first):
+    [ ] Lotus MCH
+    [ ] Novamed Clinic
+    [ ] Ajora MCH
+    [ ] Yadon Clinic
+[ ] Scroll to bottom of report detail
+[ ] See "📝 Hospital Summary / 医院摘要" section
+[ ] See full sales notes in gray box
+[ ] Check multiple reports to confirm
+
+
+════════════════════════════════════════════════════════════════════
+  📊 WHAT GETS IMPORTED
+════════════════════════════════════════════════════════════════════
+
+SPECIALTIES (55+ hospitals):
+───────────────────────────
+Biruhkids Pediatrics center     → Pediatrics (Child Health)
+Dr. Shemse MCH                  → Maternal and Child Health (MCH)
+Legehar General Hospital        → General Hospital
+Addis Cardiac Hospital          → Cardiology
+Alfewz Health Care              → Primary Health Care Center
+Dr. Meliha Gyn/Obs              → Gynecology and Obstetrics
+Arada Giorgis Specialized       → Specialized Medical Center
+Caring Specialty Clinic         → Specialty Clinic
+Fikir abrak Internal and MCH    → Internal Medicine and MCH
+...and 46+ more hospitals!
+
+
+SUMMARIES (68 hospitals):
+─────────────────────────
+Lotus MCH              → Full sales notes (equipment, tests/day, 
+                          follow-up actions)
+Novamed Clinic         → Full sales notes
+Ajora MCH              → Full sales notes
+Yadon Clinic           → Full sales notes
+Hewan Gynecology       → Full sales notes
+Yerer General Hospital → Full sales notes
+St. Mary Medium Clinic → Full sales notes
+Tersis Clinics         → Full sales notes
+...and 60+ more hospitals!
+
+
+════════════════════════════════════════════════════════════════════
+  ⏱️ TIME TRACKING
+════════════════════════════════════════════════════════════════════
+
+Import Specialties:  2 minutes
+Import Summaries:    2 minutes
+Verify Results:      2 minutes
+─────────────────────────────
+TOTAL TIME:          6 minutes ⚡
+
+
+════════════════════════════════════════════════════════════════════
+  🎯 FILES YOU NEED
+════════════════════════════════════════════════════════════════════
+
+IMPORT TOOLS (HTML):
+✅ import-specialties.html
+✅ import-summaries.html
+
+DATA FILES (CSV):
+✅ HOSPITAL_SPECIALTIES_IMPORT.csv
+✅ HOSPITAL_SUMMARIES_IMPORT.csv
+
+VIEW RESULTS:
+✅ index.html (for specialties)
+✅ admin.html (for summaries)
+
+
+════════════════════════════════════════════════════════════════════
+  💡 TIPS
+════════════════════════════════════════════════════════════════════
+
+✅ Do specialties FIRST, then summaries
+✅ Wait for success message before moving to next step
+✅ Verify each import worked before proceeding
+✅ If import fails, check CSV file is correct
+✅ If no success message, refresh page and try again
+✅ Both imports save to localStorage (permanent)
+
+
+════════════════════════════════════════════════════════════════════
+  🚀 QUICK START
+════════════════════════════════════════════════════════════════════
+
+RIGHT NOW:
+
+1. Open import-specialties.html
+2. Upload HOSPITAL_SPECIALTIES_IMPORT.csv
+3. Click import
+4. Open import-summaries.html
+5. Upload HOSPITAL_SUMMARIES_IMPORT.csv
+6. Click import
+7. Done! ✅
+
+GO! ⚡
+
+
+════════════════════════════════════════════════════════════════════
+  ✅ COMPLETION CHECKLIST
+════════════════════════════════════════════════════════════════════
+
+When finished, you should have:
+
+[ ] 55+ hospitals with specialty field
+[ ] Specialties visible on hospital cards
+[ ] 68 visit reports with full sales notes
+[ ] Summaries visible in report details
+[ ] All data saved in localStorage
+[ ] Everything working correctly
+
+✅ ALL DONE! 🎉
+
+
+════════════════════════════════════════════════════════════════════

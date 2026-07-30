@@ -1,0 +1,42 @@
+GOOGLE SHEET SETUP - COPY AND PASTE THESE ROWS
+
+===========================================
+TAB 1: Users
+===========================================
+username	password	role	teamId	name	nameZh	createdAt	lastLogin	status	phone	email	preferredTeam	registeredAt
+
+===========================================
+TAB 2: Customers
+===========================================
+id	name	nameZh	city	cityZh	model	contact	phone	email	doctor	lastVisit	teamId	potential	notes	address	specialty	type	createdAt	updatedAt
+
+===========================================
+TAB 3: VisitReports
+===========================================
+id	submittedAt	fillDate	salesPerson	teamId	hospitalName	hospitalAddress	visitingName	position	department	visitTime	visitLocation	phone	hospitalType	doctorsOnDuty	doctorsPartTime	visitType	visitPurpose	objectiveAchievement	otherBrand1	otherOrigin1	otherBrand2	otherOrigin2	otherBrand3	otherOrigin3	wondfostockName	wondfostockQty	elecBrand	elecOrigin	elecDaily	elecPrice	bioBrand	bioOrigin	bioFull	bioSemi	bioDaily	bioPrice	hemBrand	hemOrigin	hemDaily	hemPrice	tubeBrand	tubeOrigin	tubeQty	tubePrice	tubeColor	btBrand	btOrigin	btQtyPrice	needleBrand	needleOrigin	needleQty	needleModel	needlePrice	equipNeeds	medicationHabits	fluidMedicine	medicationHabits2	customerCategory	customerPotential	visitProgress	nextVisitDate	nextVisitTarget	discussionNotes	currentEquipment	outcome	orders
+
+===========================================
+TAB 4: PotentialCustomers
+===========================================
+name	address	contact	phone	patientLoad	hormoneAnalyzer	chemAnalyzer	electrolyteAnalyzer	testTubes	status	notes	salesRep	fromVisit	teamId
+
+===========================================
+TAB 5: FacilitySummaries
+===========================================
+hospitalName	summary
+
+===========================================
+TAB 6: Announcements (Optional)
+===========================================
+id	hospitalName	hospitalAddress	contact	phone	salesPerson	teamId	purchaseType	machineModel	status	notes	announcedAt	reportId	confirmedAt	confirmedBy	rejectReason
+
+===========================================
+INSTRUCTIONS:
+===========================================
+1. Create new Google Sheet
+2. For each tab above:
+   - Click + to add new sheet
+   - Rename the sheet to match the tab name
+   - Copy the header row and paste it in the first row
+3. Share the sheet with your team
+4. Then I'll create the Apps Script code

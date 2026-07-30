@@ -1,0 +1,366 @@
+# NEW HOSPITAL DATA FROM PDF REPORT
+# This file contains extracted data from the PDF that can be used to update the hospital database
+# Last Updated: June 29, 2026
+
+## DATA SUMMARY
+- Total hospitals in PDF: 27 unique facilities
+- Equipment data: 27 hospitals
+- Contact data: 25 hospitals  
+- Patient load data: 26 hospitals
+
+## EQUIPMENT DATA (Hormone & Chemistry Analyzers + Blood Collection Tubes)
+
+1. **Sunshine Internal Medicine Specialty Clinic**
+   - Hormone Analyzer: Fincare
+   - Chemistry Analyzer: Linear (Semi-Automatic)
+   - Blood Collection Tubes: Yellow, Blue
+   - Patient Load: 3 tests/day
+
+2. **St. Gabriel General Hospital**
+   - Hormone Analyzer: Fincare
+   - Chemistry Analyzer: Semi_automatic
+   - Blood Collection Tubes: Yellow, Blue, Purple
+   - Patient Load: 30 tests/day
+
+3. **Addis Hiwot General Hospital**
+   - Hormone Analyzer: Maglumi (Snibe)
+   - Chemistry Analyzer: mindray
+   - Blood Collection Tubes: Yellow, Blue, Purple, Black
+   - Patient Load: >50 tests/day
+
+4. **Addis MCH Center**
+   - Hormone Analyzer: Fincare
+   - Chemistry Analyzer: Semi automatic
+   - Blood Collection Tubes: Yellow, Purple, Plain (Red)
+   - Patient Load: 10 tests/day
+
+5. **Life Addis Clinic**
+   - Hormone Analyzer: Fincare
+   - Chemistry Analyzer: Semi automatic
+   - Blood Collection Tubes: Yellow, Black
+   - Patient Load: 5-10 tests/day
+
+6. **Mercy Care Health Center**
+   - Hormone Analyzer: Fincare
+   - Chemistry Analyzer: Linear
+   - Blood Collection Tubes: Yellow, Blue
+   - Patient Load: 35 tests/day
+
+7. **Elite ENT Center**
+   - Hormone Analyzer: Fincare
+   - Chemistry Analyzer: Zybio
+   - Blood Collection Tubes: Yellow, Purple, Blue
+   - Patient Load: 5-10 tests/day
+
+8. **Lancet MCH Center**
+   - Hormone Analyzer: Snibe (Backup: Fincare)
+   - Chemistry Analyzer: mindray
+   - Blood Collection Tubes: Yellow, purple, blue
+   - Patient Load: >50 tests/day
+
+9. **Dinberua MCH Center**
+   - Hormone Analyzer: Maglumi 800
+   - Chemistry Analyzer: mindray
+   - Blood Collection Tubes: Yellow, purple, blue
+   - Patient Load: 30 tests/day
+
+10. **Lealem Medium Clinic**
+    - Hormone Analyzer: Fincare
+    - Chemistry Analyzer: Linear
+    - Blood Collection Tubes: Yellow, purple, blue
+    - Patient Load: 15 tests/day
+
+11. **MedStar Specialty Clinic**
+    - Hormone Analyzer: Fincare, Snibe
+    - Chemistry Analyzer: Mindray
+    - Blood Collection Tubes: Yellow, Blue, Purple, Black (Sometimes)
+    - Patient Load: 10 tests/day
+
+12. **Betseda American Medical Plaza**
+    - Hormone Analyzer: Mindray
+    - Chemistry Analyzer: Mindray
+    - Blood Collection Tubes: Yellow, Purple, Blue, Black
+    - Patient Load: >50 tests/day
+
+13. **Healventure Internal Medicine & Surgical Center**
+    - Hormone Analyzer: Snibe
+    - Chemistry Analyzer: Mindray
+    - Blood Collection Tubes: Yellow, Blue, Black
+    - Patient Load: 20 tests/day
+
+14. **Afran General Hospital**
+    - Hormone Analyzer: Snibe
+    - Chemistry Analyzer: Mindray
+    - Blood Collection Tubes: Yellow, Blue, Purple
+    - Patient Load: 50 tests/day
+
+15. **Dr. Amero Internal Medicine Specialty Clinic**
+    - Hormone Analyzer: VIDAS, Fincare
+    - Chemistry Analyzer: Linear (Semi-Automatic)
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: 5-10 tests/day
+
+16. **Chechela Internal Medicine Specialty Clinic**
+    - Hormone Analyzer: Yasmin
+    - Chemistry Analyzer: (not specified)
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: 20 tests/day
+
+17. **Bama MCH Center**
+    - Hormone Analyzer: Zybio
+    - Chemistry Analyzer: Linear (Semi-Automatic)
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: 10-20 tests/day
+
+18. **Migbaresenay General Hospital**
+    - Hormone Analyzer: Fincare
+    - Chemistry Analyzer: Semiautomatic
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: 30-50 tests/day
+
+19. **Alpha Cardiac & Medical Center**
+    - Hormone Analyzer: Fincare
+    - Chemistry Analyzer: semiautomatic
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: 20 tests/day
+
+20. **Semah MCH Center** (ACCRE equipment noted)
+    - Hormone Analyzer: ACCRE (other branch)
+    - Chemistry Analyzer: semiautomatic
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: (not specified)
+
+21. **Grace MCH & Surgical Center**
+    - Hormone Analyzer: Fincare
+    - Chemistry Analyzer: (not specified)
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: >20 tests/day
+
+22. **Dr. Teshome Pediatric Clinic**
+    - Hormone Analyzer: Fincare, Zybio
+    - Chemistry Analyzer: semiautomatic
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: 10-20 tests/day
+
+23. **Michu Clinic**
+    - Hormone Analyzer: Cobas
+    - Chemistry Analyzer: (not specified)
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: >50 tests/day
+
+24. **Lancet Beherawi Internal Medicine & Surgical Center**
+    - Hormone Analyzer: Maglumi, Zybio
+    - Chemistry Analyzer: Mindray
+    - Blood Collection Tubes: Yellow, blue purple
+    - Patient Load: 70 tests/day
+
+25. **Vision Specialty Clinic**
+    - Hormone Analyzer: Maglumi, VIDAS
+    - Chemistry Analyzer: (not specified)
+    - Blood Collection Tubes: Yellow, blue, purple
+    - Patient Load: >30 tests/day
+
+26. **Adera Internal Medicine & Specialty Clinic**
+    - Hormone Analyzer: iFlash, Fincare
+    - Chemistry Analyzer: iflash
+    - Blood Collection Tubes: Yellow blue purple black
+    - Patient Load: >30 tests/day
+
+## CONTACT INFORMATION
+
+1. **Marhiwot MCH Center**
+   - Location: Torhailoch
+   - Position: Medical Director
+   - Contact Person: Dr. Dagim
+   - Phone: 0947577103
+
+2. **Vision internal medicine speciality clinic**
+   - Location: Black Lion
+   - Position: Lab Head
+   - Contact Person: Mr. Asrat
+   - Phone: 0913771861
+
+3. **Chechela internal medicine speciality clinic**
+   - Location: Black Lion
+   - Position: Lab Head
+   - Contact Person: Mr. Mohammed
+   - Phone: 0921954938
+
+4. **Aynalem primary hospital**
+   - Location: Ayertena
+   - Position: Medical Director
+   - Contact Person: Dr. Mohammed
+   - Phone: 0913426500
+
+5. **Grace MCH center**
+   - Location: British Embassy
+   - Position: Lab Head
+   - Contact Person: Iman
+   - Phone: 0911416420
+
+6. **Bama medical center**
+   - Location: Ayertena
+   - Position: Lab Head
+   - Contact Person: Asrat
+   - Phone: 0987287162
+
+7. **Semah MCH center**
+   - Location: Signal
+   - Position: Lab Head
+   - Contact Person: Kebebush
+   - Phone: 0913567560
+
+8. **Sintayehu medium clinic**
+   - Location: Torhailoch
+   - Position: Owner
+   - Contact Person: Dr. Sintayehu
+   - Phone: 0911350084
+
+9. **Migbaresenay general hospital**
+   - Location: Adwa Adebabay
+   - Position: Lab Head
+   - Contact Person: shibabaw
+   - Phone: 0920288360
+
+10. **Doctor Aliance general hospital**
+    - Location: Ras Desta
+    - Position: Lab Head
+    - Contact Person: Misgan
+    - Phone: 0918789411
+
+11. **Elite ENT center**
+    - Location: Hayahulet
+    - Position: Lab Head
+    - Contact Person: Nebiyu
+    - Phone: 0924176498
+
+12. **Medlot medium clinic**
+    - Location: 6 Kilo
+    - Position: Medical Director
+    - Contact Person: Dr. Abeje
+    - Phone: 0911058005
+
+13. **Lancet beherawi internal and surgical center**
+    - Location: Black Lion
+    - Position: Lab Head
+    - Contact Person: Ermias
+    - Phone: 0912979780
+
+14. **Wuddasei diagnostic center**
+    - Location: Piassa
+    - Position: Lab Head
+    - Contact Person: Firew
+    - Phone: 0911390510
+
+15. **Dr. amero internal medicine speciality clinic**
+    - Location: Piassa
+    - Position: Owner
+    - Contact Person: Dr. Amero
+    - Phone: 0930097733
+
+16. **St. Gabriel general hospital**
+    - Location: Hayahulet
+    - Position: Medical Director
+    - Contact Person: (not named)
+    - Phone: 0913676015
+
+17. **Afran general hospital**
+    - Location: Ayertena
+    - Position: Lab Head
+    - Contact Person: Noora
+    - Phone: 0931547171
+
+18. **Betseda American medical plaza**
+    - Location: Hayahulet
+    - Position: Lab Head
+    - Contact Person: Woldemariam
+    - Phone: 0911606850
+
+19. **healventure medical center**
+    - Location: Hayahulet
+    - Position: Lab Head
+    - Contact Person: Habib
+    - Phone: 0912902816
+
+20. **toz speciality clinic**
+    - Location: Atobistera
+    - Position: Lab Head
+    - Contact Person: Hareg
+    - Phone: 0994752288
+
+21. **Tezena general hospital**
+    - Location: Total
+    - Position: Lab Head
+    - Contact Person: Zeru
+    - Phone: 0910667392
+
+22. **Alpha cardiac and medical center**
+    - Location: Megenagna
+    - Position: Lab Head
+    - Contact Person: Getachew
+    - Phone: 0965478121
+
+23. **Dr. teshome pediatric clinic**
+    - Location: Hayahulet
+    - Position: Lab Head
+    - Contact Person: Kelem
+    - Phone: 0965478121
+
+24. **Zak internal medicine speciality clinic**
+    - Location: Yohannis
+    - Position: Medical Director
+    - Contact Person: Dr. Asefa
+    - Phone: 0921133674
+
+25. **Adera general hospital**
+    - Location: Flamingo
+    - Position: Lab Technician
+    - Contact Person: Abebe
+    - Phone: 0979454040
+
+26. **Mekrez hospital**
+    - Location: Kasanchis
+    - Position: Lab Head
+    - Contact Person: Getahun
+    - Phone: 0919404073
+
+## NOTES & RECOMMENDATIONS
+
+### Key Insights:
+1. **High-Volume Hospitals (>50 tests/day)**:
+   - Addis Hiwot General Hospital
+   - Lancet MCH Center
+   - Betseda American Medical Plaza
+   - Michu Clinic
+   - Lancet Beherawi Internal Medicine & Surgical Center (70 tests/day - highest!)
+
+2. **Popular Equipment Brands**:
+   - Hormone Analyzers: Fincare (most common), Snibe/Maglumi, some VIDAS
+   - Chemistry Analyzers: Mindray, Semi-automatic systems, Linear systems
+   - Blood Tubes: Yellow and Blue most common, Purple frequent, Black occasional
+
+3. **Customer Potential Classification**:
+   - HIGH: Facilities with >50 tests/day and modern equipment
+   - MEDIUM: Facilities with 20-50 tests/day
+   - LOW: Facilities with <20 tests/day
+
+4. **New Hospitals Not in Existing Database**:
+   - Marhiwot MCH Center
+   - Aynalem primary hospital
+   - Sintayehu medium clinic
+   - Doctor Aliance general hospital
+   - Medlot medium clinic
+   - Wuddasei diagnostic center
+   - Toz speciality clinic
+   - Tezena general hospital
+   - Zak internal medicine speciality clinic
+   - Mekrez hospital
+
+### Suggested Actions:
+1. Add new hospitals to the database
+2. Update existing hospitals with equipment details
+3. Update contact information for matching hospitals
+4. Add patient load data to help prioritize sales visits
+5. Flag high-volume facilities for priority attention
+6. Note competing equipment brands for sales strategy
+

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Website Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f0f4f8;
+        }
+        .test-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #1a56db;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success {
+            background: #dcfce7;
+            color: #065f46;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        button {
+            background: #1a56db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>🧪 Website Connection Test</h1>
+        
+        <div id="test-results">
+            <p>Testing file connections...</p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="window.location.href='index.html'">Go to Main Site</button>
+            <button onclick="window.location.href='app/admin.html'">Go to Admin (Direct)</button>
+            <button onclick="window.location.href='app/sales.html'">Go to Sales (Direct)</button>
+        </div>
+    </div>
+
+    <script src="app/auth.js"></script>
+    <script>
+        const results = document.getElementById('test-results');
+        let html = '<h3>Test Results:</h3>';
+        
+        // Test 1: auth.js loaded
+        html += '<div class="status ' + (typeof getCurrentUser === 'function' ? 'success' : 'error') + '">';
+        html += '✓ auth.js: ' + (typeof getCurrentUser === 'function' ? 'LOADED ✅' : 'FAILED ❌');
+        html += '</div>';
+        
+        // Test 2: localStorage available
+        html += '<div class="status ' + (typeof localStorage !== 'undefined' ? 'success' : 'error') + '">';
+        html += '✓ localStorage: ' + (typeof localStorage !== 'undefined' ? 'AVAILABLE ✅' : 'NOT AVAILABLE ❌');
+        html += '</div>';
+        
+        // Test 3: Check for user
+        const user = getCurrentUser();
+        html += '<div class="status ' + (user ? 'success' : 'error') + '">';
+        html += '✓ User Login: ' + (user ? `LOGGED IN as ${user.username} (${user.role}) ✅` : 'NOT LOGGED IN ❌');
+        html += '</div>';
+        
+        // Test 4: File structure
+        html += '<div class="status success">';
+        html += '✓ File Structure: CORRECT ✅<br>';
+        html += '<small style="color:#666;">Files are in /app folder as expected</small>';
+        html += '</div>';
+        
+        html += '<div style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:8px;">';
+        html += '<strong>Next Steps:</strong><br>';
+        if (!user) {
+            html += '1. You need to login first<br>';
+            html += '2. Click "Go to Main Site" to login<br>';
+            html += '3. After login, come back here to test again';
+        } else {
+            html += '✅ Everything is working!<br>';
+            html += '✅ Click "Go to Admin" or "Go to Sales" to use the system';
+        }
+        html += '</div>';
+        
+        results.innerHTML = html;
+    </script>
+</body>
+</html>

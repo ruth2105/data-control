@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Sunshine Internal Medicine Specialty Clinic",
+    "nameZh": "阳光内科专科诊所",
+    "city": "A.A",
+    "hormoneAnalyzer": "Fincare",
+    "chemistryAnalyzer": "Linear (Semi-Automatic)",
+    "bloodTubes": "Yellow, Blue",
+    "patientLoad": "3",
+    "model": "EXT"
+  },
+  {
+    "name": "St. Gabriel General Hospital",
+    "nameZh": "圣加百列综合医院",
+    "city": "A.A",
+    "hormoneAnalyzer": "Fincare",
+    "chemistryAnalyzer": "Semi_automatic",
+    "bloodTubes": "Yellow, Blue, Purple",
+    "patientLoad": "30",
+    "contacts": [{
+      "role": "Medical Director",
+      "roleZh": "医疗主任",
+      "name": "",
+      "phone": "0913676015"
+    }],
+    "location": "Hayahulet",
+    "model": "EXT"
+  },
+  {
+    "name": "Addis Hiwot General Hospital",
+    "nameZh": "阿迪斯希沃特综合医院",
+    "city": "A.A",
+    "hormoneAnalyzer": "Maglumi (Snibe)",
+    "chemistryAnalyzer": "mindray",
+    "bloodTubes": "Yellow, Blue, Purple, Black",
+    "patientLoad": ">50",
+    "potential": "HIGH",
+    "model": "EXT"
+  },
+  {
+    "name": "Addis MCH Center",
+    "nameZh": "阿迪斯妇幼中心",
+    "city": "A.A",
+    "hormoneAnalyzer": "Fincare",
+    "chemistryAnalyzer": "Semi automatic",
+    "bloodTubes": "Yellow, Purple, Plain (Red)",
+    "patientLoad": "10",
+    "model": "EXT"
+  },
+  {
+    "name": "Life Addis Clinic",
+    "nameZh": "生命阿迪斯诊所",
+    "city": "A.A",
+    "hormoneAnalyzer": "Fincare",
+    "chemistryAnalyzer": "Semi automatic",
+    "bloodTubes": "Yellow, Black",
+    "patientLoad": "5-10",
+    "model": "EXT"
+  },
+  {
+    "name": "Mercy Care Health Center",
+    "nameZh": "慈悲关怀健康中心",
+    "city": "A.A",
+    "hormoneAnalyzer": "Fincare",
+    "chemistryAnalyzer": "Linear",
+    "bloodTubes": "Yellow, Blue",
+    "patientLoad": "35",
+    "model": "EXT"
+  },
+  {
+    "name": "Elite ENT Center",
+    "nameZh": "精英耳鼻喉中心",
+    "city": "A.A",
+    "hormoneAnalyzer": "Fincare",
+    "chemistryAnalyzer": "Zybio",
+    "bloodTubes": "Yellow, Purple, Blue",
+    "patientLoad": "5-10",
+    "contacts": [{
+      "role": "Lab Head",
+      "roleZh": "检验科主任",
+      "name": "Nebiyu",
+      "phone": "0924176498"
+    }],
+    "location": "Hayahulet",
+    "model": "EXT"
+  },
+  {
+    "name": "Lancet MCH Center",
+    "nameZh": "兰斯特妇幼中心",
+    "city": "A.A",
+    "hormoneAnalyzer": "Snibe (Backup: Fincare)",
+    "chemistryAnalyzer": "mindray",
+    "bloodTubes": "Yellow, purple, blue",
+    "patientLoad": ">50",
+    "potential": "HIGH",
+    "model": "EXT"
+  },
+  {
+    "name": "Dinberua MCH Center",
+    "nameZh": "丁贝鲁阿妇幼中心",
+    "city": "A.A",

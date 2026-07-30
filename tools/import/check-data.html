@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Check LocalStorage Data</title>
+<style>
+body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+.section { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+h2 { color: #1a56db; }
+pre { background: #f8f8f8; padding: 10px; border-radius: 4px; overflow-x: auto; }
+.count { color: #10b981; font-weight: bold; font-size: 1.2em; }
+</style>
+</head>
+<body>
+
+<h1>📊 LocalStorage Data Check</h1>
+
+<div class="section">
+  <h2>Visit Reports (fremenatos_visitReports)</h2>
+  <div class="count" id="visitReportsCount">Loading...</div>
+  <pre id="visitReportsData"></pre>
+</div>
+
+<div class="section">
+  <h2>Potential Customers (fremenatos_potentials)</h2>
+  <div class="count" id="potentialsCount">Loading...</div>
+  <pre id="potentialsData"></pre>
+</div>
+
+<div class="section">
+  <h2>Machine Customers (fremenatos_machine)</h2>
+  <div class="count" id="machineCount">Loading...</div>
+  <pre id="machineData"></pre>
+</div>
+
+<div class="section">
+  <h2>External Customers (fremenatos_external)</h2>
+  <div class="count" id="externalCount">Loading...</div>
+  <pre id="externalData"></pre>
+</div>
+
+<script>
+// Visit Reports
+const visitReports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+document.getElementById('visitReportsCount').textContent = `Total: ${visitReports.length} reports`;
+document.getElementById('visitReportsData').textContent = visitReports.length > 0 
+  ? JSON.stringify(visitReports.slice(0, 3), null, 2) + '\n\n... (showing first 3)' 
+  : 'No visit reports found';
+
+// Potentials
+const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+document.getElementById('potentialsCount').textContent = `Total: ${potentials.length} potentials`;
+document.getElementById('potentialsData').textContent = potentials.length > 0 
+  ? JSON.stringify(potentials.slice(0, 3), null, 2) + '\n\n... (showing first 3)' 
+  : 'No potentials found';
+
+// Machine
+const machine = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+document.getElementById('machineCount').textContent = `Total: ${machine.length} machine customers`;
+document.getElementById('machineData').textContent = machine.length > 0 
+  ? JSON.stringify(machine.slice(0, 3), null, 2) + '\n\n... (showing first 3)' 
+  : 'No machine customers found';
+
+// External
+const external = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+document.getElementById('externalCount').textContent = `Total: ${external.length} external customers`;
+document.getElementById('externalData').textContent = external.length > 0 
+  ? JSON.stringify(external.slice(0, 3), null, 2) + '\n\n... (showing first 3)' 
+  : 'No external customers found';
+</script>
+
+</body>
+</html>

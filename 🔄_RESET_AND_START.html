@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reset & Start Fresh</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.btn {
+  padding: 18px 40px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 10px;
+}
+
+.btn-reset {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.btn-reset:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(239,68,68,0.3);
+}
+
+.btn-continue {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.btn-continue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(16,185,129,0.3);
+}
+
+.status {
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+}
+
+.status.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 2px solid #86efac;
+  display: block;
+}
+
+.info-box {
+  background: #fef3c7;
+  border: 2px solid #fbbf24;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 30px 0;
+  text-align: left;
+}
+
+.info-box h3 {
+  color: #92400e;
+  margin-bottom: 12px;
+}
+
+.info-box ul {
+  color: #92400e;
+  margin-left: 20px;
+}
+
+.info-box li {
+  margin: 8px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔄 Reset System</h1>
+  <p class="subtitle">
+    This will clear all browser storage and start fresh.<br>
+    Use this to fix login issues and mixed admin/sales display.
+  </p>
+
+  <div class="info-box">
+    <h3>⚠️ What will be reset:</h3>
+    <ul>
+      <li>✅ All login sessions</li>
+      <li>✅ Browser cache for this site</li>
+      <li>✅ Any stored credentials</li>
+    </ul>
+    <br>
+    <h3>✅ What will NOT be lost:</h3>
+    <ul>
+      <li>📊 Your hospital data</li>
+      <li>📝 Visit reports</li>
+      <li>👥 User accounts</li>
+      <li>📋 Hospital summaries</li>
+    </ul>
+  </div>
+
+  <button class="btn btn-reset" onclick="resetEverything()">
+    🔄 Reset & Clear Everything
+  </button>
+
+  <div id="status" class="status"></div>
+
+  <div id="continue" style="display:none;margin-top:20px">
+    <p style="margin-bottom:15px;font-weight:600;color:#166534">
+      ✅ Reset Complete! Choose where to go:
+    </p>
+    <button class="btn btn-continue" onclick="window.location.href='app/admin.html'">
+      👨‍💼 Go to Admin Page
+    </button>
+    <button class="btn btn-continue" onclick="window.location.href='app/sales.html'">
+      💼 Go to Sales Page
+    </button>
+  </div>
+</div>
+
+<script>
+function resetEverything() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ Resetting...';
+  
+  try {
+    // Clear all localStorage
+    localStorage.clear();
+    
+    // Clear all sessionStorage
+    sessionStorage.clear();
+    
+    // Show success
+    const status = document.getElementById('status');
+    status.className = 'status success';
+    status.innerHTML = `
+      <h2 style="margin-bottom:10px">✅ Successfully Reset!</h2>
+      <p>All browser storage has been cleared.</p>
+      <p>You can now login fresh without any conflicts.</p>
+    `;
+    
+    // Show continue buttons
+    document.getElementById('continue').style.display = 'block';
+    
+    // Hide reset button
+    btn.style.display = 'none';
+    
+  } catch (error) {
+    alert('Error: ' + error.message);
+    btn.disabled = false;
+    btn.textContent = '🔄 Reset & Clear Everything';
+  }
+}
+</script>
+
+</body>
+</html>

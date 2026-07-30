@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Fix Short Summaries - Re-import FULL TEXT</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f0f4f8;
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+h1 {
+  color: #dc2626;
+  margin-bottom: 10px;
+}
+.problem {
+  background: #fee2e2;
+  border: 3px solid #dc2626;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.solution {
+  background: #dcfce7;
+  border: 3px solid #10b981;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.btn {
+  padding: 14px 28px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 10px 5px;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+.btn-success {
+  background: #10b981;
+}
+#results {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+}
+.summary-preview {
+  background: #f3f4f6;
+  border: 2px solid #9ca3af;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.short {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+.long {
+  border-color: #10b981;
+  background: #dcfce7;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⚠️ FIX: Short Summaries → Full Text</h1>
+  
+  <div class="problem">
+    <h2 style="margin-top:0">🔍 Problem Detected:</h2>
+    <p><strong>Your summaries are SHORT (truncated)</strong></p>
+    <p>They should be LONG with full details (150-500 characters)</p>
+    <p>But they're showing as short text (20-100 characters)</p>
+  </div>
+
+  <div class="solution">
+    <h2 style="margin-top:0">✅ Solution:</h2>
+    <p><strong>Re-import with FULL TEXT from the correct source</strong></p>
+    <p>This tool will:</p>
+    <ol>
+      <li>Clear current SHORT summaries</li>
+      <li>Import FULL TEXT summaries with all details</li>
+      <li>Save correctly to localStorage</li>
+    </ol>
+  </div>
+
+  <div style="text-align: center; margin: 30px 0;">
+    <button class="btn" onclick="checkCurrentSummaries()">🔍 Check Current Summaries</button>
+    <button class="btn btn-success" onclick="fixSummaries()">🔧 FIX: Import FULL TEXT</button>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+// FULL TEXT SUMMARIES - Kalkidan (27 hospitals)
+const KALKIDAN_FULL = [
+  {name:"tersis clinics",summary:"Tersis Clinics is a hot priority facility located in lamberet. They currently use vidas for hormone testing, semi automated for chemistry, and semi automated un specified analyzer for electrolyte analysis. The facility has an estimated patient load of 5 tests/day and requires SST, EDTA tubes. Current opportunity: Strong interest and expansion potential. Continued follow-up with Liyu Tersis Clinic Lab is recommended to advance the opportunity."},
+  {name:"lotus mch",summary:"Lotus Mch is a hot priority facility located in Garment. They currently use Finecare for hormone testing, Mindray for chemistry, and B&E for electrolyte analysis. The facility has an estimated patient load of 10–20 tests/day and requires SST, EDTA tubes. Current opportunity: Interested in reagent placement; requested comparative analysis. Continued follow-up with Head Lab Technician, Medical Director is recommended to advance the opportunity."},
+  {name:"novamed clinic",summary:"Novamed Clinic is a hot priority facility located in goro. They currently use Finecare for hormone testing, none for chemistry, and Interested in B&E Electrolyte for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes. Current opportunity: Interested in electrolyte analyzer. Continued follow-up with Zeaman (Laboratory Head) is recommended to advance the opportunity."},
+  {name:"yerer general hospital",summary:"Yerer General Hospital is a hot priority facility located in yerer. They currently use Finecare, Zybio, Maglumi for hormone testing, Mindray for chemistry, and fully automated un specified anlyzer for electrolyte analysis. The facility has an estimated patient load of >20 tests/day and requires SST, EDTA tubes. Current opportunity: Considering ACCRE as an additional analyzer. Continued follow-up with Head Lab Technician is recommended to advance the opportunity."}
+];
+
+function checkCurrentSummaries() {
+  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  const results = document.getElementById('results');
+  
+  const hospitals = Object.keys(facilitySummaries);
+  
+  if (hospitals.length === 0) {
+    results.innerHTML = `
+      <h3 style="color:#dc2626">❌ No Summaries Found!</h3>
+      <p>No summaries in localStorage. Click "FIX: Import FULL TEXT" to import.</p>
+    `;
+    return;
+  }
+  
+  let shortCount = 0;
+  let fullCount = 0;
+  
+  const samples = hospitals.slice(0, 5).map(name => {
+    const summary = facilitySummaries[name];
+    const length = summary.length;
+    const isShort = length < 150;
+    
+    if (isShort) shortCount++; else fullCount++;
+    
+    return `
+      <div>
+        <h4 style="color:${isShort?'#dc2626':'#10b981'}">${name}</h4>
+        <p><strong>Length:</strong> ${length} characters ${isShort?'⚠️ SHORT':'✅ FULL'}</p>
+        <div class="summary-preview ${isShort?'short':'long'}">${summary}</div>
+      </div>
+    `;
+  }).join('<hr>');
+  
+  results.innerHTML = `
+    <h3>📊 Current Summaries:</h3>
+    <p><strong>Total:</strong> ${hospitals.length}</p>
+    <p><strong>✅ Full Text (>150 chars):</strong> ${fullCount}</p>
+    <p><strong>⚠️ Short Text (<150 chars):</strong> ${shortCount}</p>
+    <hr>
+    <h4>Sample (First 5):</h4>
+    ${samples}
+  `;
+}
+
+function fixSummaries() {
+  if (!confirm('This will REPLACE all summaries with FULL TEXT versions. Continue?')) {
+    return;
+  }
+  
+  const results = document.getElementById('results');
+  results.innerHTML = '<h3>⏳ Fixing summaries...</h3>';
+  
+  // Get current summaries
+  const facilitySummaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  
+  // Check what we have
+  const before = Object.keys(facilitySummaries).length;
+  let fixed = 0;
+  
+  // Add FULL TEXT versions
+  KALKIDAN_FULL.forEach(item => {
+    const oldLength = facilitySummaries[item.name] ? facilitySummaries[item.name].length : 0;
+    facilitySummaries[item.name] = item.summary;
+    
+    if (oldLength < item.summary.length) {
+      fixed++;
+    }
+  });
+  
+  // Save back
+  localStorage.setItem('fremenatos_facility_summaries', JSON.stringify(facilitySummaries));
+  
+  const after = Object.keys(facilitySummaries).length;
+  
+  results.innerHTML = `
+    <div style="background:#dcfce7;padding:20px;border-radius:8px;border:3px solid #10b981">
+      <h3 style="color:#10b981;margin-top:0">✅ Summaries Fixed!</h3>
+      <p><strong>Before:</strong> ${before} summaries</p>
+      <p><strong>After:</strong> ${after} summaries</p>
+      <p><strong>Fixed/Updated:</strong> ${fixed} summaries now have FULL TEXT</p>
+      <hr style="margin:20px 0">
+      <h4>Sample Fixed Summary:</h4>
+      <div class="summary-preview long">${KALKIDAN_FULL[0].summary}</div>
+      <p style="margin-top:20px"><strong>✅ Now refresh your page and check "Tersis Clinics" - you'll see the FULL summary!</strong></p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>

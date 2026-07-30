@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Data</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .section { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .count { font-size: 24px; font-weight: bold; color: #1a56db; }
+        button { padding: 10px 20px; background: #dc2626; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Data Check Tool</h1>
+    
+    <div class="section">
+        <h3>📊 Current Data Counts:</h3>
+        <div>Potentials: <span class="count" id="potentialsCount">0</span></div>
+        <div>Machine: <span class="count" id="machineCount">0</span></div>
+        <div>External: <span class="count" id="externalCount">0</span></div>
+        <div>Visit Reports: <span class="count" id="reportsCount">0</span></div>
+        <div><strong>Total Combined: <span class="count" id="totalCount">0</span></strong></div>
+    </div>
+
+    <div class="section">
+        <h3>⚠️ Clear Data Actions:</h3>
+        <button onclick="clearPotentials()">Clear Potentials</button>
+        <button onclick="clearMachine()">Clear Machine</button>
+        <button onclick="clearExternal()">Clear External</button>
+        <button onclick="clearReports()">Clear Reports</button>
+        <button onclick="clearAll()" style="background: #1a56db;">Clear All Data</button>
+    </div>
+
+    <div class="section">
+        <h3>📋 First 5 Potentials:</h3>
+        <pre id="potentialsPreview"></pre>
+    </div>
+
+    <script>
+        function updateCounts() {
+            const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+            const machine = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+            const external = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+            const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+
+            document.getElementById('potentialsCount').textContent = potentials.length;
+            document.getElementById('machineCount').textContent = machine.length;
+            document.getElementById('externalCount').textContent = external.length;
+            document.getElementById('reportsCount').textContent = reports.length;
+            document.getElementById('totalCount').textContent = potentials.length + machine.length + external.length;
+
+            document.getElementById('potentialsPreview').textContent = JSON.stringify(potentials.slice(0, 5), null, 2);
+        }
+
+        function clearPotentials() {
+            if(confirm('Clear all potentials?')) {
+                localStorage.removeItem('fremenatos_potentials');
+                updateCounts();
+            }
+        }
+
+        function clearMachine() {
+            if(confirm('Clear all machine customers?')) {
+                localStorage.removeItem('fremenatos_machine');
+                updateCounts();
+            }
+        }
+
+        function clearExternal() {
+            if(confirm('Clear all external customers?')) {
+                localStorage.removeItem('fremenatos_external');
+                updateCounts();
+            }
+        }
+
+        function clearReports() {
+            if(confirm('Clear all visit reports?')) {
+                localStorage.removeItem('fremenatos_visitReports');
+                updateCounts();
+            }
+        }
+
+        function clearAll() {
+            if(confirm('Clear ALL data? This cannot be undone!')) {
+                localStorage.removeItem('fremenatos_potentials');
+                localStorage.removeItem('fremenatos_machine');
+                localStorage.removeItem('fremenatos_external');
+                localStorage.removeItem('fremenatos_visitReports');
+                updateCounts();
+            }
+        }
+
+        updateCounts();
+    </script>
+</body>
+</html>

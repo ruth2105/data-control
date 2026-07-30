@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✅ Data Verification Tool</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  padding: 30px;
+  margin: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+h1 {
+  color: #065f46;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 40px;
+  font-size: 1.2rem;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.status-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 3px solid #10b981;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+}
+
+.status-card.warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-color: #f59e0b;
+}
+
+.status-card.error {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-color: #ef4444;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #065f46;
+  margin: 10px 0;
+}
+
+.stat-label {
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.details {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 20px 0;
+}
+
+.details h3 {
+  color: #1e293b;
+  margin-bottom: 15px;
+}
+
+.details pre {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.btn {
+  display: inline-block;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 700;
+  margin: 10px 10px 10px 0;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.actions {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.sample-list {
+  list-style: none;
+  padding: 0;
+}
+
+.sample-list li {
+  padding: 10px;
+  background: white;
+  margin: 5px 0;
+  border-radius: 6px;
+  border-left: 4px solid #10b981;
+}
+
+.icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>✅ Data Verification</h1>
+  <p class="subtitle">Check if all hospital data is loaded correctly</p>
+
+  <div class="status-grid" id="statusGrid">
+    <!-- Cards will be generated here -->
+  </div>
+
+  <div class="details">
+    <h3>📊 Detailed Breakdown:</h3>
+    <pre id="detailsOutput">Loading...</pre>
+  </div>
+
+  <div class="details">
+    <h3>🏥 Sample Hospitals (First 10):</h3>
+    <ul class="sample-list" id="sampleList">
+      <li>Loading...</li>
+    </ul>
+  </div>
+
+  <div class="details">
+    <h3>📝 Sample Summaries (First 5):</h3>
+    <pre id="summariesOutput">Loading...</pre>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="location.href='MASTER_IMPORT.html'">📥 Re-Import Data</button>
+    <button class="btn" onclick="location.href='index.html'">🏥 Open Dashboard</button>
+    <button class="btn" onclick="location.href='app/sales.html'">📱 Open Sales View</button>
+    <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+  </div>
+</div>
+
+<script>
+function checkData() {
+  // Get all data from localStorage
+  const machine = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+  const external = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+  const potentials = JSON.parse(localStorage.getItem('fremenatos_potentials') || '[]');
+  const summaries = JSON.parse(localStorage.getItem('fremenatos_facility_summaries') || '{}');
+  const reports = JSON.parse(localStorage.getItem('fremenatos_visitReports') || '[]');
+  const users = JSON.parse(localStorage.getItem('fremenatos_users') || '[]');
+  
+  // Calculate totals
+  const totalHospitals = machine.length + external.length + potentials.length + 29; // +29 hardcoded
+  const totalSummaries = Object.keys(summaries).length;
+  const totalReports = reports.length;
+  const totalUsers = users.length;
+  
+  // Determine status
+  const hospitalsStatus = totalHospitals >= 70 ? 'good' : (totalHospitals > 0 ? 'warning' : 'error');
+  const summariesStatus = totalSummaries >= 60 ? 'good' : (totalSummaries > 0 ? 'warning' : 'error');
+  const reportsStatus = totalReports > 0 ? 'good' : 'warning';
+  
+  // Build status cards
+  const statusGrid = document.getElementById('statusGrid');
+  statusGrid.innerHTML = `
+    <div class="status-card ${hospitalsStatus === 'error' ? 'error' : (hospitalsStatus === 'warning' ? 'warning' : '')}">
+      <div class="icon">${hospitalsStatus === 'good' ? '✅' : (hospitalsStatus === 'warning' ? '⚠️' : '❌')}</div>
+      <div class="stat-number">${totalHospitals}</div>
+      <div class="stat-label">Total Hospitals</div>
+    </div>
+    
+    <div class="status-card ${summariesStatus === 'error' ? 'error' : (summariesStatus === 'warning' ? 'warning' : '')}">
+      <div class="icon">${summariesStatus === 'good' ? '✅' : (summariesStatus === 'warning' ? '⚠️' : '❌')}</div>
+      <div class="stat-number">${totalSummaries}</div>
+      <div class="stat-label">Hospital Summaries</div>
+    </div>
+    
+    <div class="status-card ${reportsStatus === 'error' ? 'error' : (reportsStatus === 'warning' ? 'warning' : '')}">
+      <div class="icon">${reportsStatus === 'good' ? '✅' : '⚠️'}</div>
+      <div class="stat-number">${totalReports}</div>
+      <div class="stat-label">Visit Reports</div>
+    </div>
+    
+    <div class="status-card ${totalUsers > 0 ? '' : 'warning'}">
+      <div class="icon">${totalUsers > 0 ? '✅' : '⚠️'}</div>
+      <div class="stat-number">${totalUsers}</div>
+      <div class="stat-label">User Accounts</div>
+    </div>
+  `;
+  
+  // Build detailed output
+  const details = {
+    "Machine Customers (A8)": machine.length,
+    "External Customers (A90)": external.length,
+    "Potential Customers (localStorage)": potentials.length,
+    "Hardcoded Potentials (in code)": 29,
+    "Total Hospitals": totalHospitals,
+    "---": "---",
+    "Facility Summaries": totalSummaries,
+    "Visit Reports": totalReports,
+    "User Accounts": totalUsers,
+    "----": "----",
+    "Expected Hospitals": "103+",
+    "Expected Summaries": "69 (Ephrata 42 + Kalkidan 27)",
+    "Status": totalHospitals >= 70 && totalSummaries >= 60 ? "✅ GOOD" : "⚠️ NEEDS IMPORT"
+  };
+  
+  document.getElementById('detailsOutput').textContent = JSON.stringify(details, null, 2);
+  
+  // Show sample hospitals
+  const allHospitals = [...machine, ...external, ...potentials];
+  const sampleList = document.getElementById('sampleList');
+  if (allHospitals.length > 0) {
+    sampleList.innerHTML = allHospitals.slice(0, 10).map(h => 
+      `<li>🏥 <strong>${h.name || h.Hospital}</strong> - ${h.city || h.City || 'Unknown'} (${h.model || h.Model || 'N/A'})</li>`
+    ).join('');
+  } else {
+    sampleList.innerHTML = '<li style="color: #ef4444;">❌ No hospitals found - Run MASTER_IMPORT.html first!</li>';
+  }
+  
+  // Show sample summaries
+  const summaryKeys = Object.keys(summaries);
+  const summariesOutput = document.getElementById('summariesOutput');
+  if (summaryKeys.length > 0) {
+    const samples = {};
+    summaryKeys.slice(0, 5).forEach(key => {
+      samples[key] = summaries[key].substring(0, 150) + '...';
+    });
+    summariesOutput.textContent = JSON.stringify(samples, null, 2);
+  } else {
+    summariesOutput.textContent = '❌ No summaries found - Run MASTER_IMPORT.html first!';
+  }
+}
+
+function clearAllData() {
+  if (!confirm('⚠️ This will DELETE ALL data! Are you sure?')) return;
+  if (!confirm('Really delete everything? This cannot be undone!')) return;
+  
+  localStorage.clear();
+  alert('✅ All data cleared! Refresh page to see results.');
+  location.reload();
+}
+
+// Run on load
+window.addEventListener('DOMContentLoaded', checkData);
+</script>
+
+</body>
+</html>

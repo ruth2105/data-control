@@ -1,0 +1,25 @@
+# Melat's Hospital Visit Data - Enhanced Format
+# Format: HospitalName | Address | ContactPerson | Phone | ElectrolyteAnalyzer | BiochemistryAnalyzer | HematologyAnalyzer | Potential
+
+# From Word Documents (5 hospitals)
+ACL ENT & Medical Center | Addis Ababa | Betty - Laboratorist | | Zybio | | | Warm
+Arada Giorgis | Addis Ababa | Laboratorist | | Mindray | | | Warm
+Biruhkids | Addis Ababa | Laboratorist | | B & E | | Zybayn, Medeonic | Warm
+
+# From Detailed Reports (20+ hospitals)
+Universe Medical Center | | Amanuel - Laboratorist | 0901393116 | Wondfo | Zybio, iChem 535 | Dymind | Warm
+Summit Health Center | | Ashenafi - Lab Head | 0913785617 | | Zybayio | Mindray | Warm | Doctors:3 | Hormone:Accre90 | Tubes:Tedia(ESR,EDTA,SST) | Expired reagents removed
+Quelebet Specialized Medical Center | | General Manager | | | Zybayio | Mindray | Warm | Doctors:5(+1PT) | Hormone:Maglumi,Accre8 | Tubes:Tedia(ESR,EDTA,SST,Cetritine) | Organizing-follow up in 1 month
+Yehulueshet Hospital | Piassa branch | | | | Pentra, Vidas, Finecare | | Cold
+Legehar General Hospital | | | | | | | Warm
+Amin General Hospital | | Dr. Sawda - Purchaser | | | | | Warm
+Semah MCH | | | | | Finecare | | Warm
+Abajifar Medium Clinic | | Wonde - Laboratorist | 0921429878 | | Mindray | Mindray | Hot
+Dr. Belete Medium Clinic | | Mesay - Laboratorist | 0912363131 | | URIT | BH 70P | Hot
+Dr. Ermias Medium Clinic | | Dr. Ermias - Owner | 0911441098 | | Human | Diatron | Warm
+Gibe Medium Clinic | | Esrom - Lab Head | 0913269953 | B&E | Mindray | Mindray, Dymind | Hot
+Jimma Awetu Primary Hospital | | Abdo - Lab Head | 0913438154 | K-Lite 8G, Human | Human | Mindray | Hot
+Geda Medical Laboratory | | Abdi - Laboratorist | 0964977500 | K-Lite 8 | Zybio | Zybio, Dymind | Warm
+My Medium Clinic | | Dr. Mohammed - Owner | 0917803022 | | Mindray, Iubio | Dymind | Warm
+Oda Hule Hospital | | Pharmacy Head | 0915887955 | B&E | URIT | | Warm
+Shenen Gibe General Hospital | | Chala - Lab Head | 0917444004 | Human | | Sysmex | Hot

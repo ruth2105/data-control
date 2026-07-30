@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Export Database</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .section { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        button { padding: 10px 20px; background: #1a56db; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #2563eb; }
+        pre { background: #f8f8f8; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>📊 Database Export Tool</h1>
+    
+    <div class="section">
+        <h3>Export All Data:</h3>
+        <button onclick="exportAllData()">📥 Export Complete Database (JSON)</button>
+        <button onclick="exportAsCSV()">📥 Export as CSV</button>
+    </div>
+
+    <div class="section">
+        <h3>Export Individual Tables:</h3>
+        <button onclick="exportTable('potentials')">🏥 Potentials</button>
+        <button onclick="exportTable('machine')">⚙️ Machine</button>
+        <button onclick="exportTable('external')">🌐 External</button>
+        <button onclick="exportTable('visitReports')">📋 Visit Reports</button>
+        <button onclick="exportTable('users')">👥 Users</button>
+        <button onclick="exportTable('facility_summaries')">📝 Summaries</button>
+    </div>
+
+    <div class="section">
+        <h3>Database Status:</h3>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function getData(key) {
+            return JSON.parse(localStorage.getItem('fremenatos_' + key) || '[]');
+        }
+
+        function updateStatus() {
+            const keys = ['potentials', 'machine', 'external', 'visitReports', 'users', 'facility_summaries'];
+            let html = '';
+            keys.forEach(key => {
+                const data = key === 'facility_summaries' 
+                    ? Object.keys(JSON.parse(localStorage.getItem('fremenatos_' + key) || '{}')).length
+                    : getData(key).length;
+                html += `<div>${key}: <strong>${data} records</strong></div>`;
+            });
+            document.getElementById('status').innerHTML = html;
+        }
+
+        function exportTable(key) {
+            const data = localStorage.getItem('fremenatos_' + key);
+            if (!data) {
+                alert('No data found for ' + key);
+                return;
+            }
+            downloadFile(key + '.json', data);
+        }
+
+        function exportAllData() {
+            const allData = {};
+            const keys = ['potentials', 'machine', 'external', 'visitReports', 'users', 'facility_summaries'];
+            keys.forEach(key => {
+                allData[key] = JSON.parse(localStorage.getItem('fremenatos_' + key) || (key === 'facility_summaries' ? '{}' : '[]'));
+            });
+            downloadFile('complete_database.json', JSON.stringify(allData, null, 2));
+        }
+
+        function exportAsCSV() {
+            const potentials = getData('potentials');
+            if (potentials.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const headers = Object.keys(potentials[0]).join(',');
+            const rows = potentials.map(row => Object.values(row).map(val => `"${val || ''}"`).join(','));
+            const csv = [headers, ...rows].join('\n');
+            
+            downloadFile('database_export.csv', csv);
+        }
+
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        updateStatus();
+    </script>
+</body>
+</html>

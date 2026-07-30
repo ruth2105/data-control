@@ -1,0 +1,169 @@
+// Copy this script and run it in the browser console on index.html or admin.html
+
+const summariesText = `Customer Facility Summaries
+Lotus Mch
+Lotus Mch is a hot priority facility located in Garment. They currently use Finecare for hormone testing,  Mindray for chemistry, and  B&E for electrolyte analysis. The facility has an estimated patient load of 10–20 tests/day and requires SST, EDTA tubes.
+Current opportunity: Interested in reagent placement; requested comparative analysis. Continued follow-up with Head Lab Technician, Medical Director is recommended to advance the opportunity.
+Novamed Clinic
+Novamed Clinic is a hot priority facility located in goro. They currently use Finecare for hormone testing, none for chemistry, and Interested in B&E Electrolyte for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes.
+Current opportunity: Interested in electrolyte analyzer. Continued follow-up with Zeaman (Laboratory Head) is recommended to advance the opportunity.
+Ajora Mch
+Ajora Mch is a hot priority facility located in summit. They currently use finecare for hormone testing, siesmen semiautomatic  for chemistry, and B&E for electrolyte analysis. The facility has an estimated patient load of 10–20 tests/day and requires SST, EDTA tubes.
+Current opportunity: Interested in Accree placement. Continued follow-up with Tina (Laboratory Head) is recommended to advance the opportunity.
+Yadon Clinic
+Yadon Clinic is a hot priority facility located in ayat. They currently use Finecare for hormone testing, none  for chemistry, and semi automated un specified analyzer  for electrolyte analysis. The facility has an estimated patient load of >10 tests/day and requires SST, EDTA tubes.
+Current opportunity: Proposal under stakeholder review. Continued follow-up with Owner, Head Lab Technician is recommended to advance the opportunity.
+Hewan Gynecology Specialized Clinic
+Hewan Gynecology Specialized Clinic is a hot priority facility located in jemo. They currently use none for hormone testing, semi-automated dirui for chemistry, and None for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes.
+Current opportunity: Planning to purchase hormone analyzer. Continued follow-up with Medical Director/Owner is recommended to advance the opportunity.
+Yerer General Hospital
+Yerer General Hospital is a hot priority facility located in yerer. They currently use Finecare, Zybio, Maglumi for hormone testing, Mindray for chemistry, and fully automated un specified anlyzer  for electrolyte analysis. The facility has an estimated patient load of >20 tests/day and requires SST, EDTA tubes.
+Current opportunity: Considering ACCRE as an additional analyzer. Continued follow-up with Head Lab Technician is recommended to advance the opportunity.
+St. Mary Medium Clinic
+St. Mary Medium Clinic is a hot priority facility located in goro. They currently use none for hormone testing, semi automated  for chemistry, and CBS 401 B&E for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes.
+Current opportunity: Evaluating installation of hormone analyzer. Continued follow-up with Medical Director is recommended to advance the opportunity.
+Tersis Clinics
+Tersis Clinics is a hot priority facility located in lamberet. They currently use vidas for hormone testing, semi automated  for chemistry, and semi automated un specified analyzer  for electrolyte analysis. The facility has an estimated patient load of 5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Strong interest and expansion potential. Continued follow-up with Liyu Tersis Clinic Lab is recommended to advance the opportunity.
+Gfb Specialized Clinic
+Gfb Specialized Clinic is a hot priority facility located in ayat. They currently use fine care for hormone testing, semi automated  for chemistry, and semi automated un specified analyzer  for electrolyte analysis. The facility has an estimated patient load of 2_5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Good potential. Continued follow-up with Laboratory Professionals is recommended to advance the opportunity.
+Betsegah Mch
+Betsegah Mch is a hot priority facility located in gurdshola. They currently use finecare,Maglumi  for hormone testing, semi automated  for chemistry, and Potential for B&E for electrolyte analysis. The facility has an estimated patient load of >20 tests/day and requires SST, EDTA tubes.
+Current opportunity: Awaiting management feedback. Continued follow-up with Head Purchaser is recommended to advance the opportunity.
+Abebech Gobena Mch
+Abebech Gobena Mch is a hot priority facility located in ayat tsehel. They currently use Not specified for hormone testing, siesmen semiautomatic  for chemistry, and CBS 50 for electrolyte analysis. The facility has an estimated patient load of 15–20 tests/day and requires SST, EDTA tubes.
+Current opportunity: Strong interest in placement model. Continued follow-up with Dani (Laboratory Head) is recommended to advance the opportunity.
+Ethiocare Medical Center
+Ethiocare Medical Center is a warm priority facility located in garment. They currently use Mindray CLIA (inactive) for hormone testing, semi automated  for chemistry, and Edgelayt 3 for electrolyte analysis. The facility has an estimated patient load of 5–10 tests/day and requires SST, EDTA tubes.
+Current opportunity: Evaluating chemistry analyzer suppliers. Continued follow-up with Purchasing Officer is recommended to advance the opportunity.
+Mary Clinic
+Mary Clinic is a warm priority facility located in 72.0. They currently use none for hormone testing, semi automated  for chemistry, and Potential for B&E for electrolyte analysis. The facility has an estimated patient load of 5–10 tests/day and requires SST, EDTA tubes.
+Current opportunity: Planning to buy hormone analyzer next year. Continued follow-up with Head Lab Technician, Owner is recommended to advance the opportunity.
+Fikreselam General Hospital
+Fikreselam General Hospital is a warm priority facility located in cmc. They currently use Not specified for hormone testing, fully automated for chemistry, and not specified  for electrolyte analysis. The facility has an estimated patient load of 10–15 tests/day and requires SST, EDTA tubes.
+Current opportunity: Follow-up meeting scheduled. Continued follow-up with Head Lab Technician is recommended to advance the opportunity.
+Ebm Specialty Clinic
+Ebm Specialty Clinic is a warm priority facility located in ayat. They currently use Finecare, BiG for hormone testing, semi automated  for chemistry, and  B&E for electrolyte analysis. The facility has an estimated patient load of 3–5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Considering analyzer upgrade. Continued follow-up with Abebe (Laboratory Head) is recommended to advance the opportunity.
+Dr. Yared Pediatric Clinic
+Dr. Yared Pediatric Clinic is a warm priority facility located in horo. They currently use Finecare for hormone testing, semi automated  for chemistry, and B&E for electrolyte analysis. The facility has an estimated patient load of Under evaluation and requires SST, EDTA tubes.
+Current opportunity: Will consider as patient flow increases. Continued follow-up with Elias Lab is recommended to advance the opportunity.
+Ag Kovamed Clinic
+Ag Kovamed Clinic is a warm priority facility located in 72.0. They currently use Finecare for hormone testing, not specified  for chemistry, and not specified  for electrolyte analysis. The facility has an estimated patient load of Low and requires SST, EDTA tubes.
+Current opportunity: Interested in electrolyte analyzer. Continued follow-up with Head of Laboratory is recommended to advance the opportunity.
+Rubira Medical Center
+Rubira Medical Center is a cold priority facility located in summit. They currently use Zybio for hormone testing, not specified  for chemistry, and not specified  for electrolyte analysis. The facility has an estimated patient load of 3–5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Satisfied with current analyzer. Continued follow-up with Laboratory Technician is recommended to advance the opportunity.
+Kidist Selamihret Clinic
+Kidist Selamihret Clinic is a cold priority facility located in summit72. They currently use none for hormone testing, not specified  for chemistry, and not specified  for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Low patient flow. Continued follow-up with Head Lab Technician is recommended to advance the opportunity.
+Cheza Medium Clinic
+Cheza Medium Clinic is a cold priority facility located in wossen. They currently use Finecare for hormone testing, not specified  for chemistry, and not specified  for electrolyte analysis. The facility has an estimated patient load of ~2 tests/day and requires SST, EDTA tubes.
+Current opportunity: Already decided on Finecare. Continued follow-up with Owner is recommended to advance the opportunity.
+Lancet Internal Medical Center
+Lancet Internal Medical Center is a cold priority facility located in megenagna. They currently use Maglumi, Finecare for hormone testing, not specified  for chemistry, and not specified  for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Low patient volume. Continued follow-up with Head Nurse, Lab Technician is recommended to advance the opportunity.
+Dr. Saba Clinic
+Dr. Saba Clinic is a cold priority facility located in ajora. They currently use Finecare for hormone testing, conas for chemistry, and None for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes.
+Current opportunity: No interest in additional analyzer. Continued follow-up with Laboratory Staff is recommended to advance the opportunity.
+Enat Clinic
+Enat Clinic is a cold priority facility located in megenagna. They currently use Finecare for hormone testing, siesmen for chemistry, and none for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Financial constraints. Continued follow-up with Enat Clinic Owners is recommended to advance the opportunity.
+Eldana Clinic
+Eldana Clinic is a cold priority facility located in megenagna. They currently use Zybio for hormone testing, mindray for chemistry, and Band E for electrolyte analysis. The facility has an estimated patient load of 10–20 tests/day and requires SST, EDTA tubes.
+Current opportunity: Recently purchased Zybio. Continued follow-up with medical director  is recommended to advance the opportunity.
+Dr. Asaye Clinic
+Dr. Asaye Clinic is a cold priority facility located in summit. They currently use Finecare for hormone testing, none for chemistry, and none for electrolyte analysis. The facility has an estimated patient load of <5 tests/day and requires SST, EDTA tubes.
+Current opportunity: Satisfied with current setup. Continued follow-up with Laboratory Professional is recommended to advance the opportunity.
+Care Plus Addis Clinic
+Care Plus Addis Clinic is a cold priority facility located in gurdshola. They currently use VIDAS for hormone testing, not specified  for chemistry, and mot specified for electrolyte analysis. The facility has an estimated patient load of 0–3 tests/day and requires EDTA, SST tubes.
+Current opportunity: Low patient flow and infrastructure challenges. Continued follow-up with Head Lab, Medical Director is recommended to advance the opportunity.
+Agar Specialized Clinic
+Agar Specialized Clinic is a warm priority facility located in ayst. They currently use fine care  for hormone testing, None for chemistry, and Potential for B&E for electrolyte analysis. The facility has an estimated patient load of 5–10 tests/day and requires SST, EDTA tubes.
+Current opportunity: Interested in Accree analyzer. Continued follow-up with Dr. Eyasu is recommended to advance the opportunity.`;
+
+// Parse summaries
+function parseSummaries(text) {
+    const lines = text.split('\n');
+    const summaries = {};
+    let currentHospital = null;
+    let currentSummary = [];
+    
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        
+        // Check if this is a hospital name (no period at end, not starting with "Current opportunity")
+        if (!trimmed.endsWith('.') && !trimmed.startsWith('Current opportunity') && trimmed !== 'Customer Facility Summaries') {
+            // Save previous hospital
+            if (currentHospital && currentSummary.length > 0) {
+                summaries[currentHospital] = currentSummary.join('\n');
+            }
+            // Start new hospital
+            currentHospital = trimmed;
+            currentSummary = [];
+        } else if (currentHospital) {
+            currentSummary.push(trimmed);
+        }
+    }
+    
+    // Save last hospital
+    if (currentHospital && currentSummary.length > 0) {
+        summaries[currentHospital] = currentSummary.join('\n');
+    }
+    
+    return summaries;
+}
+
+const summaries = parseSummaries(summariesText);
+console.log(`Parsed ${Object.keys(summaries).length} hospital summaries`);
+
+// Get existing customers from localStorage
+const machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+const externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+const allCustomers = [...machineCustomers, ...externalCustomers];
+
+// Match and add summaries
+let matched = 0;
+const unmatched = [];
+
+for (const customer of allCustomers) {
+    const hospitalName = customer.name;
+    
+    // Try exact match
+    if (summaries[hospitalName]) {
+        customer.summary = summaries[hospitalName];
+        matched++;
+        console.log(`✓ Matched: ${hospitalName}`);
+    } else {
+        // Try case-insensitive match
+        let found = false;
+        for (const summaryName of Object.keys(summaries)) {
+            if (summaryName.toLowerCase() === hospitalName.toLowerCase()) {
+                customer.summary = summaries[summaryName];
+                matched++;
+                console.log(`✓ Matched (case-insensitive): ${hospitalName}`);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            unmatched.push(hospitalName);
+            console.log(`✗ No match: ${hospitalName}`);
+        }
+    }
+}
+
+console.log(`\nMatched: ${matched}/${allCustomers.length}`);
+console.log(`Unmatched: ${unmatched.length}`);
+if (unmatched.length > 0) {
+    console.log('Unmatched hospitals:', unmatched);
+}
+
+// Save updated data
+localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
+localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
+
+console.log('\n✅ Summaries imported and saved to localStorage!');
+console.log('Refresh the page to see the summaries in customer details.');

@@ -1,0 +1,27 @@
+Hospital Name,Hormone Analyzer,Chemistry Analyzer,Blood Collection Tubes,Patient Load (tests/day),Priority
+Sunshine Internal Medicine Specialty Clinic,Fincare,Linear (Semi-Automatic),"Yellow, Blue",3,LOW
+St. Gabriel General Hospital,Fincare,Semi_automatic,"Yellow, Blue, Purple",30,MEDIUM
+Addis Hiwot General Hospital,Maglumi (Snibe),mindray,"Yellow, Blue, Purple, Black",>50,HIGH
+Addis MCH Center,Fincare,Semi automatic,"Yellow, Purple, Plain (Red)",10,LOW
+Life Addis Clinic,Fincare,Semi automatic,"Yellow, Black",5-10,LOW
+Mercy Care Health Center,Fincare,Linear,"Yellow, Blue",35,MEDIUM
+Elite ENT Center,Fincare,Zybio,"Yellow, Purple, Blue",5-10,LOW
+Lancet MCH Center,Snibe (Backup: Fincare),mindray,"Yellow, purple, blue",>50,HIGH
+Dinberua MCH Center,Maglumi 800,mindray,"Yellow, purple, blue",30,MEDIUM
+Lealem Medium Clinic,Fincare,Linear,"Yellow, purple, blue",15,LOW
+MedStar Specialty Clinic,"Fincare, Snibe",Mindray,"Yellow, Blue, Purple, Black (Sometimes)",10,LOW
+Betseda American Medical Plaza,Mindray,Mindray,"Yellow, Purple, Blue, Black",>50,HIGH
+Healventure Internal Medicine & Surgical Center,Snibe,Mindray,"Yellow, Blue, Black",20,MEDIUM
+Afran General Hospital,Snibe,Mindray,"Yellow, Blue, Purple",50,HIGH
+Dr. Amero Internal Medicine Specialty Clinic,"VIDAS, Fincare",Linear (Semi-Automatic),"Yellow, blue, purple",5-10,LOW
+Chechela Internal Medicine Specialty Clinic,Yasmin,,"Yellow, blue, purple",20,MEDIUM
+Bama MCH Center,Zybio,Linear (Semi-Automatic),"Yellow, blue, purple",10-20,MEDIUM
+Migbaresenay General Hospital,Fincare,Semiautomatic,"Yellow, blue, purple",30-50,HIGH
+Alpha Cardiac & Medical Center,Fincare,semiautomatic,"Yellow, blue, purple",20,MEDIUM
+Semah MCH Center,ACCRE (other branch),semiautomatic,"Yellow, blue, purple",,MEDIUM
+Grace MCH & Surgical Center,Fincare,,"Yellow, blue, purple",>20,MEDIUM
+Dr. Teshome Pediatric Clinic,"Fincare, Zybio",semiautomatic,"Yellow, blue, purple",10-20,MEDIUM
+Michu Clinic,Cobas,,"Yellow, blue, purple",>50,HIGH
+Lancet Beherawi Internal Medicine & Surgical Center,"Maglumi, Zybio",Mindray,"Yellow, blue purple",70,HIGH
+Vision Specialty Clinic,"Maglumi, VIDAS",,"Yellow, blue, purple",>30,MEDIUM
+Adera Internal Medicine & Specialty Clinic,"iFlash, Fincare",iflash,"Yellow blue purple black",>30,MEDIUM
