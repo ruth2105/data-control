@@ -6069,8 +6069,30 @@ function updatePotentialStats() {
 
 // ===================== INIT =====================
 function initializeCustomerData() {
-  machineCustomers = getCustomerData('machine');
-  externalCustomers = getCustomerData('external');
+  // First try to get data from localStorage
+  const machineData = localStorage.getItem('fremenatos_machine');
+  const externalData = localStorage.getItem('fremenatos_external');
+  
+  if (machineData) {
+    try {
+      machineCustomers = JSON.parse(machineData);
+    } catch (e) {
+      machineCustomers = getCustomerData('machine');
+    }
+  } else {
+    machineCustomers = getCustomerData('machine');
+  }
+  
+  if (externalData) {
+    try {
+      externalCustomers = JSON.parse(externalData);
+    } catch (e) {
+      externalCustomers = getCustomerData('external');
+    }
+  } else {
+    externalCustomers = getCustomerData('external');
+  }
+  
   allCustomers = [...machineCustomers, ...externalCustomers];
 
   localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
@@ -6084,7 +6106,12 @@ function initializeCustomerData() {
   renderCards();
 }
 
-initializeCustomerData();
+// Call the IIFE initialization which will handle this properly
+setTimeout(() => {
+  if (typeof window.initializeCustomerData === 'function') {
+    window.initializeCustomerData();
+  }
+}, 100);
 
 // ===================== EXPORT CUSTOMER LIST =====================
 function exportCustomerList(type) {
@@ -6627,14 +6654,25 @@ function applyFilters() {
   }
 
   function initializeCustomerData() {
-    // Use the global variables defined earlier in the file
-    if (typeof machineCustomers === 'undefined') machineCustomers = [];
-    if (typeof externalCustomers === 'undefined') externalCustomers = [];
-    if (typeof allCustomers === 'undefined') allCustomers = [];
+    // Don't reinitialize if already done by the main script
+    if (window.machineCustomers && window.machineCustomers.length > 0) {
+      // Just update the UI with existing data
+      updateStats();
+      renderCityButtons();
+      renderCards();
+      renderDashboard();
+      loadProfileInfo();
+      return;
+    }
     
-    machineCustomers = readStoredCustomers('machine');
-    externalCustomers = readStoredCustomers('external');
-    allCustomers = [...machineCustomers, ...externalCustomers];
+    // Use the global variables defined earlier in the file
+    if (typeof window.machineCustomers === 'undefined') window.machineCustomers = [];
+    if (typeof window.externalCustomers === 'undefined') window.externalCustomers = [];
+    if (typeof window.allCustomers === 'undefined') window.allCustomers = [];
+    
+    window.machineCustomers = readStoredCustomers('machine');
+    window.externalCustomers = readStoredCustomers('external');
+    window.allCustomers = [...window.machineCustomers, ...window.externalCustomers];
     updateStats();
     renderCityButtons();
     renderCards();
@@ -6643,13 +6681,13 @@ function applyFilters() {
   }
 
   function updateStats() {
-    const total = window.machineCustomers.length + window.externalCustomers.length;
+    const total = (window.machineCustomers?.length || 0) + (window.externalCustomers?.length || 0);
     const totalEl = document.getElementById('statTotal');
     const machineEl = document.getElementById('statMachine');
     const externalEl = document.getElementById('statExternal');
     if (totalEl) totalEl.textContent = total;
-    if (machineEl) machineEl.textContent = window.machineCustomers.length;
-    if (externalEl) externalEl.textContent = window.externalCustomers.length;
+    if (machineEl) machineEl.textContent = window.machineCustomers?.length || 0;
+    if (externalEl) externalEl.textContent = window.externalCustomers?.length || 0;
   }
 
   function renderCityButtons() {
@@ -6674,7 +6712,8 @@ function applyFilters() {
 
   function getFiltered() {
     const term = (state.searchTerm || '').toLowerCase();
-    return window.allCustomers.filter(customer => {
+    const customers = window.allCustomers || [];
+    return customers.filter(customer => {
       const name = (customer.name || '').toLowerCase();
       const city = (customer.city || '').toLowerCase();
       const matchesSearch = !term || name.includes(term) || city.includes(term);
@@ -6689,8 +6728,9 @@ function applyFilters() {
     const info = document.getElementById('resultsInfo');
     if (!grid) return;
     const filtered = getFiltered();
+    const allCount = window.allCustomers?.length || 0;
     if (info) {
-      info.textContent = `显示 ${filtered.length} / ${window.allCustomers.length} 位客户`;
+      info.textContent = `显示 ${filtered.length} / ${allCount} 位客户`;
     }
     if (!filtered.length) {
       grid.innerHTML = '<div class="no-results">没有匹配的客户</div>';
@@ -6719,14 +6759,14 @@ function applyFilters() {
     const panel = document.getElementById('page-dashboard');
     if (!panel) return;
     const summary = document.getElementById('dashboardDateRange');
-    if (summary) summary.textContent = `客户总数: ${window.allCustomers.length} · 机器客户: ${window.machineCustomers.length} · 外部客户: ${window.externalCustomers.length}`;
+    if (summary) summary.textContent = `客户总数: ${window.allCustomers?.length || 0} · 机器客户: ${window.machineCustomers?.length || 0} · 外部客户: ${window.externalCustomers?.length || 0}`;
   }
 
   function renderReports() {
     const panel = document.getElementById('page-reports');
     if (!panel) return;
     const count = document.getElementById('reportsCount');
-    if (count) count.textContent = `当前可见 ${window.allCustomers.length} 个客户`;
+    if (count) count.textContent = `当前可见 ${window.allCustomers?.length || 0} 个客户`;
   }
 
   function loadProfileInfo() {
@@ -6797,7 +6837,10 @@ function applyFilters() {
   window.setupVisitForm = setupVisitForm;
   window.initializeCustomerData = initializeCustomerData;
 
-  initializeCustomerData();
+  // Call initialization after a short delay to ensure main script has run
+  setTimeout(() => {
+    initializeCustomerData();
+  }, 50);
 })();
 </script>
 </body>
