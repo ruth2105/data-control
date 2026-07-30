@@ -1159,7 +1159,8 @@ async function getCustomerData(type) {
           console.log('Firebase machine customers:', filtered.length, 'items');
           return filtered;
         } else {
-          const data = firebaseCustomers.filter(c => c.model === 'EXT');
+          // External customers: those with model 'EXT' or those not A8/A90
+          const data = firebaseCustomers.filter(c => c.model === 'EXT' || (c.model !== 'A8' && c.model !== 'A90'));
           const filtered = data.filter(c => !deletedCustomers.includes(c.id));
           localStorage.setItem('fremenatos_external', JSON.stringify(filtered));
           console.log('Firebase external customers:', filtered.length, 'items');
@@ -1203,7 +1204,8 @@ async function getCustomerData(type) {
         localStorage.setItem(key, JSON.stringify(filtered));
         return filtered;
       } else {
-        const data = result.data.filter(c => !c.model || c.model === 'EXT');
+        // External customers: those with model 'EXT' or those not A8/A90
+        const data = result.data.filter(c => c.model === 'EXT' || (c.model !== 'A8' && c.model !== 'A90'));
         const filtered = data.filter(c => !deletedCustomers.includes(c.id));
         localStorage.setItem(key, JSON.stringify(filtered));
         return filtered;
@@ -6553,6 +6555,8 @@ async function initializeApp() {
   if (window.firebaseService && window.firebaseService.isReady()) {
     try {
       const existingCustomers = await window.firebaseService.getCustomers();
+      console.log('Existing Firebase customers:', existingCustomers.length);
+      
       if (existingCustomers.length === 0) {
         console.log('Firebase customers empty, initializing with default data');
         // Initialize Firebase with default customers
@@ -6563,6 +6567,28 @@ async function initializeApp() {
           await window.firebaseService.saveCustomer(customer);
         }
         console.log('Firebase initialized with default customers');
+      } else {
+        // Check if we have the expected number of customers
+        const expectedTotal = MACHINE_DEFAULTS.length + EXTERNAL_DEFAULTS.length;
+        if (existingCustomers.length < expectedTotal) {
+          console.log('Firebase has fewer customers than expected, adding missing ones');
+          
+          // Add missing machine customers
+          for (const customer of MACHINE_DEFAULTS) {
+            if (!existingCustomers.find(c => c.id === customer.id)) {
+              await window.firebaseService.saveCustomer(customer);
+              console.log('Added missing machine customer:', customer.name);
+            }
+          }
+          
+          // Add missing external customers
+          for (const customer of EXTERNAL_DEFAULTS) {
+            if (!existingCustomers.find(c => c.id === customer.id)) {
+              await window.firebaseService.saveCustomer(customer);
+              console.log('Added missing external customer:', customer.name);
+            }
+          }
+        }
       }
     } catch (error) {
       console.log('Failed to initialize Firebase with default data:', error);
