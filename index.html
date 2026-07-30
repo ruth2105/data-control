@@ -5604,9 +5604,15 @@ function updateStats() {
   const externalCount = Array.isArray(externalCustomers) ? externalCustomers.length : 0;
   const total = machineCount + externalCount;
 
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('statMachine').textContent = machineCount;
-  document.getElementById('statExternal').textContent = externalCount;
+  console.log('updateStats:', { machineCount, externalCount, total });
+
+  const statTotal = document.getElementById('statTotal');
+  const statMachine = document.getElementById('statMachine');
+  const statExternal = document.getElementById('statExternal');
+
+  if (statTotal) statTotal.textContent = total;
+  if (statMachine) statMachine.textContent = machineCount;
+  if (statExternal) statExternal.textContent = externalCount;
 }
 
 // ===================== CUSTOMER-REPORT LINKAGE =====================
