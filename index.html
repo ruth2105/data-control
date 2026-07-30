@@ -1154,7 +1154,7 @@ async function getCustomerData(type) {
     } catch(e) {}
   }
 
-  // If no localStorage data only, then try Google Sheets
+  // If no localStorage data, try Google Sheets (but don't fail if it doesn't work)
   console.log('No localStorage data, trying Google Sheets');
   try {
     const result = await getCustomers();
@@ -1174,10 +1174,12 @@ async function getCustomerData(type) {
       }
     }
   } catch (error) {
-    console.log('Google Sheets sync failed, using fallback data:', error);
+    console.log('Google Sheets sync failed (expected on Vercel), using fallback data:', error);
   }
 
-  console.log('Using fallback data');
+  // Always use fallback data if localStorage is empty and API fails
+  console.log('Using fallback data:', fallbackData.length, 'items');
+  localStorage.setItem(key, JSON.stringify(fallbackData));
   return fallbackData;
 }
 
@@ -6489,16 +6491,8 @@ function updatePotentialStats() {
 async function initializeApp() {
   machineCustomers = await getCustomerData('machine');
   externalCustomers = await getCustomerData('external');
-
-  // Only use defaults if localStorage is completely empty (not just empty array)
-  if (!Array.isArray(machineCustomers)) {
-    machineCustomers = MACHINE_DEFAULTS.slice();
-    localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
-  }
-  if (!Array.isArray(externalCustomers)) {
-    externalCustomers = EXTERNAL_DEFAULTS.slice();
-    localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
-  }
+  
+  // getCustomerData now handles fallback defaults, so we don't need redundant checks here
   
   // Only show actual customers who have machine accounts in the main list.
   allCustomers = [...machineCustomers, ...externalCustomers];

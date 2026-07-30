@@ -1,7 +1,23 @@
 // Google Sheets API Client for Hospital Management System
 // This replaces localStorage with Google Sheets backend
 
-window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
+// Auto-detect platform and set appropriate API endpoint
+const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('netlify.com');
+const isVercel = window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel.com');
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+if (isNetlify) {
+  window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
+} else if (isVercel) {
+  // Vercel serverless functions use a different path structure
+  window.SCRIPT_URL = window.SCRIPT_URL || '/api/proxy';
+} else if (isLocal) {
+  // Local development - use Netlify proxy or local server
+  window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
+} else {
+  // Default fallback
+  window.SCRIPT_URL = window.SCRIPT_URL || '/.netlify/functions/proxy';
+}
 
 // Generic GET request helper
 async function apiGet(action, params = {}) {
