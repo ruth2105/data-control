@@ -166,6 +166,73 @@
     return listenCollection('visitReports', callback, 'submittedAt');
   }
 
+  // Customer data functions for cross-device sync
+  async function getCustomers() {
+    if (!isReady()) return [];
+    const snapshot = await collection('customers').orderBy('name').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async function saveCustomer(customerData) {
+    if (!isReady()) return { success: false, message: 'Firebase unavailable' };
+    if (!customerData) return { success: false, message: 'Missing customer data' };
+
+    try {
+      const id = String(customerData.id || Date.now());
+      const payload = {
+        ...customerData,
+        id,
+        updatedAt: window.firebaseFieldValue.serverTimestamp()
+      };
+      await collection('customers').doc(id).set(payload, { merge: true });
+      return { success: true, customer: payload };
+    } catch (error) {
+      return { success: false, message: error.message || 'Firebase save failed' };
+    }
+  }
+
+  async function deleteCustomer(customerId) {
+    if (!isReady()) return { success: false, message: 'Firebase unavailable' };
+    if (!customerId) return { success: false, message: 'Missing customer id' };
+
+    try {
+      await collection('customers').doc(String(customerId)).delete();
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message || 'Firebase delete failed' };
+    }
+  }
+
+  function listenCustomers(callback) {
+    return listenCollection('customers', callback, 'name');
+  }
+
+  // Deleted customers tracking for cross-device sync
+  async function getDeletedCustomers() {
+    if (!isReady()) return [];
+    const doc = await collection('settings').doc('deletedCustomers').get();
+    return doc.exists ? (doc.data().ids || []) : [];
+  }
+
+  async function addDeletedCustomer(customerId) {
+    if (!isReady()) return { success: false, message: 'Firebase unavailable' };
+    if (!customerId) return { success: false, message: 'Missing customer id' };
+
+    try {
+      const current = await getDeletedCustomers();
+      if (!current.includes(customerId)) {
+        current.push(customerId);
+        await collection('settings').doc('deletedCustomers').set({ 
+          ids: current,
+          updatedAt: window.firebaseFieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message || 'Firebase add failed' };
+    }
+  }
+
   window.firebaseService = {
     isReady,
     getCollection,
@@ -180,6 +247,12 @@
     saveVisitReport,
     deleteVisitReport,
     listenVisitReports,
-    listenCollection
+    listenCollection,
+    getCustomers,
+    saveCustomer,
+    deleteCustomer,
+    listenCustomers,
+    getDeletedCustomers,
+    addDeletedCustomer
   };
 })();
