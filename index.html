@@ -6867,24 +6867,7 @@ async function reassignUserTeam(username) {
     return;
   }
 
-  // Check team limit (2 people per team)
-  const MAX_SALESPEOPLE = 12;
-  const TEAM_LIMIT = Math.max(1, Math.ceil(MAX_SALESPEOPLE / 6));
-  const localUsers = loadLocalUsers();
-  const builtInSales = (typeof USERS !== 'undefined')
-    ? Object.values(USERS).filter(u => u && u.role === 'sales' && u.name).map(u => ({ name: u.name, teamId: u.teamId }))
-    : [];
-  const activeLocalSales = localUsers
-    .filter(u => u.role === 'sales' && String(u.status || '').toLowerCase() === 'active')
-    .map(u => ({ name: u.name, teamId: u.teamId }));
-  const allSalespeople = [...builtInSales, ...activeLocalSales];
-  
-  // Count people in target team (excluding the user being moved)
-  const teamCount = allSalespeople.filter(s => Number(s.teamId) === teamId && s.name !== username).length;
-  if (teamCount >= TEAM_LIMIT) {
-    alert(`❌ Cannot reassign!\n\nTeam ${teamId} already has ${teamCount} active salespeople (maximum allowed ${TEAM_LIMIT}).\n\nPlease choose a different team.`);
-    return;
-  }
+  // No team limit - flexible arrangement for all teams
 
   try {
     const updateData = { teamId };
@@ -6943,13 +6926,7 @@ async function approveUser(username, preferredTeam = null) {
   
   let normalizedTeamId = Number.isFinite(teamId) && teamId >= 1 && teamId <= 6 ? teamId : 1;
 
-  // Enforce per-team limit (TEAM_LIMIT). Count includes built-in and active local salespeople.
-  const TEAM_LIMIT = Math.max(1, Math.ceil(30 / 6));
-  const TEAM_COUNT = allSalespeople.filter(s => Number(s.teamId) === normalizedTeamId).length;
-  if (TEAM_COUNT >= TEAM_LIMIT) {
-    alert(`❌ Cannot approve user!\n\nTeam ${normalizedTeamId} already has ${TEAM_COUNT} active salespeople (maximum allowed ${TEAM_LIMIT}).\n\nPlease choose a different team or remove an existing user.`);
-    return;
-  }
+  // No team limit - flexible arrangement for all teams
 
   if (!confirm(`Approve ${username} and assign to Team ${normalizedTeamId}?`)) return;
 
