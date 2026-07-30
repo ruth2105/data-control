@@ -5208,6 +5208,8 @@ function exportToExcel(lang) {
 
 // ===================== DYNAMIC STATS =====================
 function updateStats() {
+  const machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+  const externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
   const total = machineCustomers.length + externalCustomers.length;
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statMachine').textContent = machineCustomers.length;

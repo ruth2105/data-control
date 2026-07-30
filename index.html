@@ -4634,6 +4634,8 @@ function renderDashboard() {
   document.getElementById('kpiTotalVisits').textContent = periodReports.length;
   
   // KPI 2: Total Customers (actual machine/external customers only)
+  const machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+  const externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
   const actualCustomerCount = (Array.isArray(machineCustomers) ? machineCustomers.length : 0) + (Array.isArray(externalCustomers) ? externalCustomers.length : 0);
   document.getElementById('kpiTotalCustomers').textContent = actualCustomerCount;
 
@@ -5596,6 +5598,8 @@ function exportToExcel(lang) {
 
 // ===================== DYNAMIC STATS =====================
 function updateStats() {
+  const machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+  const externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
   const machineCount = Array.isArray(machineCustomers) ? machineCustomers.length : 0;
   const externalCount = Array.isArray(externalCustomers) ? externalCustomers.length : 0;
   const total = machineCount + externalCount;
