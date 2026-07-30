@@ -1126,6 +1126,7 @@ function hDoctors(h) { return h.doctorsZh || h.doctors; }
 // ===================== CUSTOMER DATA MANAGEMENT =====================
 async function getCustomerData(type) {
   const fallbackData = type === 'machine' ? MACHINE_DEFAULTS : EXTERNAL_DEFAULTS;
+  console.log('getCustomerData called for type:', type, 'fallbackData length:', fallbackData.length);
 
   // Get list of deleted customer IDs
   const deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
@@ -1178,7 +1179,7 @@ async function getCustomerData(type) {
   }
 
   // Always use fallback data if localStorage is empty and API fails
-  console.log('Using fallback data:', fallbackData.length, 'items');
+  console.log('Using fallback data for', type, ':', fallbackData.length, 'items');
   localStorage.setItem(key, JSON.stringify(fallbackData));
   return fallbackData;
 }
@@ -1611,7 +1612,7 @@ const MACHINE_DEFAULTS = [
   {id:62,name:"Hope Oncology Center",nameZh:"希望肿瘤中心",city:"A.A",date:"",model:"A8",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"luel",nameZh:"卢埃尔",phone:"0919888446"}],
    payment:[],stock:"6-month consumption: 7 tests (0.5% of total). Specializes in cancer care.",stockZh:"6个月消费：7次测试（占总数0.5%）。专门从事癌症护理。",order:"",doctors:"",specialty:"Oncology (Cancer Care Center)",specialtyZh:"肿瘤科（癌症护理中心）",ownership:"Private",ownershipZh:"私立"},
-  {id:63,name:"American Medical Center",nameZh:"美国医疗中心",city:"A.A",date:"",model:"A6",
+  {id:63,name:"American Medical Center",nameZh:"美国医疗中心",city:"A.A",date:"",model:"A8",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Mekdes",nameZh:"梅克德斯",phone:"0922820286"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"General Medical Service",specialtyZh:"综合医疗服务",ownership:"Private",ownershipZh:"私立"},
   {id:64,name:"Alatyon General Hospital",nameZh:"阿拉顿综合医院",city:"Hawassa",date:"",model:"A90",
@@ -1620,19 +1621,19 @@ const MACHINE_DEFAULTS = [
   {id:65,name:"Feya General Hospital",nameZh:"费亚综合医院",city:"Shashemene",date:"",model:"A8",
    contacts:[{role:"Owner",roleZh:"业主",name:"Dr kelemu",nameZh:"凯莱穆医生",phone:"0911714904"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"Private",ownershipZh:"私立"},
-  {id:66,name:"Alem Primary Hospital",nameZh:"阿勒姆初级医院",city:"Butajira",date:"",model:"A6",
+  {id:66,name:"Alem Primary Hospital",nameZh:"阿勒姆初级医院",city:"Butajira",date:"",model:"A8",
    contacts:[{role:"G/Manager",roleZh:"总经理",name:"yilkal",nameZh:"伊尔卡尔",phone:"0920271225"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"Primary Hospital (General Healthcare Services)",specialtyZh:"初级医院（综合医疗服务）",ownership:"",ownershipZh:""},
   {id:67,name:"Rohobot General Hospital",nameZh:"罗博特综合医院",city:"Asella",date:"",model:"A90",
    contacts:[{role:"owner",roleZh:"业主",name:"Dr kedir",nameZh:"基德尔医生",phone:"0927713200"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"",ownershipZh:""},
-  {id:68,name:"Mohammed Akle General Hospital",nameZh:"穆罕默德·阿克勒综合医院",city:"Awash",date:"",model:"A6",
+  {id:68,name:"Mohammed Akle General Hospital",nameZh:"穆罕默德·阿克勒综合医院",city:"Awash",date:"",model:"A8",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Ahemed",nameZh:"艾哈迈德",phone:"0920546849"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"General Hospital",specialtyZh:"综合医院",ownership:"",ownershipZh:""}
 ];
 
 const EXTERNAL_DEFAULTS = [
-  {id:69,name:"Birhan Ethiopia International Medicine",nameZh:"伯尔汉埃塞俄比亚国际医学",city:"A.A",date:"",model:"A8",
+  {id:69,name:"Birhan Ethiopia International Medicine",nameZh:"伯尔汉埃塞俄比亚国际医学",city:"A.A",date:"",model:"EXT",
    contacts:[{role:"Medical Director",roleZh:"医疗主任",name:"DR Zewudu",nameZh:"泽伍杜医生",phone:"0911668642"}],
    payment:[],
    stock:"HscTnl, Vitamin B12 (1 pack), Folate",
@@ -1640,19 +1641,19 @@ const EXTERNAL_DEFAULTS = [
    order:"Vitamin B12, Folate, HscTnl. Next import: Insulin and C-peptide",
    orderZh:"维生素B12, 叶酸, HscTnl. 下次进口: 胰岛素和C肽",
    doctors:"1 full time",doctorsZh:"1名全职",specialty:"Internal Medicine Specialty Clinic",specialtyZh:"内科专科诊所",ownership:"Private",ownershipZh:"私立"},
-  {id:70,name:"Alem Tena Internal Medicine Speciality Center",nameZh:"阿勒姆泰纳内科专科中心",city:"A.A",date:"",model:"A90",
+  {id:70,name:"Alem Tena Internal Medicine Speciality Center",nameZh:"阿勒姆泰纳内科专科中心",city:"A.A",date:"",model:"EXT",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Ashenafi",nameZh:"阿谢纳菲",phone:"0955660646"}],
    payment:[],stock:"",order:"Note: store manager not available, sent reagent list for order",orderZh:"备注: 库管不在, 已发送试剂清单供订购",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
-  {id:71,name:"ACE Engineering PLC",nameZh:"ACE工程有限公司",city:"A.A",date:"",model:"A6",
+  {id:71,name:"ACE Engineering PLC",nameZh:"ACE工程有限公司",city:"A.A",date:"",model:"EXT",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Betty",nameZh:"贝蒂",phone:"0939762618"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
-  {id:72,name:"Alta Medium Clinic",nameZh:"阿尔塔中型诊所",city:"Adama",date:"",model:"A6",
+  {id:72,name:"Alta Medium Clinic",nameZh:"阿尔塔中型诊所",city:"Adama",date:"",model:"EXT",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Sintayehu",nameZh:"辛塔耶胡",phone:"0923465690"},{role:"Finance Head",roleZh:"财务主管",name:"Asfaw",nameZh:"阿斯法",phone:""}],
    payment:[{role:"Finance Head",roleZh:"财务主管",name:"Asfaw",nameZh:"阿斯法",phone:""}],stock:"",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
-  {id:73,name:"Medhen Beza Primary Hospital",nameZh:"梅德亨贝扎初级医院",city:"Adama",date:"",model:"A6",
+  {id:73,name:"Medhen Beza Primary Hospital",nameZh:"梅德亨贝扎初级医院",city:"Adama",date:"",model:"EXT",
    contacts:[{role:"Owner/Purchaser",roleZh:"业主/采购",name:"Sister .Mekdes",nameZh:"梅克德斯修女",phone:"0993935767"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"Internal Medicine",specialtyZh:"内科",ownership:"Private",ownershipZh:"私立"},
-  {id:74,name:"Alem Gena Medical Services",nameZh:"阿勒姆格纳医疗服务",city:"A.A",date:"",model:"A8",
+  {id:74,name:"Alem Gena Medical Services",nameZh:"阿勒姆格纳医疗服务",city:"A.A",date:"",model:"EXT",
    contacts:[{role:"Lab Head",roleZh:"检验科主任",name:"Amsal",nameZh:"阿姆萨尔",phone:"0935401135"}],
    payment:[],stock:"",order:"",doctors:"",specialty:"General Medical Service",specialtyZh:"综合医疗服务",ownership:"Private",ownershipZh:"私立"}
 ];
