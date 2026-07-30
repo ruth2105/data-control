@@ -5208,8 +5208,6 @@ function exportToExcel(lang) {
 
 // ===================== DYNAMIC STATS =====================
 function updateStats() {
-  const machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
-  const externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
   const total = machineCustomers.length + externalCustomers.length;
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statMachine').textContent = machineCustomers.length;
@@ -6588,9 +6586,6 @@ function applyFilters() {
     Yirgalem: { zh: '伊尔加莱姆', en: 'Yirgalem' }
   };
   const state = { currentTab: 'all', currentCity: 'All', currentModel: 'All', searchTerm: '' };
-  let machineCustomers = [];
-  let externalCustomers = [];
-  let allCustomers = [];
 
   function getCurrentLang() {
     return (document.documentElement.lang || 'zh').toLowerCase();
@@ -6632,6 +6627,11 @@ function applyFilters() {
   }
 
   function initializeCustomerData() {
+    // Use the global variables defined earlier in the file
+    if (typeof machineCustomers === 'undefined') machineCustomers = [];
+    if (typeof externalCustomers === 'undefined') externalCustomers = [];
+    if (typeof allCustomers === 'undefined') allCustomers = [];
+    
     machineCustomers = readStoredCustomers('machine');
     externalCustomers = readStoredCustomers('external');
     allCustomers = [...machineCustomers, ...externalCustomers];
@@ -6643,13 +6643,13 @@ function applyFilters() {
   }
 
   function updateStats() {
-    const total = machineCustomers.length + externalCustomers.length;
+    const total = window.machineCustomers.length + window.externalCustomers.length;
     const totalEl = document.getElementById('statTotal');
     const machineEl = document.getElementById('statMachine');
     const externalEl = document.getElementById('statExternal');
     if (totalEl) totalEl.textContent = total;
-    if (machineEl) machineEl.textContent = machineCustomers.length;
-    if (externalEl) externalEl.textContent = externalCustomers.length;
+    if (machineEl) machineEl.textContent = window.machineCustomers.length;
+    if (externalEl) externalEl.textContent = window.externalCustomers.length;
   }
 
   function renderCityButtons() {
@@ -6661,9 +6661,20 @@ function applyFilters() {
     container.innerHTML = buttons;
   }
 
+  function setCity(city) {
+    state.currentCity = city;
+    renderCityButtons();
+    renderCards();
+  }
+
+  function setModel(model) {
+    state.currentModel = model;
+    renderCards();
+  }
+
   function getFiltered() {
     const term = (state.searchTerm || '').toLowerCase();
-    return allCustomers.filter(customer => {
+    return window.allCustomers.filter(customer => {
       const name = (customer.name || '').toLowerCase();
       const city = (customer.city || '').toLowerCase();
       const matchesSearch = !term || name.includes(term) || city.includes(term);
@@ -6679,7 +6690,7 @@ function applyFilters() {
     if (!grid) return;
     const filtered = getFiltered();
     if (info) {
-      info.textContent = `显示 ${filtered.length} / ${allCustomers.length} 位客户`;
+      info.textContent = `显示 ${filtered.length} / ${window.allCustomers.length} 位客户`;
     }
     if (!filtered.length) {
       grid.innerHTML = '<div class="no-results">没有匹配的客户</div>';
@@ -6708,14 +6719,14 @@ function applyFilters() {
     const panel = document.getElementById('page-dashboard');
     if (!panel) return;
     const summary = document.getElementById('dashboardDateRange');
-    if (summary) summary.textContent = `客户总数: ${allCustomers.length} · 机器客户: ${machineCustomers.length} · 外部客户: ${externalCustomers.length}`;
+    if (summary) summary.textContent = `客户总数: ${window.allCustomers.length} · 机器客户: ${window.machineCustomers.length} · 外部客户: ${window.externalCustomers.length}`;
   }
 
   function renderReports() {
     const panel = document.getElementById('page-reports');
     if (!panel) return;
     const count = document.getElementById('reportsCount');
-    if (count) count.textContent = `当前可见 ${allCustomers.length} 个客户`;
+    if (count) count.textContent = `当前可见 ${window.allCustomers.length} 个客户`;
   }
 
   function loadProfileInfo() {
