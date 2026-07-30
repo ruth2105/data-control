@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Customer Classifications</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .section { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .customer { background: #f8f8f8; padding: 10px; margin: 5px 0; border-radius: 5px; border-left: 4px solid #ccc; }
+        .customer.machine { border-left-color: #10b981; }
+        .customer.external { border-left-color: #f59e0b; }
+        .customer.potential { border-left-color: #3b82f6; }
+        button { padding: 10px 20px; background: #1a56db; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        pre { background: #f8f8f8; padding: 10px; border-radius: 5px; overflow-x: auto; max-height: 300px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Customer Classification Check</h1>
+    
+    <div class="section">
+        <h3>📊 Current Data Counts:</h3>
+        <div id="counts"></div>
+    </div>
+
+    <div class="section">
+        <h3>🏥 Potentials (Regular Customers):</h3>
+        <div id="potentials"></div>
+    </div>
+
+    <div class="section">
+        <h3>⚙️ Machine Customers (A8/A90):</h3>
+        <div id="machine"></div>
+    </div>
+
+    <div class="section">
+        <h3>🌐 External Customers:</h3>
+        <div id="external"></div>
+    </div>
+
+    <div class="section">
+        <h3>🔧 Actions:</h3>
+        <button onclick="exportAllData()">📥 Export All Customer Data</button>
+        <button onclick="clearAllData()">🗑️ Clear All Data</button>
+    </div>
+
+    <script>
+        function getData(key) {
+            try {
+                return JSON.parse(localStorage.getItem('fremenatos_' + key) || '[]');
+            } catch (e) {
+                console.error('Error parsing data for key:', key, e);
+                return [];
+            }
+        }
+
+        function updateCounts() {
+            const potentials = getData('potentials');
+            const machine = getData('machine');
+            const external = getData('external');
+
+            console.log('Data check:', { potentials: potentials.length, machine: machine.length, external: external.length });
+
+            document.getElementById('counts').innerHTML = `
+                <div>Potentials: <strong>${potentials.length}</strong></div>
+                <div>Machine: <strong>${machine.length}</strong></div>
+                <div>External: <strong>${external.length}</strong></div>
+                <div><strong>Total: ${potentials.length + machine.length + external.length}</strong></div>
+            `;
+
+            renderCustomers('potentials', potentials, 'potential');
+            renderCustomers('machine', machine, 'machine');
+            renderCustomers('external', external, 'external');
+        }
+
+        function renderCustomers(containerId, customers, type) {
+            const container = document.getElementById(containerId);
+            if (customers.length === 0) {
+                container.innerHTML = '<div style="color: #666; font-style: italic;">No customers in this category</div>';
+                return;
+            }
+
+            container.innerHTML = customers.map(c => `
+                <div class="customer ${type}">
+                    <strong>${c.name || c.hospitalName || 'Unknown'}</strong><br>
+                    <small>Address: ${c.address || c.hospitalAddress || 'N/A'}</small><br>
+                    <small>Type: ${type}</small>
+                </div>
+            `).join('');
+        }
+
+        function exportAllData() {
+            const allData = {
+                potentials: getData('potentials'),
+                machine: getData('machine'),
+                external: getData('external')
+            };
+            downloadFile('customer_classifications.json', JSON.stringify(allData, null, 2));
+        }
+
+        function clearAllData() {
+            if(confirm('Clear ALL customer data? This cannot be undone!')) {
+                localStorage.removeItem('fremenatos_potentials');
+                localStorage.removeItem('fremenatos_machine');
+                localStorage.removeItem('fremenatos_external');
+                updateCounts();
+            }
+        }
+
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        updateCounts();
+    </script>
+</body>
+</html>
