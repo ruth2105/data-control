@@ -7331,6 +7331,10 @@ async function confirmPurchaseAnnouncement(announcementId, machineModel) {
 }
 
 async function addCustomerFromAnnouncement(announcement) {
+  // Load current customer data from localStorage
+  const machineCustomers = JSON.parse(localStorage.getItem('fremenatos_machine') || '[]');
+  const externalCustomers = JSON.parse(localStorage.getItem('fremenatos_external') || '[]');
+  
   // Determine city from address or default
   const city = announcement.hospitalAddress || 'A.A';
   
@@ -7358,14 +7362,14 @@ async function addCustomerFromAnnouncement(announcement) {
   // Add to appropriate customer list
   if (announcement.machineModel === 'A8' || announcement.machineModel === 'A90') {
     machineCustomers.push(newCustomer);
-    await saveCustomerData('machine', machineCustomers);
+    localStorage.setItem('fremenatos_machine', JSON.stringify(machineCustomers));
   } else {
     externalCustomers.push(newCustomer);
-    await saveCustomerData('external', externalCustomers);
+    localStorage.setItem('fremenatos_external', JSON.stringify(externalCustomers));
   }
   
   // Refresh customer display
-  allCustomers = [...machineCustomers, ...externalCustomers];
+  const allCustomers = [...machineCustomers, ...externalCustomers];
   renderCards();
   updateStats();
 }
