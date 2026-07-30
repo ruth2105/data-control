@@ -1285,7 +1285,14 @@ async function updateCustomer(type, id, updates) {
 }
 
 async function deleteCustomer(type, id) {
-  if (!confirm(currentLang === 'zh' ? '确定删除此客户？所有关联的拜访报告不会删除。' : 'Delete this customer? Related visit reports will be kept.')) return;
+  console.log('deleteCustomer called with type:', type, 'id:', id);
+  
+  if (!confirm(currentLang === 'zh' ? '确定删除此客户？所有关联的拜访报告不会删除。' : 'Delete this customer? Related visit reports will be kept.')) {
+    console.log('User cancelled deletion');
+    return;
+  }
+  
+  console.log('User confirmed deletion');
   
   // If type is 'all', determine actual type from the customer
   let actualType = type;
@@ -1293,6 +1300,11 @@ async function deleteCustomer(type, id) {
     const customer = allCustomers.find(c => c.id === id);
     if (customer) {
       actualType = (customer.model === 'A8' || customer.model === 'A90') ? 'machine' : 'external';
+      console.log('Determined actual type:', actualType, 'from customer model:', customer.model);
+    } else {
+      console.error('Customer not found in allCustomers for id:', id);
+      alert('Customer not found');
+      return;
     }
   }
   
@@ -1301,16 +1313,19 @@ async function deleteCustomer(type, id) {
   if (!deletedCustomers.includes(id)) {
     deletedCustomers.push(id);
     localStorage.setItem('fremenatos_deleted_customers', JSON.stringify(deletedCustomers));
+    console.log('Added to local deleted customers list:', deletedCustomers);
   }
   
   // Sync with Firebase for cross-device deletion (only add to deleted list, don't delete the record)
   if (window.firebaseService && window.firebaseService.isReady()) {
     try {
-      await window.firebaseService.addDeletedCustomer(id);
-      console.log('Added to Firebase deleted customers list for cross-device sync');
+      const result = await window.firebaseService.addDeletedCustomer(id);
+      console.log('Firebase addDeletedCustomer result:', result);
     } catch (error) {
       console.log('Failed to add to Firebase deleted customers:', error);
     }
+  } else {
+    console.log('Firebase not ready, skipping Firebase sync');
   }
   
   // Delete from localStorage FIRST (this is our primary source)
@@ -1338,9 +1353,13 @@ async function deleteCustomer(type, id) {
   }
   allCustomers = [...machineCustomers, ...externalCustomers];
   
+  console.log('Updated local arrays - machine:', machineCustomers.length, 'external:', externalCustomers.length, 'total:', allCustomers.length);
+  
   closeModal();
   renderCards();
   updateStats();
+  
+  console.log('Delete operation completed successfully');
 }
 
 async function refreshAllCustomers() {
