@@ -1150,20 +1150,21 @@ async function getCustomerData(type) {
     try {
       const firebaseCustomers = await window.firebaseService.getCustomers();
       console.log('Firebase customers loaded:', firebaseCustomers.length, 'items');
+      console.log('Deleted customers to filter:', deletedCustomers);
       
       if (firebaseCustomers.length > 0) {
         if (type === 'machine') {
           const data = firebaseCustomers.filter(c => c.model === 'A8' || c.model === 'A90');
           const filtered = data.filter(c => !deletedCustomers.includes(c.id));
           localStorage.setItem('fremenatos_machine', JSON.stringify(filtered));
-          console.log('Firebase machine customers:', filtered.length, 'items');
+          console.log('Firebase machine customers:', filtered.length, 'items (filtered out', data.length - filtered.length, 'deleted)');
           return filtered;
         } else {
           // External customers: those with model 'EXT' or those not A8/A90
           const data = firebaseCustomers.filter(c => c.model === 'EXT' || (c.model !== 'A8' && c.model !== 'A90'));
           const filtered = data.filter(c => !deletedCustomers.includes(c.id));
           localStorage.setItem('fremenatos_external', JSON.stringify(filtered));
-          console.log('Firebase external customers:', filtered.length, 'items');
+          console.log('Firebase external customers:', filtered.length, 'items (filtered out', data.length - filtered.length, 'deleted)');
           return filtered;
         }
       }
@@ -1295,31 +1296,31 @@ async function deleteCustomer(type, id) {
     }
   }
   
-  // Add to deleted customers list to prevent restoration
+  // Add to deleted customers list to prevent restoration (cross-device sync)
   let deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
   if (!deletedCustomers.includes(id)) {
     deletedCustomers.push(id);
     localStorage.setItem('fremenatos_deleted_customers', JSON.stringify(deletedCustomers));
   }
   
-  // Sync with Firebase for cross-device deletion
+  // Sync with Firebase for cross-device deletion (only add to deleted list, don't delete the record)
   if (window.firebaseService && window.firebaseService.isReady()) {
     try {
       await window.firebaseService.addDeletedCustomer(id);
-      await window.firebaseService.deleteCustomer(id);
-      console.log('Deleted from Firebase for cross-device sync');
+      console.log('Added to Firebase deleted customers list for cross-device sync');
     } catch (error) {
-      console.log('Failed to delete from Firebase:', error);
+      console.log('Failed to add to Firebase deleted customers:', error);
     }
   }
   
   // Delete from localStorage FIRST (this is our primary source)
   const key = 'fremenatos_' + actualType;
   const data = JSON.parse(localStorage.getItem(key) || '[]');
+  console.log('Before deletion from localStorage:', key, 'has', data.length, 'customers');
   const filtered = data.filter(c => c.id !== id);
   localStorage.setItem(key, JSON.stringify(filtered));
   
-  console.log('Deleted from localStorage. Remaining:', filtered.length);
+  console.log('Deleted from localStorage. Remaining:', filtered.length, 'was', data.length);
   
   // Then try to delete from Google Sheets (best effort)
   try {
@@ -6551,7 +6552,7 @@ function updatePotentialStats() {
 // ===================== INIT =====================
 // Load customer data from localStorage (with defaults fallback)
 async function initializeApp() {
-  // Initialize Firebase with default data if empty
+  // Initialize Firebase with default data if empty (only on first load)
   if (window.firebaseService && window.firebaseService.isReady()) {
     try {
       const existingCustomers = await window.firebaseService.getCustomers();
@@ -6568,30 +6569,10 @@ async function initializeApp() {
         }
         console.log('Firebase initialized with default customers');
       } else {
-        // Check if we have the expected number of customers
-        const expectedTotal = MACHINE_DEFAULTS.length + EXTERNAL_DEFAULTS.length;
-        if (existingCustomers.length < expectedTotal) {
-          console.log('Firebase has fewer customers than expected, adding missing ones');
-          
-          // Add missing machine customers
-          for (const customer of MACHINE_DEFAULTS) {
-            if (!existingCustomers.find(c => c.id === customer.id)) {
-              await window.firebaseService.saveCustomer(customer);
-              console.log('Added missing machine customer:', customer.name);
-            }
-          }
-          
-          // Add missing external customers
-          for (const customer of EXTERNAL_DEFAULTS) {
-            if (!existingCustomers.find(c => c.id === customer.id)) {
-              await window.firebaseService.saveCustomer(customer);
-              console.log('Added missing external customer:', customer.name);
-            }
-          }
-        }
+        console.log('Firebase already has customers, skipping initialization');
       }
     } catch (error) {
-      console.log('Failed to initialize Firebase with default data:', error);
+      console.log('Failed to check Firebase customer data:', error);
     }
   }
 
