@@ -1144,6 +1144,9 @@ async function getCustomerData(type) {
     deletedCustomers = JSON.parse(localStorage.getItem('fremenatos_deleted_customers') || '[]');
   }
   console.log('Deleted customers list:', deletedCustomers);
+  
+  // Ensure deleted customer IDs are strings for consistent comparison
+  deletedCustomers = deletedCustomers.map(id => String(id));
 
   // First try Firebase for real-time sync across devices
   if (window.firebaseService && window.firebaseService.isReady()) {
@@ -1155,14 +1158,14 @@ async function getCustomerData(type) {
       if (firebaseCustomers.length > 0) {
         if (type === 'machine') {
           const data = firebaseCustomers.filter(c => c.model === 'A8' || c.model === 'A90');
-          const filtered = data.filter(c => !deletedCustomers.includes(c.id));
+          const filtered = data.filter(c => !deletedCustomers.includes(String(c.id)));
           localStorage.setItem('fremenatos_machine', JSON.stringify(filtered));
           console.log('Firebase machine customers:', filtered.length, 'items (filtered out', data.length - filtered.length, 'deleted)');
           return filtered;
         } else {
           // External customers: those with model 'EXT' or those not A8/A90
           const data = firebaseCustomers.filter(c => c.model === 'EXT' || (c.model !== 'A8' && c.model !== 'A90'));
-          const filtered = data.filter(c => !deletedCustomers.includes(c.id));
+          const filtered = data.filter(c => !deletedCustomers.includes(String(c.id)));
           localStorage.setItem('fremenatos_external', JSON.stringify(filtered));
           console.log('Firebase external customers:', filtered.length, 'items (filtered out', data.length - filtered.length, 'deleted)');
           return filtered;
@@ -1182,8 +1185,8 @@ async function getCustomerData(type) {
     try {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        // Filter out deleted customers
-        const filtered = parsed.filter(c => !deletedCustomers.includes(c.id));
+        // Filter out deleted customers (string comparison)
+        const filtered = parsed.filter(c => !deletedCustomers.includes(String(c.id)));
         console.log('After filtering deleted customers:', filtered.length, 'items (removed', parsed.length - filtered.length, ')');
         // Update localStorage with filtered data
         if (filtered.length !== parsed.length) {
@@ -1201,13 +1204,13 @@ async function getCustomerData(type) {
     if (result.success && Array.isArray(result.data) && result.data.length > 0) {
       if (type === 'machine') {
         const data = result.data.filter(c => c.model === 'A8' || c.model === 'A90');
-        const filtered = data.filter(c => !deletedCustomers.includes(c.id));
+        const filtered = data.filter(c => !deletedCustomers.includes(String(c.id)));
         localStorage.setItem(key, JSON.stringify(filtered));
         return filtered;
       } else {
         // External customers: those with model 'EXT' or those not A8/A90
         const data = result.data.filter(c => c.model === 'EXT' || (c.model !== 'A8' && c.model !== 'A90'));
-        const filtered = data.filter(c => !deletedCustomers.includes(c.id));
+        const filtered = data.filter(c => !deletedCustomers.includes(String(c.id)));
         localStorage.setItem(key, JSON.stringify(filtered));
         return filtered;
       }
@@ -1297,13 +1300,17 @@ async function deleteCustomer(type, id) {
   // If type is 'all', determine actual type from the customer
   let actualType = type;
   if (type === 'all') {
-    const customer = allCustomers.find(c => c.id === id);
+    // More robust ID comparison - handle both string and number IDs
+    const customer = allCustomers.find(c => String(c.id) === String(id));
+    console.log('Looking for customer with id:', id, 'in allCustomers of length:', allCustomers.length);
+    
     if (customer) {
       actualType = (customer.model === 'A8' || customer.model === 'A90') ? 'machine' : 'external';
       console.log('Determined actual type:', actualType, 'from customer model:', customer.model);
     } else {
       console.error('Customer not found in allCustomers for id:', id);
-      alert('Customer not found');
+      console.log('Available customer IDs:', allCustomers.map(c => c.id));
+      alert('Customer not found. Please refresh the page and try again.');
       return;
     }
   }
@@ -1332,10 +1339,14 @@ async function deleteCustomer(type, id) {
   const key = 'fremenatos_' + actualType;
   const data = JSON.parse(localStorage.getItem(key) || '[]');
   console.log('Before deletion from localStorage:', key, 'has', data.length, 'customers');
-  const filtered = data.filter(c => c.id !== id);
+  console.log('Looking for customer with id:', id, 'in localStorage data');
+  
+  // More robust ID comparison for localStorage
+  const filtered = data.filter(c => String(c.id) !== String(id));
   localStorage.setItem(key, JSON.stringify(filtered));
   
   console.log('Deleted from localStorage. Remaining:', filtered.length, 'was', data.length);
+  console.log('Filter removed', data.length - filtered.length, 'customers');
   
   // Then try to delete from Google Sheets (best effort)
   try {
